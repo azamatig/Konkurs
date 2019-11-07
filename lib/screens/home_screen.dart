@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/screens/PaymentScreen.dart';
+import 'package:konkurs_app/screens/WinnerScreen.dart';
 import 'package:konkurs_app/screens/feed_screen.dart';
+import 'package:konkurs_app/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,10 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: _pageController,
         children: <Widget>[
           FeedScreen(),
-          //   SearchScreen(),
-          //     CreatePostScreen(),
-          //      ActivityScreen(),
-          //       ProfileScreen(userId: Provider.of<UserData>(context).currentUserId),
+          WinnerScreen(),
+          PaymentScreen(),
+          ProfileScreen(userId: Provider.of<UserData>(context).currentUserId),
         ],
         onPageChanged: (int index) {
           setState(() {
