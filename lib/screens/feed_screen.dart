@@ -1,8 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/profile_screen.dart';
+import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/utils.dart';
+import 'package:provider/provider.dart';
 
 class FeedScreen extends StatefulWidget {
   static final String id = 'feed_screen';
+  final String userId;
+
+  FeedScreen({this.userId});
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -18,34 +29,72 @@ class _FeedScreenState extends State<FeedScreen> {
   Container buildItem(DocumentSnapshot doc) {
     return Container(
       child: Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        color: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Image.network(
+                doc.data['imagepost'],
+                fit: BoxFit.fill,
+              ),
               Center(
-                child: Image.network(
-                  doc.data['imagepost'],
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 2.0),
+                  child: Text(
+                    '${doc.data['name']}',
+                    style: TextStyle(fontSize: 24, color: Colors.black45),
+                  ),
                 ),
               ),
-              Text(
-                '${doc.data['name']}',
-                style: TextStyle(fontSize: 24, color: Colors.black45),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  '${doc.data['description']}',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
               Divider(),
-              Text(
-                '${doc.data['description']}',
-                style: TextStyle(fontSize: 19),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: () => updateData(doc),
-                    child: Text('Подробнее',
-                        style: TextStyle(color: Colors.white)),
-                    color: Colors.lightBlueAccent,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 95.0, 10.0),
+                    child: FlatButton(
+                      child: Icon(Icons.share),
+                      onPressed: () async {
+                        var response = await FlutterShareMe().shareToSystem(
+                            msg: 'ссылка на приложение будет здесь');
+                        if (response == 'success') {
+                          print('navigate success');
+                        }
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 10.0),
+                    child: Container(
+                      width: 180,
+                      height: 43,
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        onPressed: () => updateData(doc),
+                        child: Text(
+                          'Подробнее',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'CeraCompactPro'),
+                          textAlign: TextAlign.center,
+                        ),
+                        color: PaypalColors.Turquois,
+                      ),
+                    ),
                   ),
                 ],
               )
@@ -58,84 +107,179 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.all(0),
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Text("****"),
-                accountEmail: Text("***@**.com"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://static.joybuy.com/ept_m/res/en/launcher-144.png'),
+    return DefaultTabController(
+      length: 3,
+      child: Container(
+        child: Scaffold(
+          drawer: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.85, //20.0,
+            child: Drawer(
+              child: ListView(
+                padding: EdgeInsets.all(0.0),
+                children: <Widget>[
+                  FutureBuilder(
+                    future: usersRef.document(widget.userId).get(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      User user = User.fromDoc(snapshot.data);
+
+                      return UserAccountsDrawerHeader(
+                        accountEmail: Text(
+                          user.email,
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        accountName: Text(
+                          user.name,
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        currentAccountPicture: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: CircleAvatar(
+                            backgroundImage: user.profileImageUrl.isEmpty
+                                ? AssetImage(
+                                    'assets/images/user_placeholder.jpg')
+                                : CachedNetworkImageProvider(
+                                    user.profileImageUrl),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    "https://i.pinimg.com/originals/68/f6/43/68f643d36f631d9e1955097ffa4254d3.jpg"))),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Оплата'),
+                    trailing: Icon(Icons.payment),
+                  ),
+                  ListTile(
+                      title: Text('Пригласить друга'),
+                      trailing: Icon(Icons.person),
+                      onTap: () async {
+                        var response = await FlutterShareMe().shareToSystem(
+                            msg: 'ссылка на приложение будет здесь');
+                        if (response == 'success') {
+                          print('navigate success');
+                        }
+                      }),
+                  ListTile(
+                    title: Text('Обратная связь'),
+                    trailing: Icon(Icons.info_outline),
+                  ),
+                  ListTile(
+                      title: Text('Профиль'),
+                      trailing: Icon(Icons.input),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfileScreen(
+                                  userId: Provider.of<UserData>(context)
+                                      .currentUserId)),
+                        );
+                      }),
+                  Divider(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ListTile(
+                      title: Text('Выйти'),
+                      trailing: Icon(Icons.exit_to_app),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            bottom: TabBar(
+              labelColor: Colors.black45,
+              tabs: <Widget>[
+                Tab(
+                  text: ('Новые'),
+                ), // First tab ListView with Primary Posts
+                Tab(
+                  text: ('В обработке'),
                 ),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            "https://cdn.pixabay.com/photo/2015/09/21/06/59/mountains-949425_960_720.jpg"))),
+                Tab(
+                  text: ('Завершенные'),
+                )
+              ],
+            ),
+            title: Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 57.0, 0.0),
+                child: Text(
+                  'Konkurs',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'CerapCompactPro',
+                    fontSize: 25.0,
+                  ),
+                ),
               ),
-              ListTile(
-                title: Text('Оплата'),
-                trailing: Icon(Icons.payment),
+            ),
+          ),
+          backgroundColor: Colors.white10,
+          body: TabBarView(
+            children: <Widget>[
+              ListView(
+                padding: EdgeInsets.all(8),
+                children: <Widget>[
+                  StreamBuilder<QuerySnapshot>(
+                    stream: db.collection('post').snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: snapshot.data.documents
+                              .map((doc) => buildItem(doc))
+                              .toList(),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                title: Text('Пригласить друга'),
-                trailing: Icon(Icons.person),
+              Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: Text(
+                  'На данный момент список пуст',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: PaypalColors.DarkBlue,
+                    fontFamily: AvailableFonts.primaryFont,
+                    fontSize: 25,
+                  ),
+                ),
               ),
-              ListTile(
-                title: Text('Обратная связь'),
-                trailing: Icon(Icons.info_outline),
-              ),
-              ListTile(
-                title: Text('Профиль'),
-                trailing: Icon(Icons.input),
-              ),
-              Divider(),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ListTile(
-                  title: Text('Выйти'),
-                  trailing: Icon(Icons.exit_to_app),
+              Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: Text(
+                  'Список пуст',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: PaypalColors.DarkBlue,
+                    fontFamily: AvailableFonts.primaryFont,
+                    fontSize: 25,
+                  ),
                 ),
               ),
             ],
           ),
-        ),
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Center(
-            child: Text(
-              'Konkurs',
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'CeraCompactPro',
-                fontSize: 25.0,
-              ),
-            ),
-          ),
-        ),
-        backgroundColor: Colors.white10,
-        body: ListView(
-          padding: EdgeInsets.all(8),
-          children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-              stream: db.collection('post').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: snapshot.data.documents
-                        .map((doc) => buildItem(doc))
-                        .toList(),
-                  );
-                } else {
-                  return SizedBox();
-                }
-              },
-            ),
-          ],
         ),
       ),
     );

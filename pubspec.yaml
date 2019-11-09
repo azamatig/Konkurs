@@ -37,6 +37,7 @@ dependencies:
   uuid: ^2.0.2
   provider: ^3.1.0+1
   image_cropper: ^1.1.0
+  flutter_share_me: ^0.4.0
 
 
 
@@ -90,17 +91,17 @@ flutter:
        - asset: assets/fonts/Cera Compact Pro Medium.otf
     - family: Barlow
       fonts:
-         - asset: assets/fonts/Barlow-Regular.ttf
-         - asset: assets/fonts/Barlow-SemiBold.ttf
-           weight: 400
-         - asset: assets/fonts/Barlow-Bold.ttf
-           weight: 700
+        - asset: assets/fonts/Barlow-Regular.ttf
+        - asset: assets/fonts/Barlow-SemiBold.ttf
+          weight: 400
+        - asset: assets/fonts/Barlow-Bold.ttf
+          weight: 700
     - family: Quicksand
       fonts:
-         - asset: assets/fonts/Quicksand-Regular.ttf
-         - asset: assets/fonts/Quicksand-Medium.ttf
-         - asset: assets/fonts/Quicksand-SemiBold.ttf
-         - asset: assets/fonts/Quicksand-Bold.ttf
+        - asset: assets/fonts/Quicksand-Regular.ttf
+        - asset: assets/fonts/Quicksand-Medium.ttf
+        - asset: assets/fonts/Quicksand-SemiBold.ttf
+        - asset: assets/fonts/Quicksand-Bold.ttf
 
 
   #     - asset: fonts/Schyler-Italic.ttf
