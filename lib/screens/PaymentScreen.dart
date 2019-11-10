@@ -42,9 +42,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   style: TextStyle(fontSize: 12, color: PaypalColors.Win),
                 ),
               ),
-              _paypalCard(context),
-              _activityText(),
-              _activityList(),
+              Column(
+                children: <Widget>[
+                  _paypalCard(context),
+                  _activityText(),
+                  _activityList(),
+                ],
+              ),
             ],
           ),
         ),
@@ -80,10 +84,10 @@ Container _paypalCard(context) {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Image.asset('assets/images/Paypal-logo.png', height: 30),
+                Image.asset('assets/images/paper-money.jpg', height: 30),
                 SizedBox(width: 20),
                 Text(
-                  'BALANCE',
+                  'БАЛАНС',
                   style: TextStyle(
                       color: PaypalColors.DarkBlue,
                       fontFamily: "worksans",
@@ -105,19 +109,21 @@ Container _paypalCard(context) {
                 Row(
                   children: <Widget>[
                     Text(
-                      '\$',
-                      style: TextStyle(fontFamily: "vistolsans", fontSize: 25),
+                      'участий',
+                      style: TextStyle(
+                          fontFamily: AvailableFonts.primaryFont, fontSize: 25),
                     ),
                     SizedBox(width: 13),
                     Text(
-                      '452,20',
-                      style: TextStyle(fontFamily: "sfprotext", fontSize: 45),
+                      '5',
+                      style: TextStyle(
+                          fontFamily: AvailableFonts.primaryFont, fontSize: 45),
                     ),
                     SizedBox(width: 13),
                   ],
                 ),
                 Text(
-                  'Available',
+                  'Доступно',
                   style: TextStyle(
                       fontFamily: "worksans",
                       color: PaypalColors.Grey,
@@ -136,7 +142,7 @@ Container _paypalCard(context) {
                 color: PaypalColors.LightGrey,
                 textColor: PaypalColors.DarkBlue,
                 child: Text(
-                  "MR.RAGNAR LOTHBROK",
+                  "Перейти в профиль",
                   style: TextStyle(
                       fontFamily: "worksans",
                       color: PaypalColors.DarkBlue,
@@ -176,9 +182,9 @@ Container _activityText() {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Text(
-          'Activity',
+          'Подписки',
           style: TextStyle(
-              fontFamily: "worksans",
+              fontFamily: "Quicksand",
               fontSize: 15,
               fontWeight: FontWeight.w600),
         ),
@@ -186,9 +192,9 @@ Container _activityText() {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'VIEW ALL',
+              'ПОКУПКИ',
               style: TextStyle(
-                  fontFamily: "worksans",
+                  fontFamily: "Quicksand",
                   fontWeight: FontWeight.w400,
                   fontSize: 10,
                   color: PaypalColors.Grey),
@@ -211,21 +217,25 @@ ListView _activityList() {
         margin: EdgeInsets.only(bottom: 15),
         decoration: _tileDecoration(),
         child: ListTile(
-          leading: Image.asset('assets/images/Nike.png'),
+          leading: Image.asset(
+            'assets/images/icon2.png',
+            height: 50,
+            width: 50,
+          ),
           title: Text(
-            'Nike Medieval',
+            'Подписка 1',
             style: TextStyle(
                 fontFamily: "worksans",
                 fontWeight: FontWeight.w500,
                 color: Colors.black),
           ),
           subtitle: Text(
-            'Jan 21, 2019',
+            'Ежемесячно 2 участия',
             style:
                 TextStyle(fontFamily: "worksans", fontWeight: FontWeight.w300),
           ),
           trailing: Text(
-            '-249,99 USD',
+            '5 USD',
             style: TextStyle(fontFamily: "worksans"),
           ),
         ),
@@ -236,22 +246,26 @@ ListView _activityList() {
         child: ListTile(
           leading: Container(
             width: 42,
-            child: Image.asset('assets/images/if_9_avatar_2754584.png'),
+            child: Image.asset(
+              'assets/images/icon3.png',
+              height: 50,
+              width: 50,
+            ),
           ),
           title: Text(
-            'Lagertha Lothbrok',
+            'Подписка 2',
             style: TextStyle(
                 fontFamily: "worksans",
                 fontWeight: FontWeight.w500,
                 color: Colors.black),
           ),
           subtitle: Text(
-            'Jan 18, 2019',
+            'Ежемесячно 5 участий',
             style:
                 TextStyle(fontFamily: "worksans", fontWeight: FontWeight.w300),
           ),
           trailing: Text(
-            '+102,00 USD',
+            '15 USD',
             style: TextStyle(fontFamily: "worksans"),
           ),
         ),
@@ -262,29 +276,27 @@ ListView _activityList() {
         child: ListTile(
           leading: ClipOval(
             child: Container(
-              color: PaypalColors.LightBlue,
               child: Image.asset(
-                "assets/images/icon_shop.png",
-                fit: BoxFit.scaleDown,
-                width: 35.0,
-                height: 35.0,
+                "assets/images/icon1.png",
+                width: 50.0,
+                height: 50.0,
               ),
             ),
           ),
           title: Text(
-            'Spotify Finance Limited',
+            'Подписка 3',
             style: TextStyle(
                 fontFamily: "worksans",
                 fontWeight: FontWeight.w500,
                 color: Colors.black),
           ),
           subtitle: Text(
-            'Jan 11, 2019',
+            'Ежемесячно 10 участий',
             style:
                 TextStyle(fontFamily: "worksans", fontWeight: FontWeight.w300),
           ),
           trailing: Text(
-            '-9,99 USD',
+            '20 USD',
             style: TextStyle(fontFamily: "worksans"),
           ),
         ),

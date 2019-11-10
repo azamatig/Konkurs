@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/profile_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/utils.dart';
@@ -12,8 +13,11 @@ import 'package:provider/provider.dart';
 class FeedScreen extends StatefulWidget {
   static final String id = 'feed_screen';
   final String userId;
+  final String postImage;
+  final String postName;
+  final String postDesc;
 
-  FeedScreen({this.userId});
+  FeedScreen({this.userId, this.postImage, this.postDesc, this.postName});
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -84,7 +88,17 @@ class _FeedScreenState extends State<FeedScreen> {
                       child: FlatButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
-                        onPressed: () => updateData(doc),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DetailsScreen(
+                                userId: Provider.of<UserData>(context)
+                                    .currentUserId,
+                                postImage: doc.data['imagepost'],
+                                postName: doc.data['name'],
+                                postDesc: doc.data['description'],
+                              ),
+                            )),
                         child: Text(
                           'Подробнее',
                           style: TextStyle(
@@ -117,47 +131,61 @@ class _FeedScreenState extends State<FeedScreen> {
               child: ListView(
                 padding: EdgeInsets.all(0.0),
                 children: <Widget>[
-                  FutureBuilder(
-                    future: usersRef.document(widget.userId).get(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                    child: FutureBuilder(
+                      future: usersRef.document(widget.userId).get(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        User user = User.fromDoc(snapshot.data);
+                        return Column(
+                          children: <Widget>[
+                            UserAccountsDrawerHeader(
+                              accountEmail: Text(
+                                user.email,
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                ),
+                              ),
+                              accountName: Text(
+                                user.name,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              currentAccountPicture: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: CircleAvatar(
+                                  backgroundImage: user.profileImageUrl.isEmpty
+                                      ? AssetImage(
+                                          'assets/images/user_placeholder.jpg')
+                                      : CachedNetworkImageProvider(
+                                          user.profileImageUrl),
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          "https://i.pinimg.com/originals/68/f6/43/68f643d36f631d9e1955097ffa4254d3.jpg"))),
+                            ),
+                          ],
                         );
-                      }
-                      User user = User.fromDoc(snapshot.data);
-
-                      return UserAccountsDrawerHeader(
-                        accountEmail: Text(
-                          user.email,
-                          style: TextStyle(
-                            fontSize: 15.0,
-                          ),
-                        ),
-                        accountName: Text(
-                          user.name,
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        currentAccountPicture: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: CircleAvatar(
-                            backgroundImage: user.profileImageUrl.isEmpty
-                                ? AssetImage(
-                                    'assets/images/user_placeholder.jpg')
-                                : CachedNetworkImageProvider(
-                                    user.profileImageUrl),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                    "https://i.pinimg.com/originals/68/f6/43/68f643d36f631d9e1955097ffa4254d3.jpg"))),
-                      );
-                    },
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Image.asset(
+                      'assets/images/highlightColor.jpg',
+                      alignment: Alignment.topLeft,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   ListTile(
                     title: Text('Оплата'),

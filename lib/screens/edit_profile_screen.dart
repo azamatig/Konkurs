@@ -21,6 +21,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   File _profileImage;
   String _name = '';
   String _bio = '';
+  String _age = '';
+  String _location = '';
   bool _isLoading = false;
 
   @override
@@ -28,6 +30,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     _name = widget.user.name;
     _bio = widget.user.bio;
+    _age = widget.user.age;
+    _location = widget.user.location;
   }
 
   _handleImageFromGallery() async {
@@ -77,11 +81,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
 
       User user = User(
-        id: widget.user.id,
-        name: _name,
-        profileImageUrl: _profileImageUrl,
-        bio: _bio,
-      );
+          id: widget.user.id,
+          name: _name,
+          profileImageUrl: _profileImageUrl,
+          bio: _bio,
+          age: _age,
+          location: _location);
       // Database update
       DatabaseService.updateUser(user);
 
@@ -96,7 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Edit Profile',
+          'Редактировать профиль',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -124,7 +129,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     FlatButton(
                       onPressed: _handleImageFromGallery,
                       child: Text(
-                        'Change Profile Image',
+                        'Загрузить фото профиля',
                         style: TextStyle(
                             color: Theme.of(context).accentColor,
                             fontSize: 16.0),
@@ -138,10 +143,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Icons.person,
                           size: 30.0,
                         ),
-                        labelText: 'Name',
+                        labelText: 'ФИО',
                       ),
                       validator: (input) => input.trim().length < 1
-                          ? 'Please enter a valid name'
+                          ? 'Пожалуйста введите действительное ФИО'
                           : null,
                       onSaved: (input) => _name = input,
                     ),
@@ -153,12 +158,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Icons.book,
                           size: 30.0,
                         ),
-                        labelText: 'Bio',
+                        labelText: 'Обо мне',
                       ),
                       validator: (input) => input.trim().length > 150
-                          ? 'Please enter a bio less than 150 characters'
+                          ? 'Не больше 150 символов'
                           : null,
                       onSaved: (input) => _bio = input,
+                    ),
+                    TextFormField(
+                      initialValue: _age,
+                      style: TextStyle(fontSize: 18.0),
+                      decoration: InputDecoration(
+                        icon: Icon(
+                          Icons.account_circle,
+                          size: 30.0,
+                        ),
+                        labelText: 'Возраст',
+                      ),
+                      validator: (input) =>
+                          input.trim().length < 1 ? 'Введите возраст' : null,
+                      onSaved: (input) => _age = input,
+                    ),
+                    TextFormField(
+                      initialValue: _location,
+                      style: TextStyle(fontSize: 18.0),
+                      decoration: InputDecoration(
+                        icon: Icon(
+                          Icons.pin_drop,
+                          size: 30.0,
+                        ),
+                        labelText: 'Местоположение',
+                      ),
+                      validator: (input) => input.trim().length < 1
+                          ? 'Пожалуйста введите действительно местоположение'
+                          : null,
+                      onSaved: (input) => _location = input,
                     ),
                     Container(
                       margin: EdgeInsets.all(40.0),
@@ -169,7 +203,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Colors.blue,
                         textColor: Colors.white,
                         child: Text(
-                          'Save Profile',
+                          'Сохранить',
                           style: TextStyle(fontSize: 18.0),
                         ),
                       ),

@@ -7,6 +7,8 @@ class Post {
   final dynamic likes;
   final String authorId;
   final Timestamp timestamp;
+  final String description;
+  final String name;
 
   Post({
     this.id,
@@ -15,16 +17,19 @@ class Post {
     this.likes,
     this.authorId,
     this.timestamp,
+    this.description,
+    this.name,
   });
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
-      id: doc.documentID,
-      imageUrl: doc['imageUrl'],
-      caption: doc['caption'],
-      likes: doc['likes'],
-      authorId: doc['authorId'],
-      timestamp: doc['timestamp'],
-    );
+        id: doc.documentID,
+        imageUrl: doc['imagepost'],
+        caption: doc['caption'],
+        likes: doc['likes'],
+        authorId: doc['authorId'],
+        timestamp: doc['timestamp'],
+        name: doc['name'],
+        description: doc['description']);
   }
 }
