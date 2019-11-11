@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.bottomCenter,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: 350,
+              height: 300,
               child: Column(
                 children: <Widget>[
                   Expanded(
@@ -140,7 +140,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 50),
+                              Divider(),
                             ],
                           ),
                         ),
@@ -177,8 +178,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                    user.profileImageUrl.isEmpty
-                        ? AssetImage('assets/images/user_placeholder.jpg')
+                    user.profileImageUrl.isEmpty == null
+                        ? AssetImage('assets/images/home_page.png')
                         : (user.profileImageUrl),
                   ),
                 ),
@@ -188,15 +189,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 110.0, 20.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 170.0, 20.0),
                       child: Text(
-                        user.bio,
+                        'Ваш профиль',
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Colors.black87,
-                          fontFamily: AvailableFonts.primaryFont,
-                          fontSize: 25.0,
-                        ),
+                            color: Colors.black87,
+                            fontFamily: AvailableFonts.primaryFont,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     Material(

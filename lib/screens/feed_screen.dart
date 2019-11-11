@@ -6,6 +6,7 @@ import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/profile_screen.dart';
+import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 import 'package:provider/provider.dart';
@@ -170,9 +171,9 @@ class _FeedScreenState extends State<FeedScreen> {
                               ),
                               decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          "https://i.pinimg.com/originals/68/f6/43/68f643d36f631d9e1955097ffa4254d3.jpg"))),
+                                      fit: BoxFit.,
+                                      image: AssetImage(
+                                          "assets/images/drawer_home.jpg"))),
                             ),
                           ],
                         );
@@ -187,6 +188,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       fit: BoxFit.cover,
                     ),
                   ),
+                  Container(),
                   ListTile(
                     title: Text('Оплата'),
                     trailing: Icon(Icons.payment),
@@ -222,6 +224,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     alignment: Alignment.bottomCenter,
                     child: ListTile(
                       title: Text('Выйти'),
+                      onTap: () => AuthService.logout(),
                       trailing: Icon(Icons.exit_to_app),
                     ),
                   ),

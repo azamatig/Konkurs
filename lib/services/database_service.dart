@@ -9,6 +9,8 @@ class DatabaseService {
       'name': user.name,
       'profileImageUrl': user.profileImageUrl,
       'bio': user.bio,
+      'age': user.age,
+      'location': user.location,
     });
   }
 
