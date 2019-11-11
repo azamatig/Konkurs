@@ -171,7 +171,7 @@ class _FeedScreenState extends State<FeedScreen> {
                               ),
                               decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      fit: BoxFit.,
+                                      fit: BoxFit.cover,
                                       image: AssetImage(
                                           "assets/images/drawer_home.jpg"))),
                             ),
