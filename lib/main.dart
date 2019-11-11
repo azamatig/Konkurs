@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       builder: (context) => UserData(),
       child: MaterialApp(
-        title: 'Instagram Clone',
+        title: 'Konkurs App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(

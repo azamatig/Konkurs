@@ -31,9 +31,9 @@ class _SignupScreenState extends State<SignupScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Instagram',
+                'KonkrusApp',
                 style: TextStyle(
-                  fontFamily: 'Billabong',
+                  fontFamily: 'CeraCompactPro',
                   fontSize: 50.0,
                 ),
               ),
@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         vertical: 10.0,
                       ),
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Name'),
+                        decoration: InputDecoration(labelText: 'Имя'),
                         validator: (input) => input.trim().isEmpty
                             ? 'Please enter a valid name'
                             : null,
@@ -74,7 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         vertical: 10.0,
                       ),
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Password'),
+                        decoration: InputDecoration(labelText: 'Пароль'),
                         validator: (input) => input.length < 6
                             ? 'Must be at least 6 characters'
                             : null,
@@ -90,7 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         color: Colors.blue,
                         padding: EdgeInsets.all(10.0),
                         child: Text(
-                          'Sign Up',
+                          'Регистрация',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.0,
@@ -106,7 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         color: Colors.blue,
                         padding: EdgeInsets.all(10.0),
                         child: Text(
-                          'Back to Login',
+                          'Назад к экрану логина',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.0,
