@@ -1,6 +1,7 @@
 # konkurs_app
 
-A new Flutter application.
+A little startup project for company, rewards app for completing various tasks
+
 
 ## Getting Started
 
