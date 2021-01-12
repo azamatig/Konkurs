@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class AuthService {
   static final _auth = FirebaseAuth.instance;
-  static final _firestore = Firestore.instance;
+  static final _firestore = FirebaseFirestore.instance;
 
   static void signUpUser(
       BuildContext context, String name, String email, String password) async {
@@ -17,7 +17,7 @@ class AuthService {
       );
       FirebaseUser signedInUser = authResult.user;
       if (signedInUser != null) {
-        _firestore.collection('/users').document(signedInUser.uid).setData({
+        _firestore.collection('/users').doc(signedInUser.uid).set({
           'name': name,
           'email': email,
           'profileImageUrl': '',

@@ -26,7 +26,7 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   String id;
-  final db = Firestore.instance;
+  final db = FirebaseFirestore.instance;
   String name;
   String description;
   String imageUrl;
@@ -44,14 +44,14 @@ class _FeedScreenState extends State<FeedScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Image.network(
-                doc.data['imagepost'],
+                doc.data()['imagepost'],
                 fit: BoxFit.fill,
               ),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 2.0),
                   child: Text(
-                    '${doc.data['name']}',
+                    '${doc.data()['name']}',
                     style: TextStyle(fontSize: 24, color: Colors.black45),
                   ),
                 ),
@@ -60,7 +60,7 @@ class _FeedScreenState extends State<FeedScreen> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  '${doc.data['description']}',
+                  '${doc.data()['description']}',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -95,9 +95,14 @@ class _FeedScreenState extends State<FeedScreen> {
                               builder: (_) => DetailsScreen(
                                 userId: Provider.of<UserData>(context)
                                     .currentUserId,
-                                postImage: doc.data['imagepost'],
-                                postName: doc.data['name'],
-                                postDesc: doc.data['description'],
+                                isShared: doc.data()['shared'],
+                                prize: doc.data()['prize'],
+                                task1: doc.data()['task1'],
+                                task2: doc.data()['task2'],
+                                task3: doc.data()['task3'],
+                                postImage: doc.data()['imagepost'],
+                                postName: doc.data()['name'],
+                                postDesc: doc.data()['description'],
                               ),
                             )),
                         child: Text(
@@ -135,7 +140,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                     child: FutureBuilder(
-                      future: usersRef.document(widget.userId).get(),
+                      future: usersRef.doc(widget.userId).get(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (!snapshot.hasData) {
                           return Center(
@@ -274,7 +279,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
-                          children: snapshot.data.documents
+                          children: snapshot.data.docs
                               .map((doc) => buildItem(doc))
                               .toList(),
                         );
@@ -317,9 +322,6 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   void updateData(DocumentSnapshot doc) async {
-    await db
-        .collection('post')
-        .document(doc.documentID)
-        .updateData({'todo': 'please 🤫'});
+    await db.collection('post').doc(doc.id).update({'todo': 'please 🤫'});
   }
 }

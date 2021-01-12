@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/screens/PaymentScreen.dart';
 import 'package:konkurs_app/screens/WinnerScreen.dart';
 import 'package:konkurs_app/screens/feed_screen.dart';
 import 'package:konkurs_app/screens/profile_screen.dart';
@@ -30,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           FeedScreen(userId: Provider.of<UserData>(context).currentUserId),
           WinnerScreen(),
-          PaymentScreen(),
+          // PaymentScreen(),
           ProfileScreen(userId: Provider.of<UserData>(context).currentUserId),
         ],
         onPageChanged: (int index) {
@@ -65,12 +64,12 @@ class _HomeScreenState extends State<HomeScreen> {
               size: 20.0,
             ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.attach_money,
-              size: 20.0,
-            ),
-          ),
+          //  BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.attach_money,
+          //    size: 20.0,
+          //    ),
+          //    ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.person,

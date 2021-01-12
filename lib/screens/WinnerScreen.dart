@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 
 class WinnerScreen extends StatefulWidget {
@@ -10,12 +13,44 @@ class WinnerScreen extends StatefulWidget {
 
 class _WinnerScreenState extends State<WinnerScreen> {
   String id;
-  final db = Firestore.instance;
+  final db = FirebaseFirestore.instance;
   String name;
   String description;
   String imageUrl;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  List<DocumentSnapshot> _snap = new List<DocumentSnapshot>();
+  List<User> _user = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  var list = ['a', 'b', 'c', 'd', 'e'];
+
+// generates a new Random object
+  final _random = new Random();
+
+// generate a random index based on the list length
+// and use it to retrieve the element
+
+  Future<Null> _getData() async {
+    QuerySnapshot data;
+    data = await firestore
+        .collection('users')
+        .orderBy('name', descending: false)
+        .get();
+    if (data != null) {
+      setState(() {
+        _snap.addAll(data.docs);
+        _user = _snap.map((e) => User.fromFirestore(e)).toList();
+      });
+    }
+  }
 
   Container buildItem(DocumentSnapshot doc) {
+    var element = _user[_random.nextInt(_user.length)];
     return Container(
       child: Card(
         semanticContainer: true,
@@ -44,7 +79,7 @@ class _WinnerScreenState extends State<WinnerScreen> {
                       child: Column(
                         children: <Widget>[
                           Text(
-                            'Имя Фамилия',
+                            element.name,
                             style: TextStyle(color: Colors.white),
                           ),
                           Padding(
@@ -62,7 +97,7 @@ class _WinnerScreenState extends State<WinnerScreen> {
                 ),
               ),
               Image.network(
-                doc.data['imagepost'],
+                doc.data()['imagepost'],
                 fit: BoxFit.fill,
               ),
               Center(
@@ -70,7 +105,7 @@ class _WinnerScreenState extends State<WinnerScreen> {
                   // Название розыгрыша
                   padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 2.0),
                   child: Text(
-                    '${doc.data['name']}',
+                    '${doc.data()['name']}',
                     style: TextStyle(fontSize: 24, color: Colors.black45),
                   ),
                 ),
@@ -80,7 +115,7 @@ class _WinnerScreenState extends State<WinnerScreen> {
                 // Описание в середине карточки
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  '${doc.data['description']}',
+                  '${doc.data()['description']}',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -158,9 +193,8 @@ class _WinnerScreenState extends State<WinnerScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Column(
-                  children: snapshot.data.documents
-                      .map((doc) => buildItem(doc))
-                      .toList(),
+                  children:
+                      snapshot.data.docs.map((doc) => buildItem(doc)).toList(),
                 );
               } else {
                 return SizedBox();
@@ -173,9 +207,6 @@ class _WinnerScreenState extends State<WinnerScreen> {
   }
 
   void updateData(DocumentSnapshot doc) async {
-    await db
-        .collection('post')
-        .document(doc.documentID)
-        .updateData({'todo': 'please 🤫'});
+    await db.collection('post').doc(doc.id).update({'todo': 'please 🤫'});
   }
 }

@@ -2,15 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
-import 'package:konkurs_app/utilities/utils.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String userId;
   final String postImage;
   final String postName;
   final String postDesc;
+  final String task1;
+  final String task2;
+  final String task3;
+  final String prize;
+  final bool isShared;
 
-  DetailsScreen({this.userId, this.postImage, this.postName, this.postDesc});
+  DetailsScreen(
+      {this.userId,
+      this.postImage,
+      this.postName,
+      this.postDesc,
+      this.task1,
+      this.task2,
+      this.task3,
+      this.prize,
+      this.isShared});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -18,7 +31,7 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   String id;
-  final db = Firestore.instance;
+  final db = FirebaseFirestore.instance;
   String name;
   String description;
   String imageUrl;
@@ -133,6 +146,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
+                            "Призы",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          height: 200,
+                          width: 200,
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(widget.prize),
+                          )),
+                        ),
+                        SizedBox(height: 30),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
                             'Задания',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -147,19 +184,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           // Вторая часть листа
                           children: <Widget>[
                             Icon(
-                              Icons.playlist_add_check,
-                              size: 18,
-                              color: Colors.blueGrey[300],
+                              Icons.circle,
+                              size: 21,
+                              color: Colors.deepOrangeAccent,
                             ),
-                            SizedBox(width: 3),
+                            SizedBox(width: 15),
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Задание 1',
+                                widget.task1,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 19,
-                                  color: Colors.blueGrey[300],
+                                  fontSize: 22,
+                                  color: Colors.black,
                                 ),
                                 maxLines: 1,
                                 textAlign: TextAlign.left,
@@ -172,19 +209,21 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           // Вторая часть листа
                           children: <Widget>[
                             Icon(
-                              Icons.playlist_add_check,
-                              size: 18,
-                              color: Colors.blueGrey[300],
+                              Icons.circle,
+                              size: 21,
+                              color: widget.isShared == true
+                                  ? Colors.green[500]
+                                  : Colors.yellowAccent[700],
                             ),
-                            SizedBox(width: 3),
+                            SizedBox(width: 15),
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Задание 1',
+                                widget.task2,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 19,
-                                  color: Colors.blueGrey[300],
+                                  fontSize: 22,
+                                  color: Colors.black,
                                 ),
                                 maxLines: 1,
                                 textAlign: TextAlign.left,
@@ -197,19 +236,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           // Вторая часть листа
                           children: <Widget>[
                             Icon(
-                              Icons.playlist_add_check,
-                              size: 18,
-                              color: Colors.blueGrey[300],
+                              Icons.circle,
+                              size: 21,
+                              color: Colors.deepOrangeAccent,
                             ),
-                            SizedBox(width: 3),
+                            SizedBox(width: 15),
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Задание 1',
+                                widget.task3,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 19,
-                                  color: Colors.blueGrey[300],
+                                  fontSize: 22,
+                                  color: Colors.black,
                                 ),
                                 maxLines: 1,
                                 textAlign: TextAlign.left,
@@ -218,25 +257,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ],
                         ),
                         SizedBox(height: 40),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            widget.postDesc,
-                            style: TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 15,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        SizedBox(height: 30),
                         FlatButton(
+                          height: 50,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                           onPressed: () => dialogs.information(context,
                               'Спасибо', 'Спасибо за участие в конкурсе!'),
-                          color: PaypalColors.Violet,
+                          color: Colors.blueAccent,
                           textColor: Colors.white,
                           child: Text(
                             'Участвовать',
@@ -282,18 +310,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 110.0, 20.0),
-                child: Text(
-                  widget.postName,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontFamily: AvailableFonts.primaryFont,
-                    fontSize: 25.0,
-                  ),
-                ),
-              ),
               Material(
                 elevation: 14.0,
                 color: Colors.white,

@@ -21,12 +21,26 @@ class User {
 
   factory User.fromDoc(DocumentSnapshot doc) {
     return User(
-        id: doc.documentID,
+        id: doc.id,
         name: doc['name'],
         profileImageUrl: doc['profileImageUrl'],
         email: doc['email'],
         bio: doc['bio'] ?? '',
         age: doc['age'] ?? '',
         location: doc['location'] ?? 'Местоположение');
+  }
+
+  factory User.fromFirestore(DocumentSnapshot snapshot) {
+    var d = snapshot.data();
+    return User(
+      id: snapshot.id ?? '',
+      name: d['name'] ?? '',
+      profileImageUrl: d['profileImageUrl'] ??
+          'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png',
+      email: d['email'] ?? '',
+      bio: d['bio'] ?? '',
+      age: d['age'] ?? '',
+      location: d['location'] ?? '',
+    );
   }
 }

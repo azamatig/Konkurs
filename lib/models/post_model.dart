@@ -23,7 +23,7 @@ class Post {
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
-        id: doc.documentID,
+        id: doc.id,
         imageUrl: doc['imagepost'],
         caption: doc['caption'],
         likes: doc['likes'],

@@ -17,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Widget _profileDetails() {
     return FutureBuilder(
-        future: usersRef.document(widget.userId).get(),
+        future: usersRef.doc(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -162,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: usersRef.document(widget.userId).get(),
+          future: usersRef.doc(widget.userId).get(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -179,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fit: BoxFit.cover,
                   image: NetworkImage(
                     user.profileImageUrl.isEmpty == null
-                        ? AssetImage('assets/images/home_page.png')
+                        ? 'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png'
                         : (user.profileImageUrl),
                   ),
                 ),

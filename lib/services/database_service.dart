@@ -5,7 +5,7 @@ import 'package:konkurs_app/utilities/constants.dart';
 
 class DatabaseService {
   static void updateUser(User user) {
-    usersRef.document(user.id).updateData({
+    usersRef.doc(user.id).update({
       'name': user.name,
       'profileImageUrl': user.profileImageUrl,
       'bio': user.bio,
@@ -16,12 +16,12 @@ class DatabaseService {
 
   static Future<QuerySnapshot> searchUsers(String name) {
     Future<QuerySnapshot> users =
-        usersRef.where('name', isGreaterThanOrEqualTo: name).getDocuments();
+        usersRef.where('name', isGreaterThanOrEqualTo: name).get();
     return users;
   }
 
   static void createPost(Post post) {
-    postsRef.document(post.authorId).collection('usersPosts').add({
+    postsRef.doc(post.authorId).collection('usersPosts').add({
       'imageUrl': post.imageUrl,
       'caption': post.caption,
       'likes': post.likes,

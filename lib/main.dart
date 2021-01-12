@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/LoginScreen.dart';
@@ -7,7 +8,11 @@ import 'package:konkurs_app/screens/feed_screen.dart';
 import 'package:konkurs_app/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   Widget _getScreenId() {
