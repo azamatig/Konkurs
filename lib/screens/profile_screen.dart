@@ -140,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
-                              SizedBox(height: 50),
+                              SizedBox(height: 10),
                               Divider(),
                             ],
                           ),
@@ -148,9 +148,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  //
-                  //
-                  //
                 ],
               ),
             ),

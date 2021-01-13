@@ -49,7 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       // No existing profile image
       if (widget.user.profileImageUrl.isEmpty) {
         // Display placeholder
-        return AssetImage('assets/images/empty.png');
+        return AssetImage('assets/images/ph.png');
       } else {
         // User profile image exists
         return CachedNetworkImageProvider(widget.user.profileImageUrl);

@@ -173,8 +173,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                 padding: const EdgeInsets.all(5.0),
                                 child: CircleAvatar(
                                   backgroundImage: user.profileImageUrl.isEmpty
-                                      ? AssetImage(
-                                          'assets/images/user_placeholder.jpg')
+                                      ? AssetImage('assets/images/ph.png')
                                       : CachedNetworkImageProvider(
                                           user.profileImageUrl),
                                 ),
@@ -182,8 +181,8 @@ class _FeedScreenState extends State<FeedScreen> {
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(
-                                          "assets/images/drawer_home.jpg"))),
+                                      image:
+                                          AssetImage("assets/images/two.png"))),
                             ),
                           ],
                         );
@@ -197,11 +196,6 @@ class _FeedScreenState extends State<FeedScreen> {
                       alignment: Alignment.topLeft,
                       fit: BoxFit.cover,
                     ),
-                  ),
-                  Container(),
-                  ListTile(
-                    title: Text('Оплата'),
-                    trailing: Icon(Icons.payment),
                   ),
                   ListTile(
                       title: Text('Пригласить друга'),

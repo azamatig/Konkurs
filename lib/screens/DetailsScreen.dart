@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
 import 'package:readmore/readmore.dart';
 
@@ -185,7 +186,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           // Вторая часть листа
                           children: <Widget>[
                             Icon(
-                              Icons.circle,
+                              FontAwesomeIcons.times,
                               size: 21,
                               color: Colors.deepOrangeAccent,
                             ),
@@ -210,7 +211,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           // Вторая часть листа
                           children: <Widget>[
                             Icon(
-                              Icons.circle,
+                              widget.isShared != true
+                                  ? FontAwesomeIcons.times
+                                  : FontAwesomeIcons.check,
                               size: 21,
                               color: widget.isShared == true
                                   ? Colors.green[500]
@@ -237,7 +240,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           // Вторая часть листа
                           children: <Widget>[
                             Icon(
-                              Icons.circle,
+                              FontAwesomeIcons.times,
                               size: 21,
                               color: Colors.deepOrangeAccent,
                             ),

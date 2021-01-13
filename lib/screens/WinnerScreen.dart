@@ -27,8 +27,6 @@ class _WinnerScreenState extends State<WinnerScreen> {
     _getData();
   }
 
-  var list = ['a', 'b', 'c', 'd', 'e'];
-
 // generates a new Random object
   final _random = new Random();
 
