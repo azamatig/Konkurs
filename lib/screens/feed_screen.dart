@@ -10,6 +10,7 @@ import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 
 class FeedScreen extends StatefulWidget {
   static final String id = 'feed_screen';
@@ -59,9 +60,13 @@ class _FeedScreenState extends State<FeedScreen> {
               Divider(),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text(
+                child: ReadMoreText(
                   '${doc.data()['description']}',
                   style: TextStyle(fontSize: 16),
+                  trimLines: 2,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Больше',
+                  trimExpandedText: 'меньше',
                 ),
               ),
               Divider(),

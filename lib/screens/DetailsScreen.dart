@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
+import 'package:readmore/readmore.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String userId;
@@ -68,21 +69,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 20,
+                                  color: Colors.blueGrey[300],
                                 ),
                                 maxLines: 2,
                                 textAlign: TextAlign.left,
                               ),
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.bookmark,
-                              ),
-                              onPressed: () {},
-                            ),
                           ],
                         ),
                         Row(
                           children: <Widget>[
+                            SizedBox(height: 20),
                             Icon(
                               Icons.location_on,
                               size: 14,
@@ -92,7 +89,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Алматы, Казахстан',
+                                'Казахстан',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
@@ -111,13 +108,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             widget.postName,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 17,
+                              fontSize: 21,
                             ),
                             maxLines: 1,
                             textAlign: TextAlign.left,
                           ),
                         ),
-                        SizedBox(height: 40),
+                        SizedBox(height: 20),
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -133,12 +130,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         SizedBox(height: 10),
                         Container(
                           alignment: Alignment.centerLeft,
-                          child: Text(
+                          child: ReadMoreText(
                             widget.postDesc,
                             style: TextStyle(
                               fontWeight: FontWeight.normal,
                               fontSize: 15,
                             ),
+                            trimMode: TrimMode.Line,
+                            trimLines: 2,
+                            trimCollapsedText: 'Больше',
+                            trimExpandedText: 'меньше',
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -293,7 +294,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         backgroundColor: Colors.white,
         title: Center(
           child: Text(
-            'Задание',
+            'Детали задания',
             style: TextStyle(color: Colors.black54),
           ),
         ),
@@ -301,26 +302,48 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(widget.postImage),
-        )),
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Material(
-                elevation: 14.0,
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50.0),
-                    topRight: Radius.circular(50.0)),
-                shadowColor: Colors.grey,
-                child: _details(),
-              )
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Container(
+              height: 250,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(widget.postImage),
+              )),
+            ),
+            Row(
+              children: [
+                Container(
+                  width: 203,
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Image.asset(
+                      'assets/images/highlightColor.jpg',
+                      alignment: Alignment.topLeft,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 220,
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Image.asset(
+                      'assets/images/highlightColor.jpg',
+                      alignment: Alignment.topRight,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              child: _details(),
+            )
+          ],
         ),
       ),
     );
