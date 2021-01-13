@@ -22,135 +22,468 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
-
           User user = User.fromDoc(snapshot.data);
-          return Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 300,
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: ListView(
+          return Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        SizedBox(height: 10),
                         Container(
-                          padding: EdgeInsets.only(left: 20),
-                          height: MediaQuery.of(context).size.height,
-                          child: ListView(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            primary: false,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      // Текст имя
-                                      user.name,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 20,
-                                      ),
-                                      maxLines: 2,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.edit,
-                                    ),
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => EditProfileScreen(
-                                          user: user,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            // Текст имя
+                            "ФИО" + ' - ' + user.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                            ),
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                          ),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditProfileScreen(
+                                user: user,
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.location_on,
-                                    size: 14,
-                                    color: Colors.blueGrey[300],
-                                  ),
-                                  SizedBox(width: 3),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      // Местополодение
-                                      user.location,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        color: Colors.blueGrey[300],
-                                      ),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 3),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  // Возраст
-                                  user.age,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      color: Colors.blueGrey[300]),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 40),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Обо мне",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  //Текст обо мне
-                                  user.bio,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 15,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Divider(),
-                            ],
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.location_on,
+                          size: 14,
+                          color: Colors.blueGrey[300],
+                        ),
+                        SizedBox(width: 3),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            // Местополодение
+                            user.location,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: Colors.blueGrey[300],
+                            ),
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        // Местополодение
+                        user.email,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black45,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        // Местополодение
+                        user.age,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black45,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Ваш логин в instagram",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Divider(),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Как часто вы путешествуете?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Какая средняя продолжительность вашего отдыха?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "В какое время года вы предпочитаете путешествовать?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Какие страны для отдыха вы предпочитаете?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Другие страны(через запятую)?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Какой вид отдыхавы продпочитаете?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Как вы предпочитаете организовать свой отдых?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Что вы ждете от отдыха?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Какие места проживания вы предпочитаете на время путешействий?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Ваш предпологаемый бюдет на путешествие?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "В какой категории отеля вы чаще всего останавливались?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Сколько человек обычно путешествует вмсте с вами?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Путешествуете ли вы с детьми?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        //Текст обо мне
+                        user.bio,
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
-            ),
+            ],
           );
         });
   }
@@ -158,59 +491,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-          future: usersRef.doc(widget.userId).get(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            User user = User.fromDoc(snapshot.data);
-
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                    user.profileImageUrl.isEmpty == null
-                        ? 'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png'
-                        : (user.profileImageUrl),
-                  ),
-                ),
-              ),
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 170.0, 20.0),
-                      child: Text(
-                        'Ваш профиль',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontFamily: AvailableFonts.primaryFont,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Material(
-                      elevation: 14.0,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50.0),
-                          topRight: Radius.circular(50.0)),
-                      shadowColor: Colors.grey,
-                      child: _profileDetails(),
-                    )
-                  ],
-                ),
-              ),
-            );
-          }),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Center(
+            child: Text(
+          'Анкета',
+          style: TextStyle(color: Colors.black),
+        )),
+      ),
+      body: SingleChildScrollView(child: _profileDetails()),
     );
   }
 }

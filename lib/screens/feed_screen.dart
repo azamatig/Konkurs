@@ -38,7 +38,7 @@ class _FeedScreenState extends State<FeedScreen> {
         semanticContainer: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: const EdgeInsets.all(0.0),
           child: Column(
@@ -48,13 +48,11 @@ class _FeedScreenState extends State<FeedScreen> {
                 doc.data()['imagepost'],
                 fit: BoxFit.fill,
               ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 2.0),
-                  child: Text(
-                    '${doc.data()['name']}',
-                    style: TextStyle(fontSize: 24, color: Colors.black45),
-                  ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
+                child: Text(
+                  '${doc.data()['name']}',
+                  style: TextStyle(fontSize: 18, color: Colors.black45),
                 ),
               ),
               Divider(),
@@ -63,7 +61,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 child: ReadMoreText(
                   '${doc.data()['description']}',
                   style: TextStyle(fontSize: 16),
-                  trimLines: 2,
+                  trimLines: 3,
                   trimMode: TrimMode.Line,
                   trimCollapsedText: 'Больше',
                   trimExpandedText: 'меньше',
@@ -98,17 +96,17 @@ class _FeedScreenState extends State<FeedScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => DetailsScreen(
-                                userId: Provider.of<UserData>(context)
-                                    .currentUserId,
-                                isShared: doc.data()['shared'],
-                                prize: doc.data()['prize'],
-                                task1: doc.data()['task1'],
-                                task2: doc.data()['task2'],
-                                task3: doc.data()['task3'],
-                                postImage: doc.data()['imagepost'],
-                                postName: doc.data()['name'],
-                                postDesc: doc.data()['description'],
-                              ),
+                                  userId: Provider.of<UserData>(context)
+                                      .currentUserId,
+                                  isShared: doc.data()['shared'],
+                                  prize: doc.data()['prize'],
+                                  task1: doc.data()['task1'],
+                                  task2: doc.data()['task2'],
+                                  task3: doc.data()['task3'],
+                                  postImage: doc.data()['imagepost'],
+                                  postName: doc.data()['name'],
+                                  postDesc: doc.data()['description'],
+                                  docId: doc.id),
                             )),
                         child: Text(
                           'Подробнее',

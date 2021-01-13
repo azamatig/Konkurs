@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/utils.dart';
+import 'package:readmore/readmore.dart';
 
 class WinnerScreen extends StatefulWidget {
   @override
@@ -18,22 +19,22 @@ class _WinnerScreenState extends State<WinnerScreen> {
   String description;
   String imageUrl;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  List<DocumentSnapshot> _snap = new List<DocumentSnapshot>();
-  List<User> _user = [];
+  //  List<DocumentSnapshot> _snap = new List<DocumentSnapshot>();
+  // List<User> _user = [];
 
   @override
   void initState() {
     super.initState();
-    _getData();
+    /* _getData();*/
   }
 
 // generates a new Random object
-  final _random = new Random();
+  //  final _random = new Random();
 
 // generate a random index based on the list length
 // and use it to retrieve the element
 
-  Future<Null> _getData() async {
+/*  Future<Null> _getData() async {
     QuerySnapshot data;
     data = await firestore
         .collection('users')
@@ -45,10 +46,10 @@ class _WinnerScreenState extends State<WinnerScreen> {
         _user = _snap.map((e) => User.fromFirestore(e)).toList();
       });
     }
-  }
+ }*/
 
   Container buildItem(DocumentSnapshot doc) {
-    var element = _user[_random.nextInt(_user.length)];
+    // var element = _user[_random.nextInt(_user.length)];
     return Container(
       child: Card(
         semanticContainer: true,
@@ -77,7 +78,7 @@ class _WinnerScreenState extends State<WinnerScreen> {
                       child: Column(
                         children: <Widget>[
                           Text(
-                            element.name,
+                            ' --- ',
                             style: TextStyle(color: Colors.white),
                           ),
                           Padding(
@@ -101,10 +102,10 @@ class _WinnerScreenState extends State<WinnerScreen> {
               Center(
                 child: Padding(
                   // Название розыгрыша
-                  padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 2.0),
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 2.0),
                   child: Text(
                     '${doc.data()['name']}',
-                    style: TextStyle(fontSize: 24, color: Colors.black45),
+                    style: TextStyle(fontSize: 18, color: Colors.black45),
                   ),
                 ),
               ),
@@ -112,9 +113,13 @@ class _WinnerScreenState extends State<WinnerScreen> {
               Padding(
                 // Описание в середине карточки
                 padding: const EdgeInsets.all(10.0),
-                child: Text(
+                child: ReadMoreText(
                   '${doc.data()['description']}',
                   style: TextStyle(fontSize: 16),
+                  trimLines: 3,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Больше',
+                  trimExpandedText: 'меньше',
                 ),
               ),
               Divider(),
@@ -166,11 +171,6 @@ class _WinnerScreenState extends State<WinnerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.maybePop(context, true),
-        ),
         backgroundColor: Colors.white,
         title: Center(
           child: Text(

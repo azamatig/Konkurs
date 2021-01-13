@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
 import 'package:readmore/readmore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String userId;
@@ -15,6 +16,7 @@ class DetailsScreen extends StatefulWidget {
   final String task3;
   final String prize;
   final bool isShared;
+  final String docId;
 
   DetailsScreen(
       {this.userId,
@@ -25,19 +27,28 @@ class DetailsScreen extends StatefulWidget {
       this.task2,
       this.task3,
       this.prize,
-      this.isShared});
+      this.isShared,
+      this.docId});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  String id;
   final db = FirebaseFirestore.instance;
-  String name;
-  String description;
-  String imageUrl;
   Dialogs dialogs = new Dialogs();
+
+  void setParticipate() {
+    var list = [widget.userId];
+    db
+        .collection('post')
+        .doc(widget.docId)
+        .update({'people': FieldValue.arrayUnion(list)});
+  }
+
+  void setShared() {
+    db.collection('post').doc(widget.docId).update({'shared': true});
+  }
 
   Widget _details() {
     return Align(
@@ -197,7 +208,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 widget.task1,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 22,
+                                  fontSize: 14,
                                   color: Colors.black,
                                 ),
                                 maxLines: 1,
@@ -222,15 +233,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             SizedBox(width: 15),
                             Container(
                               alignment: Alignment.centerLeft,
-                              child: Text(
-                                widget.task2,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22,
-                                  color: Colors.black,
+                              child: GestureDetector(
+                                onTap: () => {
+                                  setShared(),
+                                  launch(
+                                      "https://www.telegram.me/pegastravel_bot",
+                                      forceSafariVC: false),
+                                },
+                                child: Text(
+                                  widget.task2,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                  ),
+                                  maxLines: 1,
+                                  textAlign: TextAlign.left,
                                 ),
-                                maxLines: 1,
-                                textAlign: TextAlign.left,
                               ),
                             ),
                           ],
@@ -251,10 +270,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 widget.task3,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 22,
+                                  fontSize: 14,
                                   color: Colors.black,
                                 ),
-                                maxLines: 1,
+                                maxLines: 3,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -266,8 +285,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          onPressed: () => dialogs.information(context,
-                              'Спасибо', 'Спасибо за участие в конкурсе!'),
+                          onPressed: () => {
+                            setParticipate(),
+                            dialogs.information(context, 'Спасибо',
+                                'Спасибо за участие в конкурсе!')
+                          },
                           color: Colors.blueAccent,
                           textColor: Colors.white,
                           child: Text(
