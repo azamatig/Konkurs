@@ -14,7 +14,7 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -34,14 +34,15 @@ dependencies:
   firebase_storage: ^4.0.0
   flutter_image_compress: ^0.6.3
   font_awesome_flutter: ^8.10.0
-  path_provider: ^1.2.0
   uuid: ^2.0.2
   provider: ^3.1.0+1
   image_cropper: ^1.1.0
   flutter_share_me: ^0.4.0
   readmore: ^1.0.1
   url_launcher: ^5.7.10
-
+  shared_preferences: ^0.5.12
+  http: ^0.12.1
+  path_provider: ^1.6.24
 
 
 dev_dependencies:

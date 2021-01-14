@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
@@ -20,13 +19,9 @@ class DatabaseService {
     return users;
   }
 
-  static void createPost(Post post) {
-    postsRef.doc(post.authorId).collection('usersPosts').add({
-      'imageUrl': post.imageUrl,
-      'caption': post.caption,
-      'likes': post.likes,
-      'authorId': post.authorId,
-      'timestamp': post.timestamp,
-    });
+  static Future<QuerySnapshot> isFinished() {
+    Future<QuerySnapshot> post =
+        postsRef.where('isFinished', isEqualTo: true).get();
+    return post;
   }
 }

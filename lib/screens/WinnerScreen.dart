@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 import 'package:readmore/readmore.dart';
 

@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/edit_profile_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:konkurs_app/utilities/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
