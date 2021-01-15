@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
