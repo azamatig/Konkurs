@@ -1,7 +1,14 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/DetailsScreen.dart';
+import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
 class WinnerScreen extends StatefulWidget {
@@ -15,38 +22,14 @@ class _WinnerScreenState extends State<WinnerScreen> {
   String name;
   String description;
   String imageUrl;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //  List<DocumentSnapshot> _snap = new List<DocumentSnapshot>();
-  // List<User> _user = [];
 
   @override
   void initState() {
     super.initState();
-    /* _getData();*/
+    DatabaseService.getData().then((value) => null);
   }
 
-// generates a new Random object
-  //  final _random = new Random();
-
-// generate a random index based on the list length
-// and use it to retrieve the element
-
-/*  Future<Null> _getData() async {
-    QuerySnapshot data;
-    data = await firestore
-        .collection('users')
-        .orderBy('name', descending: false)
-        .get();
-    if (data != null) {
-      setState(() {
-        _snap.addAll(data.docs);
-        _user = _snap.map((e) => User.fromFirestore(e)).toList();
-      });
-    }
- }*/
-
   Container buildItem(DocumentSnapshot doc) {
-    // var element = _user[_random.nextInt(_user.length)];
     return Container(
       child: Card(
         semanticContainer: true,
@@ -62,39 +45,36 @@ class _WinnerScreenState extends State<WinnerScreen> {
                 // Верхняя часть карточки с именем победителя
                 color: PaypalColors.Win,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircleAvatar(
+                        child: Image.network(
+                          'https://image.flaticon.com/icons/png/128/1319/1319983.png',
+                          height: 25,
+                          width: 25,
+                        ),
                         radius: 25.0,
                         backgroundColor: Colors.grey,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(2.0, 0.0, 0.0, 0.0),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            ' --- ',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 3.0, 13.0, 0.0),
-                            child: Text(
-                              'Победитель',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ),
-                        ],
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          doc.data()['winner'] ?? 'Победитель еще определён',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Победитель',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-              Image.network(
-                doc.data()['imagepost'],
-                fit: BoxFit.fill,
               ),
               Center(
                 child: Padding(
@@ -145,7 +125,23 @@ class _WinnerScreenState extends State<WinnerScreen> {
                       child: FlatButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
-                        onPressed: () => updateData(doc),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DetailsScreen(
+                                  userId: Provider.of<UserData>(context)
+                                      .currentUserId,
+                                  isShared: doc.data()['shared'],
+                                  isFinished: doc.data()['isFinished'],
+                                  prize: doc.data()['prize'],
+                                  task1: doc.data()['task1'],
+                                  task2: doc.data()['task2'],
+                                  task3: doc.data()['task3'],
+                                  postImage: doc.data()['imagepost'],
+                                  postName: doc.data()['name'],
+                                  postDesc: doc.data()['description'],
+                                  docId: doc.id),
+                            )),
                         child: Text(
                           'Подробнее',
                           style: TextStyle(color: Colors.white),
@@ -199,9 +195,5 @@ class _WinnerScreenState extends State<WinnerScreen> {
         ],
       ),
     );
-  }
-
-  void updateData(DocumentSnapshot doc) async {
-    await db.collection('post').doc(doc.id).update({'todo': 'please 🤫'});
   }
 }

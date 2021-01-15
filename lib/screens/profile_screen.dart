@@ -103,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         // Местополодение
-                        user.age,
+                        user.phone,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
@@ -131,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.insta,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -158,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q1,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q2,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -210,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q3,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -236,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q4,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -262,7 +262,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q5,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -288,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q6,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -314,7 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q7,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -340,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q8,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -366,7 +366,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q9,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -392,7 +392,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q10,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q11,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -444,7 +444,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q12,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,
@@ -470,7 +470,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         //Текст обо мне
-                        user.bio,
+                        user.q13,
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
                           fontSize: 15,

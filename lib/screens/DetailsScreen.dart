@@ -303,24 +303,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 ],
                               ),
                               SizedBox(height: 40),
-                              FlatButton(
-                                height: 50,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                ),
-                                onPressed: () => {
-                                  setParticipate(),
-                                  dialogs.information(context, 'Спасибо',
-                                      'Спасибо за участие в конкурсе!')
-                                },
-                                color: Colors.blueAccent,
-                                textColor: Colors.white,
-                                child: Text(
-                                  'Участвовать',
-                                  style: TextStyle(fontSize: 18.0),
-                                ),
-                              ),
+                              widget.isFinished != true
+                                  ? FlatButton(
+                                      height: 50,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      onPressed: () => {
+                                        setParticipate(),
+                                        dialogs.information(context, 'Спасибо',
+                                            'Спасибо за участие в конкурсе!')
+                                      },
+                                      color: Colors.blueAccent,
+                                      textColor: Colors.white,
+                                      child: Text(
+                                        'Участвовать',
+                                        style: TextStyle(fontSize: 18.0),
+                                      ),
+                                    )
+                                  : SizedBox(),
                             ],
                           ),
                   ),

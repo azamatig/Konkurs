@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^0.5.12
   http: ^0.12.1
   path_provider: ^1.6.24
+  grouped_buttons: ^1.0.4
 
 
 dev_dependencies:

@@ -8,7 +8,6 @@ import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/profile_screen.dart';
 import 'package:konkurs_app/services/auth_service.dart';
-import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 import 'package:provider/provider.dart';
@@ -179,7 +178,10 @@ class _FeedScreenState extends State<FeedScreen> {
                 padding: EdgeInsets.all(8),
                 children: <Widget>[
                   StreamBuilder<QuerySnapshot>(
-                    stream: db.collection('post').snapshots(),
+                    stream: db
+                        .collection('post')
+                        .where('isFinished', isEqualTo: false)
+                        .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
@@ -201,6 +203,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     stream: db
                         .collection('post')
                         .where('people', arrayContains: widget.userId)
+                        .where('isFinished', isEqualTo: false)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -222,6 +225,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   StreamBuilder<QuerySnapshot>(
                     stream: db
                         .collection('post')
+                        .where('people', arrayContains: widget.userId)
                         .where('isFinished', isEqualTo: true)
                         .snapshots(),
                     builder: (context, snapshot) {
@@ -525,6 +529,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                   userId: Provider.of<UserData>(context)
                                       .currentUserId,
                                   isShared: doc.data()['shared'],
+                                  isFinished: doc.data()['isFinished'],
                                   prize: doc.data()['prize'],
                                   task1: doc.data()['task1'],
                                   task2: doc.data()['task2'],
