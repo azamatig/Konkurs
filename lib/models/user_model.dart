@@ -1,26 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  final String id;
-  final String name;
-  final String profileImageUrl;
-  final String email;
-  final String insta;
-  final String phone;
-  final String location;
-  final String q1;
-  final String q2;
-  final String q3;
-  final String q4;
-  final String q5;
-  final String q6;
-  final String q7;
-  final String q8;
-  final String q9;
-  final String q10;
-  final String q11;
-  final String q12;
-  final String q13;
+  String id;
+  String name;
+  String profileImageUrl;
+  String email;
+  String insta;
+  String phone;
+  String location;
+  String q1;
+  String q2;
+  String q3;
+  String q4;
+  String q5;
+  String q6;
+  String q7;
+  String q8;
+  String q9;
+  String q10;
+  String q11;
+  String q12;
+  String q13;
 
   User({
     this.id,
@@ -95,5 +95,28 @@ class User {
       q12: d['q12'],
       q13: d['q13'],
     );
+  }
+
+  User.fromMap(Map<String, dynamic> mapData) {
+    this.id = mapData['id'];
+    this.email = mapData['email'];
+    this.profileImageUrl = mapData['profileImageUrl'];
+    this.name = mapData['name'];
+    this.location = mapData['location'];
+    this.insta = mapData['insta'];
+    this.phone = mapData['phone'];
+    this.q1 = mapData['q1'];
+    this.q2 = mapData['q2'];
+    this.q3 = mapData['q3'];
+    this.q4 = mapData['q4'];
+    this.q5 = mapData['q5'];
+    this.q6 = mapData['q6'];
+    this.q7 = mapData['q7'];
+    this.q8 = mapData['q8'];
+    this.q9 = mapData['q9'];
+    this.q10 = mapData['q10'];
+    this.q11 = mapData['q11'];
+    this.q12 = mapData['q12'];
+    this.q13 = mapData['q13'];
   }
 }
