@@ -9,6 +9,7 @@ import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
+import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/services/data.dart';
 import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -71,23 +72,26 @@ class _HomeScreen1State extends State<HomeScreen1> {
                         SizedBox(
                           width: 8,
                         ),
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              "GIVE",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800),
-                            ),
-                            Text(
-                              "APP",
-                              style: TextStyle(
-                                  color: Color(0xffFCCD00),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800),
-                            )
-                          ],
+                        GestureDetector(
+                          onTap: () => AuthService.logout(),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "GIVE",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                              Text(
+                                "APP",
+                                style: TextStyle(
+                                    color: Color(0xffFCCD00),
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800),
+                              )
+                            ],
+                          ),
                         ),
                         Spacer(),
                         Image.asset(

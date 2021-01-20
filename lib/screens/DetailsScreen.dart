@@ -163,90 +163,103 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           SizedBox(height: 25),
                           Container(
                             padding: EdgeInsets.only(left: 10),
-                            child: ListView(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              primary: false,
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    CircleAvatar(
-                                      radius: 15,
-                                      child: ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: user.profileImageUrl,
-                                        ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              width: 225,
+                                              child: Text(
+                                                widget.postName,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 5,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              )),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text("Дата " +
+                                              formatOnlyDate(widget.docSnap
+                                                  .data()['date']
+                                                  .toDate())),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text("Участников "),
+                                        ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      // Текст имя
-                                      '- Вы',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 20,
-                                      ),
-                                      maxLines: 2,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 15),
-                                Row(
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                            width: 200,
-                                            child: Text(
-                                              widget.postName,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 5,
-                                            )),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(formatOnlyDate(widget.docSnap
-                                            .data()['date']
-                                            .toDate())),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      width: 160.0,
-                                      child: FlatButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        onPressed: () => {},
-                                        color: Colors.pinkAccent,
-                                        padding: EdgeInsets.all(10.0),
-                                        child: Text(
-                                          'Участвовать',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18.0,
+                                Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Вы - ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 15,
+                                                color: Colors.grey),
+                                            maxLines: 2,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                              user.profileImageUrl,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        width: 160.0,
+                                        child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          onPressed: () => {},
+                                          color: Colors.pinkAccent,
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'Участвовать',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18.0,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 25,
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
+                          ),
+                          Divider(
+                            thickness: 2,
                           ),
                         ],
                       ),

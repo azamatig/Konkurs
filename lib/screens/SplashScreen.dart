@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/utils.dart';
