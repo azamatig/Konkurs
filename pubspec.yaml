@@ -72,6 +72,13 @@ flutter:
     - assets/images/icon3.png
     - assets/images/two.png
     - assets/images/ph.png
+    - assets/images/
+    - assets/images/ic_reward.png
+    - assets/images/ic_transact.png
+    - assets/images/wallet_logo.png
+    - assets/images/wallet_dark_logo.png
+    - assets/images/ic_money.png
+    - assets/images/ic_send.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

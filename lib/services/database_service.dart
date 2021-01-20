@@ -80,6 +80,13 @@ class DatabaseService {
     return url;
   }
 
+  Future<void> getUserInfo() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc((await FirebaseAuth.instance.currentUser()).uid)
+        .get();
+  }
+
   void uploadImageMsgToDb(String url, String receiverUid, String senderuid) {
     _message = Message.withoutMessage(
         receiverUid: receiverUid,
@@ -121,16 +128,6 @@ class DatabaseService {
         .collection('users')
         .orderBy('name', descending: false)
         .get();
-    return data;
-  }
-
-  static Future<QuerySnapshot> gets() async {
-    QuerySnapshot data;
-    data = await FirebaseFirestore.instance
-        .collection('users')
-        .orderBy('name', descending: false)
-        .get();
-    print(data.docs.length);
     return data;
   }
 }

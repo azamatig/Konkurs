@@ -5,6 +5,7 @@ import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/LoginScreen.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/screens/feed_screen.dart';
+import 'package:konkurs_app/screens/home.dart';
 import 'package:konkurs_app/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
-          return HomeScreen();
+          return HomeScreen1();
         } else {
           return LoginScreen();
         }
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           SignupScreen.id: (context) => SignupScreen(),
-          FeedScreen.id: (context) => FeedScreen(),
+          FeedScreen.id: (context) => HomeScreen1(),
         },
       ),
     );

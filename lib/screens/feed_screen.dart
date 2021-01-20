@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:konkurs_app/models/chat_screen.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -15,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
 class FeedScreen extends StatefulWidget {
-  static final String id = 'feed_screen';
+  static final String id = 'feed_screen1';
   final String userId;
   final String postImage;
   final String postName;
@@ -115,13 +114,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   ListTile(
                     title: Text('Обратная связь'),
                     trailing: Icon(Icons.info_outline),
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatScreen(
-                                  myId: Provider.of<UserData>(context)
-                                      .currentUserId,
-                                ))),
+                    onTap: () => {},
                   ),
                   ListTile(
                       title: Text('Профиль'),
