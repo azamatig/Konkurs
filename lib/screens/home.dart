@@ -5,11 +5,14 @@ import 'package:konkurs_app/models/date_model.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/event_type.dart';
 import 'package:konkurs_app/models/post_model.dart';
+import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
 import 'package:konkurs_app/services/data.dart';
 import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static final String id = 'feed_screen';
@@ -227,6 +230,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
 
   Widget buildItems(DocumentSnapshot doc) {
     return PopularEventTile(
+      doc: doc,
       desc: doc.data()['description'],
       imgeAssetPath: doc.data()['imagepost'],
       date: doc.data()['date'],
@@ -311,83 +315,107 @@ class PopularEventTile extends StatelessWidget {
   Timestamp date;
   String address;
   String imgeAssetPath;
+  DocumentSnapshot doc;
 
   /// later can be changed with imgUrl
-  PopularEventTile({this.address, this.date, this.imgeAssetPath, this.desc});
+  PopularEventTile(
+      {this.address, this.date, this.imgeAssetPath, this.desc, this.doc});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      margin: EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-          color: Color(0xff29404E), borderRadius: BorderRadius.circular(8)),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(left: 16),
-              width: MediaQuery.of(context).size.width - 100,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    desc,
-                    maxLines: 2,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/images/calender.png",
-                        height: 12,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        formatOnlyDate(date.toDate()),
-                        style: TextStyle(color: Colors.white, fontSize: 10),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/images/location.png",
-                        height: 12,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        address,
-                        style: TextStyle(color: Colors.white, fontSize: 10),
-                      )
-                    ],
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () => {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => DetailsScreen(
+                      docId: doc.id,
+                      docSnap: doc,
+                      docRef: doc.reference,
+                      userId: Provider.of<UserData>(context).currentUserId,
+                      isShared: doc.data()['shared'],
+                      prize: doc.data()['prize'],
+                      task1: doc.data()['task1'],
+                      task2: doc.data()['task2'],
+                      task3: doc.data()['task3'],
+                      postImage: doc.data()['imagepost'],
+                      postName: doc.data()['name'],
+                      postDesc: doc.data()['description'],
+                      isFinished: doc.data()['isFinished'],
+                    )))
+      },
+      child: Container(
+        height: 100,
+        margin: EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+            color: Color(0xff29404E), borderRadius: BorderRadius.circular(8)),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 16),
+                width: MediaQuery.of(context).size.width - 100,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      desc,
+                      maxLines: 2,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Image.asset(
+                          "assets/images/calender.png",
+                          height: 12,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          formatOnlyDate(date.toDate()),
+                          style: TextStyle(color: Colors.white, fontSize: 10),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Image.asset(
+                          "assets/images/location.png",
+                          height: 12,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          address,
+                          style: TextStyle(color: Colors.white, fontSize: 10),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8)),
-              child: Image.network(
-                imgeAssetPath,
-                height: 100,
-                width: 120,
-                fit: BoxFit.cover,
-              )),
-        ],
+            ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8)),
+                child: Image.network(
+                  imgeAssetPath,
+                  height: 100,
+                  width: 120,
+                  fit: BoxFit.cover,
+                )),
+          ],
+        ),
       ),
     );
   }

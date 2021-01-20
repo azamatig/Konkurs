@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
-import 'package:readmore/readmore.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:konkurs_app/utilities/constants.dart';
+
+import 'comments_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String userId;
@@ -18,6 +21,9 @@ class DetailsScreen extends StatefulWidget {
   final bool isShared;
   final String docId;
   final bool isFinished;
+  final DocumentReference docRef;
+  final DocumentSnapshot docSnap;
+  final User currentUser, user;
 
   DetailsScreen(
       {this.userId,
@@ -30,7 +36,11 @@ class DetailsScreen extends StatefulWidget {
       this.prize,
       this.isShared,
       this.isFinished,
-      this.docId});
+      this.docId,
+      this.docRef,
+      this.currentUser,
+      this.user,
+      this.docSnap});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -39,7 +49,6 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   final db = FirebaseFirestore.instance;
   Dialogs dialogs = new Dialogs();
-
   void setParticipate() {
     var list = [widget.userId];
     db
@@ -59,344 +68,194 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   Widget _details() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 500,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.only(left: 20),
-                    height: MediaQuery.of(context).size.height,
-                    child: widget.isFinished == true
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Center(
-                                  child: Text(
-                                'Извините, но данный конкурс был завершен и более не доступен',
-                                style: TextStyle(
-                                  fontSize: 26,
-                                ),
-                                textAlign: TextAlign.center,
-                              )),
-                            ],
-                          )
-                        : ListView(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            primary: false,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Информация о конкурсе',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 20,
-                                        color: Colors.blueGrey[300],
-                                      ),
-                                      maxLines: 2,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  SizedBox(height: 20),
-                                  Icon(
-                                    Icons.location_on,
-                                    size: 14,
-                                    color: Colors.blueGrey[300],
-                                  ),
-                                  SizedBox(width: 3),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Казахстан',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        color: Colors.blueGrey[300],
-                                      ),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  widget.postName,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 21,
-                                  ),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Описание",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: ReadMoreText(
-                                  widget.postDesc,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 15,
-                                  ),
-                                  trimMode: TrimMode.Line,
-                                  trimLines: 2,
-                                  trimCollapsedText: 'Больше',
-                                  trimExpandedText: 'меньше',
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 30),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Призы",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                height: 200,
-                                width: 200,
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(widget.prize),
-                                )),
-                              ),
-                              SizedBox(height: 30),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'Задания',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17,
-                                  ),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              SizedBox(height: 30),
-                              Row(
-                                // Вторая часть листа
-                                children: <Widget>[
-                                  Icon(
-                                    FontAwesomeIcons.times,
-                                    size: 21,
-                                    color: Colors.deepOrangeAccent,
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      widget.task1,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 30),
-                              Row(
-                                // Вторая часть листа
-                                children: <Widget>[
-                                  Icon(
-                                    widget.isShared != true
-                                        ? FontAwesomeIcons.times
-                                        : FontAwesomeIcons.check,
-                                    size: 21,
-                                    color: widget.isShared == true
-                                        ? Colors.green[500]
-                                        : Colors.yellowAccent[700],
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: GestureDetector(
-                                      onTap: () => {
-                                        setShared(),
-                                        launch(
-                                            "https://www.telegram.me/pegastravel_bot",
-                                            forceSafariVC: false),
-                                      },
-                                      child: Text(
-                                        widget.task2,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                        ),
-                                        maxLines: 1,
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 30),
-                              Row(
-                                // Вторая часть листа
-                                children: <Widget>[
-                                  Icon(
-                                    FontAwesomeIcons.times,
-                                    size: 21,
-                                    color: Colors.deepOrangeAccent,
-                                  ),
-                                  SizedBox(width: 15),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      widget.task3,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                      maxLines: 3,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 40),
-                              widget.isFinished != true
-                                  ? FlatButton(
-                                      height: 50,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      onPressed: () => {
-                                        setParticipate(),
-                                        dialogs.information(context, 'Спасибо',
-                                            'Спасибо за участие в конкурсе!')
-                                      },
-                                      color: Colors.blueAccent,
-                                      textColor: Colors.white,
-                                      child: Text(
-                                        'Участвовать',
-                                        style: TextStyle(fontSize: 18.0),
-                                      ),
-                                    )
-                                  : SizedBox(),
-                            ],
-                          ),
-                  ),
-                ],
-              ),
-            ),
-            //
-            //
-            //
-          ],
-        ),
-      ),
-    );
+    return Container();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Center(
-          child: Text(
-            'Детали задания',
-            style: TextStyle(color: Colors.black54),
+      body: Column(
+        children: [
+          _postDetails(),
+          Spacer(),
+          Container(
+            decoration: BoxDecoration(color: Colors.white),
+            height: 65,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 15),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Container(
+                        width: 40,
+                        height: 35,
+                        child: Icon(FontAwesomeIcons.heart)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Container(
+                        width: 40,
+                        height: 35,
+                        child: Icon(FontAwesomeIcons.shareAlt)),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0, right: 20),
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      width: 75,
+                      height: 35,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => CommentsScreen(
+                                        userId: widget.userId,
+                                        documentReference: widget.docRef,
+                                        user: widget.currentUser,
+                                      )));
+                        },
+                        icon: Icon(FontAwesomeIcons.commentAlt),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              height: 250,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(widget.postImage),
-              )),
-            ),
-            Row(
-              children: [
-                Container(
-                  width: 203,
-                  child: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Image.asset(
-                      'assets/images/highlightColor.jpg',
-                      alignment: Alignment.topLeft,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 220,
-                  child: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Image.asset(
-                      'assets/images/highlightColor.jpg',
-                      alignment: Alignment.topRight,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              child: _details(),
-            )
-          ],
-        ),
+        ],
       ),
     );
+  }
+
+  FutureBuilder _postDetails() {
+    return FutureBuilder(
+        future: usersRef.doc(widget.userId).get(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          User user = User.fromDoc(snapshot.data);
+          return SingleChildScrollView(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 700,
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListView(
+                        children: <Widget>[
+                          Container(
+                            height: 300,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(widget.postImage),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          Container(
+                            padding: EdgeInsets.only(left: 10),
+                            child: ListView(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              primary: false,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    CircleAvatar(
+                                      radius: 15,
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl: user.profileImageUrl,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      // Текст имя
+                                      '- Вы',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20,
+                                      ),
+                                      maxLines: 2,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 15),
+                                Row(
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                            width: 200,
+                                            child: Text(
+                                              widget.postName,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 5,
+                                            )),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(formatOnlyDate(widget.docSnap
+                                            .data()['date']
+                                            .toDate())),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                      width: 160.0,
+                                      child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        onPressed: () => {},
+                                        color: Colors.pinkAccent,
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Text(
+                                          'Участвовать',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
