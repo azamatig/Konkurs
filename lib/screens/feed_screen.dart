@@ -119,15 +119,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   ListTile(
                       title: Text('Профиль'),
                       trailing: Icon(Icons.input),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfileScreen(
-                                  userId: Provider.of<UserData>(context)
-                                      .currentUserId)),
-                        );
-                      }),
+                      onTap: () {}),
                   Divider(),
                   Align(
                     alignment: Alignment.bottomCenter,

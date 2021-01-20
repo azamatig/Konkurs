@@ -148,15 +148,7 @@ Container _paypalCard(context) {
                       color: PaypalColors.DarkBlue,
                       fontSize: 12),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfileScreen(
-                            userId:
-                                Provider.of<UserData>(context).currentUserId)),
-                  );
-                },
+                onPressed: () {},
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),

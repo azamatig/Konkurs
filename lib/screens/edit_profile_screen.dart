@@ -157,25 +157,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
 
       User user = User(
-          id: widget.user.id,
-          name: _name,
-          profileImageUrl: _profileImageUrl,
-          insta: _insta,
-          phone: _phone,
-          location: _location,
-          q1: _q1,
-          q2: _q2,
-          q3: _q3,
-          q4: _q4,
-          q5: _q5,
-          q6: _q6,
-          q7: _q7,
-          q8: _q8,
-          q9: _q9,
-          q10: _q10,
-          q11: _q11,
-          q12: _q12,
-          q13: _q13);
+        id: widget.user.id,
+        name: _name,
+        profileImageUrl: _profileImageUrl,
+        insta: _insta,
+        phone: _phone,
+        location: _location,
+      );
 
       // Database update
       DatabaseService.updateUser(user);

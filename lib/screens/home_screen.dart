@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
           FeedScreen(userId: Provider.of<UserData>(context).currentUserId),
           WinnerScreen(),
           // PaymentScreen(),
-          ProfileScreen(userId: Provider.of<UserData>(context).currentUserId),
         ],
         onPageChanged: (int index) {
           setState(() {
