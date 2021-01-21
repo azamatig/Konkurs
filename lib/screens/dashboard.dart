@@ -5,8 +5,12 @@ import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
+import 'my_wins.dart';
 
 class DashBoardPage extends StatefulWidget {
+  final userId;
+  DashBoardPage(this.userId);
+
   @override
   _DashBoardPageState createState() => _DashBoardPageState();
 }
@@ -205,8 +209,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     TableRow(children: [
                                       _actionList('assets/images/ic_send.png',
                                           'Пригласить друга'),
-                                      _actionList('assets/images/ic_money.png',
-                                          'Выйгрыши'),
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => MyWins(widget.userId)));
+                                        },
+                                        child: _actionList('assets/images/ic_money.png',
+                                            'Выйгрыши'),
+                                      ),
                                     ]),
                                     TableRow(children: [
                                       _actionList(
