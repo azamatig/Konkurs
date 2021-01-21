@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'DetailsScreen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -41,14 +40,14 @@ class _MyWinsState extends State<MyWins> {
       data = await firestore
           .collection(collectionName)
           .where('winnerUid', isEqualTo: widget.userId)
-      //.orderBy('date', descending: false)
+          //.orderBy('date', descending: false)
           .limit(10)
           .get();
     else
       data = await firestore
           .collection(collectionName)
           .where('winnerUid', isEqualTo: widget.userId)
-      //.orderBy('date', descending: false)
+          //.orderBy('date', descending: false)
           .startAfter([_lastVisible['date']])
           .limit(10)
           .get();
@@ -130,7 +129,8 @@ class _MyWinsState extends State<MyWins> {
   Widget dataList(Post d) {
     return GestureDetector(
       onTap: () async {
-        DocumentSnapshot document = await firestore.collection("post").doc(d.id).get();
+        DocumentSnapshot document =
+            await firestore.collection("post").doc(d.id).get();
         Navigator.push(
           context,
           MaterialPageRoute(

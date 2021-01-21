@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'DetailsScreen.dart';
 import 'package:konkurs_app/utilities/constants.dart';

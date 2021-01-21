@@ -91,7 +91,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           Spacer(),
           Container(
             decoration: BoxDecoration(color: Colors.white),
-            height: 55,
+            height: 75,
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15),
               child: Row(
@@ -120,7 +120,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Container(
                           width: 40,
-                          height: 20,
+                          height: 50,
                           child: Icon(
                             FontAwesomeIcons.shareAlt,
                             size: 20,
@@ -175,7 +175,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: 779,
+                height: 770,
                 child: Column(
                   children: <Widget>[
                     Expanded(

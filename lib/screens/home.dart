@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -218,7 +217,8 @@ class _HomeScreen1State extends State<HomeScreen1>
                         GestureDetector(
                           onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => DashBoardPage(userId)),
+                            MaterialPageRoute(
+                                builder: (_) => DashBoardPage(userId)),
                           ),
                           child: Container(
                             decoration: BoxDecoration(
