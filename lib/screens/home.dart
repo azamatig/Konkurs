@@ -14,14 +14,20 @@ import 'package:konkurs_app/services/data.dart';
 import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
+import 'all_giveaways.dart';
+import 'my_giveaways.dart';
+import 'closed_giveaways.dart';
+import 'package:konkurs_app/utilities/dropdown_menu.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static final String id = 'feed_screen';
+
   @override
   _HomeScreen1State createState() => _HomeScreen1State();
 }
 
-String userPhoto, userName;
+String userPhoto, userName, userId;
 
 class _HomeScreen1State extends State<HomeScreen1> {
   List<DateModel> dates = List<DateModel>();
@@ -44,6 +50,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
               setState(() {
                 userPhoto = user.profileImageUrl;
                 userName = user.name;
+                userId = user.id;
               })
             }));
   }
@@ -101,10 +108,36 @@ class _HomeScreen1State extends State<HomeScreen1> {
                         SizedBox(
                           width: 16,
                         ),
-                        Image.asset(
-                          "assets/images/menu.png",
-                          height: 22,
-                        )
+                        Container(
+                          child: SimpleAccountMenu(
+                            icons: [
+                              Icon(Icons.person),
+                              Icon(Icons.group_add),
+                              Icon(Icons.exit_to_app),
+                            ],
+                            iconColor: Colors.white,
+                            onChange: (index) async {
+                              switch(index){
+                                case 0 : {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => DashBoardPage()));
+                                }
+                                break;
+                                case 1 : {
+                                  var response = await FlutterShareMe().shareToSystem(
+                                      msg: 'ссылка на приложение будет здесь');
+                                  if (response == 'success') {
+                                    print('navigate success');
+                                  }
+                                }
+                                break;
+                                case 2 : {
+                                  AuthService.logout();
+                                }
+                                break;
+                              }
+                            },
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -147,7 +180,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
                             child: CircleAvatar(
                               radius: 30,
                               backgroundImage: CachedNetworkImageProvider(
-                                userPhoto,
+                                "https://i.pinimg.com/originals/03/e8/2e/03e82ea931c4a9853ed9bf58223c959a.jpg", //userPhoto,
                               ),
                             ),
                           ),
@@ -247,6 +280,7 @@ class DateTile extends StatelessWidget {
   String weekDay;
   String date;
   bool isSelected;
+
   DateTile({this.weekDay, this.date, this.isSelected});
 
   @override
@@ -284,31 +318,56 @@ class DateTile extends StatelessWidget {
 class EventTile extends StatelessWidget {
   String imgAssetPath;
   String eventType;
+
   EventTile({this.imgAssetPath, this.eventType});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 30),
-      margin: EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-          color: Color(0xff29404E), borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Image.asset(
-            imgAssetPath,
-            height: 27,
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          Text(
-            eventType,
-            style: TextStyle(color: Colors.white),
-          )
-        ],
+    return GestureDetector(
+      onTap: () {
+        switch (eventType) {
+          case "Все конкурсы":
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AllGiveaways()));
+            }
+            break;
+          case "Мои конкурсы":
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyGiveaways(userId)));
+            }
+            break;
+          case "Завершенные":
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ClosedGiveaways()));
+            }
+            break;
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 30),
+        margin: EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+            color: Color(0xff29404E), borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              imgAssetPath,
+              height: 27,
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Text(
+              eventType,
+              style: TextStyle(color: Colors.white),
+            )
+          ],
+        ),
       ),
     );
   }

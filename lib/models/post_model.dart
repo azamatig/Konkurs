@@ -12,6 +12,7 @@ class Post {
   final String task1;
   final String task2;
   final String task3;
+  final bool isFinished;
 
   Post(
       {this.name,
@@ -24,20 +25,23 @@ class Post {
       this.description,
       this.task1,
       this.task2,
-      this.task3});
+      this.task3,
+      this.isFinished});
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
         id: doc.id,
-        name: doc['name'],
-        imagepost: doc['imagepost'],
-        prize: doc['prize'],
-        people: doc['people'],
-        shared: doc['shared'],
-        date: doc['date'],
-        task1: doc['task1'],
-        task2: doc['task2'],
-        task3: doc['task3'],
-        description: doc['description']);
+        name: doc.data()['name'],
+        imagepost: doc.data()['imagepost'],
+        prize: doc.data()['prize'],
+        people: doc.data()['people'],
+        shared: doc.data()['shared'],
+        date: doc.data()['date'],
+        task1: doc.data()['task1'],
+        task2: doc.data()['task2'],
+        task3: doc.data()['task3'],
+        description: doc.data()['description'],
+      isFinished: doc.data()['isFinished'],
+    );
   }
 }
