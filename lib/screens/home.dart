@@ -244,7 +244,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                       height: 16,
                     ),
                     Text(
-                      "All Giveaways",
+                      "Конкурсы",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     SizedBox(
@@ -269,8 +269,11 @@ class _HomeScreen1State extends State<HomeScreen1>
                       height: 16,
                     ),
                     Text(
-                      "Popular Giveaways",
+                      "Популярные конкурсы",
                       style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 16,
                     ),
                     StreamBuilder(
                         stream: db

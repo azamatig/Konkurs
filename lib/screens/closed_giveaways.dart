@@ -75,7 +75,7 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Все конкурсы"),
+        title: Text("Завершенные конкурсы"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here

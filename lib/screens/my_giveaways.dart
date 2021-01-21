@@ -83,7 +83,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Все конкурсы"),
+        title: Text("Мои конкурсы"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
