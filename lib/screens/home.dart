@@ -14,6 +14,11 @@ import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'all_giveaways.dart';
+import 'my_giveaways.dart';
+import 'closed_giveaways.dart';
+import 'package:konkurs_app/utilities/dropdown_menu.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static final String id = 'feed_screen';
@@ -27,6 +32,7 @@ class HomeScreen1 extends StatefulWidget {
 
 String userName;
 String userPhoto;
+String userId;
 
 class _HomeScreen1State extends State<HomeScreen1>
     with TickerProviderStateMixin {
@@ -82,6 +88,15 @@ class _HomeScreen1State extends State<HomeScreen1>
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onCalendarCreated');
+    service
+        .getCurrentUser()
+        .then((user) => service.fetchUserDetailsById(user.uid).then((user) => {
+              setState(() {
+                userPhoto = user.profileImageUrl;
+                userName = user.name;
+                userId = user.id;
+              })
+            }));
   }
 
   @override
@@ -137,10 +152,45 @@ class _HomeScreen1State extends State<HomeScreen1>
                         SizedBox(
                           width: 16,
                         ),
-                        Image.asset(
-                          "assets/images/menu.png",
-                          height: 22,
-                        )
+                        Container(
+                          child: SimpleAccountMenu(
+                            icons: [
+                              Icon(Icons.person),
+                              Icon(Icons.group_add),
+                              Icon(Icons.exit_to_app),
+                            ],
+                            iconColor: Colors.white,
+                            onChange: (index) async {
+                              switch (index) {
+                                case 0:
+                                  {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DashBoardPage()));
+                                  }
+                                  break;
+                                case 1:
+                                  {
+                                    var response = await FlutterShareMe()
+                                        .shareToSystem(
+                                            msg:
+                                                'ссылка на приложение будет здесь');
+                                    if (response == 'success') {
+                                      print('navigate success');
+                                    }
+                                  }
+                                  break;
+                                case 2:
+                                  {
+                                    AuthService.logout();
+                                  }
+                                  break;
+                              }
+                            },
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -185,6 +235,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                               backgroundImage: userPhoto.isEmpty
                                   ? AssetImage('assets/images/ph.png')
                                   : CachedNetworkImageProvider(userPhoto),
+
                             ),
                           ),
                         )
@@ -391,34 +442,98 @@ class _HomeScreen1State extends State<HomeScreen1>
   }
 }
 
-class EventTile extends StatelessWidget {
-  String imgAssetPath;
-  String eventType;
-  EventTile({this.imgAssetPath, this.eventType});
+class DateTile extends StatelessWidget {
+  String weekDay;
+  String date;
+  bool isSelected;
+
+  DateTile({this.weekDay, this.date, this.isSelected});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 30),
-      margin: EdgeInsets.only(right: 16),
+      margin: EdgeInsets.only(right: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-          color: Color(0xff29404E), borderRadius: BorderRadius.circular(12)),
+          color: isSelected ? Color(0xffFCCD00) : Colors.transparent,
+          borderRadius: BorderRadius.circular(10)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(
-            imgAssetPath,
-            height: 27,
+          Text(
+            date,
+            style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontWeight: FontWeight.w600),
           ),
           SizedBox(
-            height: 12,
+            height: 10,
           ),
           Text(
-            eventType,
-            style: TextStyle(color: Colors.white),
+            weekDay,
+            style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontWeight: FontWeight.w600),
           )
         ],
+      ),
+    );
+  }
+}
+
+class EventTile extends StatelessWidget {
+  String imgAssetPath;
+  String eventType;
+
+  EventTile({this.imgAssetPath, this.eventType});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        switch (eventType) {
+          case "Все конкурсы":
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AllGiveaways()));
+            }
+            break;
+          case "Мои конкурсы":
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyGiveaways(userId)));
+            }
+            break;
+          case "Завершенные":
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ClosedGiveaways()));
+            }
+            break;
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 30),
+        margin: EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+            color: Color(0xff29404E), borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              imgAssetPath,
+              height: 27,
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Text(
+              eventType,
+              style: TextStyle(color: Colors.white),
+            )
+          ],
+        ),
       ),
     );
   }
