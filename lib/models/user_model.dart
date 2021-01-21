@@ -23,7 +23,7 @@ class User {
     return User(
       id: doc.id,
       name: doc['name'],
-      profileImageUrl: doc['profileImageUrl'],
+      profileImageUrl: doc['profileImageUrl'] ?? '',
       email: doc['email'],
       insta: doc['bio'] ?? '',
       phone: doc['age'] ?? '',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -23,103 +24,181 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'KonkrusApp',
-                style: TextStyle(
-                  fontFamily: 'CeraCompactPro',
-                  fontSize: 50.0,
-                ),
-              ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 30.0,
-                        vertical: 10.0,
-                      ),
-                      child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Имя'),
-                        validator: (input) => input.trim().isEmpty
-                            ? 'Please enter a valid name'
-                            : null,
-                        onSaved: (input) => _name = input,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 30.0,
-                        vertical: 10.0,
-                      ),
-                      child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Email'),
-                        validator: (input) => !input.contains('@')
-                            ? 'Please enter a valid email'
-                            : null,
-                        onSaved: (input) => _email = input,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 30.0,
-                        vertical: 10.0,
-                      ),
-                      child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Пароль'),
-                        validator: (input) => input.length < 6
-                            ? 'Must be at least 6 characters'
-                            : null,
-                        onSaved: (input) => _password = input,
-                        obscureText: true,
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Container(
-                      width: 250.0,
-                      child: FlatButton(
-                        onPressed: _submit,
-                        color: Colors.blue,
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          'Регистрация',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Container(
-                      width: 250.0,
-                      child: FlatButton(
-                        onPressed: () => Navigator.pop(context),
-                        color: Colors.blue,
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          'Назад к экрану логина',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("assets/images/background.png"))),
           ),
-        ),
+          SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'GIVE',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      Text(
+                        'APP',
+                        style: TextStyle(
+                            color: Color(0xffFCCD00),
+                            fontSize: 32,
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 10.0,
+                          ),
+                          child: TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                labelText: 'Имя',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                border: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white))),
+                            validator: (input) =>
+                                input.trim().isEmpty ? 'Введите имя' : null,
+                            onSaved: (input) => _name = input,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 10.0,
+                          ),
+                          child: TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                labelText: 'Email',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                border: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white))),
+                            validator: (input) => !input.contains('@')
+                                ? 'Введите действительный email'
+                                : null,
+                            onSaved: (input) => _email = input,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 10.0,
+                          ),
+                          child: TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                labelText: 'Пароль',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                border: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white))),
+                            validator: (input) => input.length < 6
+                                ? 'Не меньше 6 символов'
+                                : null,
+                            onSaved: (input) => _password = input,
+                            obscureText: true,
+                          ),
+                        ),
+                        SizedBox(height: 20.0),
+                        GestureDetector(
+                          onTap: () {
+                            _submit();
+                          },
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  "Регистрация",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 17),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Icon(
+                                  FontAwesomeIcons.arrowCircleRight,
+                                  color: Colors.orangeAccent,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20.0),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  FontAwesomeIcons.arrowCircleLeft,
+                                  color: Colors.orangeAccent,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "Назад",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 17),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

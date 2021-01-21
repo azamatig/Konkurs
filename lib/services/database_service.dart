@@ -81,10 +81,12 @@ class DatabaseService {
   }
 
   Future<void> getUserInfo() async {
+    User currentUser;
     FirebaseFirestore.instance
         .collection('users')
         .doc((await FirebaseAuth.instance.currentUser()).uid)
         .get();
+    return currentUser;
   }
 
   void uploadImageMsgToDb(String url, String receiverUid, String senderuid) {
@@ -119,7 +121,7 @@ class DatabaseService {
   Future<User> fetchUserDetailsById(String uid) async {
     DocumentSnapshot documentSnapshot =
         await _firestore.collection("users").doc(uid).get();
-    return User.fromMap(documentSnapshot.data());
+    return User.fromFirestore(documentSnapshot);
   }
 
   static Future<QuerySnapshot> getData() async {

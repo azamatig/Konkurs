@@ -45,6 +45,7 @@ dependencies:
   http: ^0.12.1
   path_provider: ^1.6.24
   grouped_buttons: ^1.0.4
+  table_calendar: ^2.3.3
 
 
 dev_dependencies:

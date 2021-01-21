@@ -6,12 +6,13 @@ import 'package:konkurs_app/screens/LoginScreen.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/screens/feed_screen.dart';
 import 'package:konkurs_app/screens/home.dart';
-import 'package:konkurs_app/screens/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  initializeDateFormatting();
   runApp(MyApp());
 }
 
@@ -22,7 +23,9 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
-          return HomeScreen1();
+          return HomeScreen1(
+            currentUserId: Provider.of<UserData>(context).currentUserId,
+          );
         } else {
           return LoginScreen();
         }

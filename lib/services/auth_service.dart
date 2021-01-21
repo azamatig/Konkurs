@@ -11,7 +11,7 @@ class AuthService {
   static void signUpUser(
       BuildContext context, String name, String email, String password) async {
     var placeholder =
-        'https://lh3.googleusercontent.com/proxy/keRqNlAaDt-yVRvFlc9RTITCilT5T7mep3tmcELK67d0dG1eEcKbGttr0TV6Zhrd3eGZ71ndBBkPt5FekS5qyQn9eqPIb4xuo6cHEL5PC-o0S5i2OmuddBK_wEMepSiB13-VMLSqLYjyW_IdONAhE4wb-723MeifJzyklZlUaZlLgrBfIxifvTbpV10UEnc09GP4r463OodDujkISbKJvh-F0ZE';
+        'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
     try {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -22,7 +22,10 @@ class AuthService {
         _firestore.collection('/users').doc(signedInUser.uid).set({
           'name': name,
           'email': email,
+          'id': signedInUser.uid,
           'profileImageUrl': placeholder,
+          'phone': '',
+          'insta': '@',
           'bio': 'Напишите о себе',
           'age': 'Возраст',
           'location': 'Местонахождение'
