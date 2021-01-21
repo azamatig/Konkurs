@@ -156,7 +156,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                           child: SimpleAccountMenu(
                             icons: [
                               Icon(Icons.person),
-                              Icon(Icons.group_add),
+                              Icon(Icons.share),
                               Icon(Icons.exit_to_app),
                             ],
                             iconColor: Colors.white,
@@ -168,7 +168,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                DashBoardPage()));
+                                                DashBoardPage(userId)));
                                   }
                                   break;
                                 case 1:
@@ -222,7 +222,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                         GestureDetector(
                           onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => DashBoardPage()),
+                            MaterialPageRoute(builder: (_) => DashBoardPage(userId)),
                           ),
                           child: Container(
                             decoration: BoxDecoration(
