@@ -132,7 +132,8 @@ class _MyGiveawaysState extends State<MyGiveaways> {
   Widget dataList(Post d) {
     return GestureDetector(
       onTap: () async {
-        DocumentSnapshot document = await firestore.collection("post").doc(d.id).get();
+        DocumentSnapshot document =
+            await firestore.collection("post").doc(d.id).get();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -247,4 +248,3 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     }
   }
 }
-

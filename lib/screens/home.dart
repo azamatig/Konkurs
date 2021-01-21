@@ -76,18 +76,14 @@ class _HomeScreen1State extends State<HomeScreen1>
   }
 
   void _onDaySelected(DateTime day, List events, List holidays) {
-    print('CALLBACK: _onDaySelected');
     setState(() {});
   }
 
   void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
-  }
+      DateTime first, DateTime last, CalendarFormat format) {}
 
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onCalendarCreated');
     service
         .getCurrentUser()
         .then((user) => service.fetchUserDetailsById(user.uid).then((user) => {
@@ -202,7 +198,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              "Привет, $userName",
+                              "Привет, $userName" ?? "Привет",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -232,10 +228,9 @@ class _HomeScreen1State extends State<HomeScreen1>
                             ),
                             child: CircleAvatar(
                               radius: 30,
-                              backgroundImage: userPhoto.isEmpty
+                              backgroundImage: userPhoto == null
                                   ? AssetImage('assets/images/ph.png')
-                                  : CachedNetworkImageProvider(userPhoto),
-
+                                  : NetworkImage(userPhoto),
                             ),
                           ),
                         )
@@ -433,11 +428,11 @@ class _HomeScreen1State extends State<HomeScreen1>
 
   Widget buildItems(DocumentSnapshot doc) {
     return PopularEventTile(
-      doc: doc,
-      desc: doc.data()['description'],
-      imgeAssetPath: doc.data()['imagepost'],
-      date: doc.data()['date'],
-      address: doc.data()['name'],
+      doc: doc ?? " ",
+      desc: doc.data()['description'] ?? " ",
+      imgeAssetPath: doc.data()['imagepost'] ?? "",
+      date: doc.data()['date'] ?? "",
+      address: doc.data()['name'] ?? "",
     );
   }
 }

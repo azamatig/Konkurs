@@ -2,11 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
+import 'AchievementView.dart';
 import 'comments_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -89,32 +91,48 @@ class _DetailsScreenState extends State<DetailsScreen> {
           Spacer(),
           Container(
             decoration: BoxDecoration(color: Colors.white),
-            height: 65,
+            height: 55,
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Container(
                         width: 40,
-                        height: 35,
-                        child: Icon(FontAwesomeIcons.heart)),
+                        height: 20,
+                        child: Icon(
+                          FontAwesomeIcons.heart,
+                          size: 20,
+                        )),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Container(
-                        width: 40,
-                        height: 35,
-                        child: Icon(FontAwesomeIcons.shareAlt)),
+                  GestureDetector(
+                    onTap: () async {
+                      var response = await FlutterShareMe().shareToSystem(
+                          msg: 'ссылка на приложение будет здесь');
+                      if (response == 'success') {
+                        print('navigate success');
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Container(
+                          width: 40,
+                          height: 20,
+                          child: Icon(
+                            FontAwesomeIcons.shareAlt,
+                            size: 20,
+                          )),
+                    ),
                   ),
                   Spacer(),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0, right: 20),
+                    padding: const EdgeInsets.only(bottom: 20.0, right: 20),
                     child: Container(
-                      alignment: Alignment.centerRight,
-                      width: 75,
-                      height: 35,
+                      width: 40,
+                      height: 20,
                       child: IconButton(
                         onPressed: () {
                           Navigator.push(
@@ -126,7 +144,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         user: widget.currentUser,
                                       )));
                         },
-                        icon: Icon(FontAwesomeIcons.commentAlt),
+                        icon: Icon(
+                          FontAwesomeIcons.commentAlt,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -154,7 +175,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: 700,
+                height: 779,
                 child: Column(
                   children: <Widget>[
                     Expanded(
@@ -176,21 +197,54 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                    width: 275,
-                                    child: Text(
-                                      widget.postName,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 5,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600),
-                                    )),
-                                SizedBox(
-                                  height: 5,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                            width: 275,
+                                            child: Text(
+                                              widget.postName,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 5,
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600),
+                                            )),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text("Дата " +
+                                            formatOnlyDate(
+                                                widget.date.toDate())),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                            user.profileImageUrl,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                Text("Дата " +
-                                    formatOnlyDate(widget.date.toDate())),
                                 Divider(
                                   thickness: 0.5,
                                 ),
@@ -199,8 +253,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 10.0),
+                                      padding: const EdgeInsets.only(left: 5.0),
                                       child: Row(
                                         children: [
                                           Column(
@@ -209,26 +262,39 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 15,
-                                                  ),
-                                                  CircleAvatar(
-                                                    radius: 10,
-                                                    backgroundImage:
-                                                        CachedNetworkImageProvider(
-                                                      user.profileImageUrl,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                              Text("Дата окончания " +
+                                                  formatOnlyDate(
+                                                      widget.date.toDate())),
                                               SizedBox(
                                                 height: 5,
                                               ),
-                                              Text("Участников " +
-                                                  participants.length
-                                                      .toString())
+                                              participants
+                                                      .contains(widget.userId)
+                                                  ? Row(
+                                                      children: [
+                                                        Text('Вы '),
+                                                        CircleAvatar(
+                                                          radius: 10,
+                                                          backgroundImage:
+                                                              CachedNetworkImageProvider(
+                                                            user.profileImageUrl,
+                                                          ),
+                                                        ),
+                                                        Text(" и " +
+                                                            participants.length
+                                                                .toString() +
+                                                            " участников")
+                                                      ],
+                                                    )
+                                                  : Text(
+                                                      "Участников " +
+                                                          participants.length
+                                                              .toString(),
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 15),
+                                                    )
                                             ],
                                           ),
                                         ],
@@ -251,7 +317,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           15)),
-                                              onPressed: () => {},
+                                              onPressed: () => {
+                                                setParticipate(),
+                                                showAchievementView(context),
+                                              },
                                               color: Colors.pinkAccent,
                                               padding: EdgeInsets.all(10.0),
                                               child: Text(
