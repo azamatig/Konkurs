@@ -7,8 +7,10 @@ class SimpleAccountMenu extends StatefulWidget {
   final Color backgroundColor;
   final Color iconColor;
   final ValueChanged<int> onChange;
-
-  const SimpleAccountMenu({
+  static OverlayEntry overlayEntry;
+  static bool isMenuOpen = false;
+  static AnimationController animationController;
+  SimpleAccountMenu({
     Key key,
     this.icons,
     this.borderRadius,
@@ -24,16 +26,13 @@ class SimpleAccountMenu extends StatefulWidget {
 class _SimpleAccountMenuState extends State<SimpleAccountMenu>
     with SingleTickerProviderStateMixin {
   GlobalKey _key;
-  bool isMenuOpen = false;
   Offset buttonPosition;
   Size buttonSize;
-  OverlayEntry _overlayEntry;
   BorderRadius _borderRadius;
-  AnimationController _animationController;
 
   @override
   void initState() {
-    _animationController = AnimationController(
+    SimpleAccountMenu.animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 250),
     );
@@ -44,7 +43,7 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    SimpleAccountMenu.animationController.dispose();
     super.dispose();
   }
 
@@ -55,17 +54,17 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
   }
 
   void closeMenu() {
-    _overlayEntry.remove();
-    _animationController.reverse();
-    isMenuOpen = !isMenuOpen;
+    SimpleAccountMenu.overlayEntry.remove();
+    SimpleAccountMenu.animationController.reverse();
+    SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
   }
 
   void openMenu() {
     findButton();
-    _animationController.forward();
-    _overlayEntry = _overlayEntryBuilder();
-    Overlay.of(context).insert(_overlayEntry);
-    isMenuOpen = !isMenuOpen;
+    SimpleAccountMenu.animationController.forward();
+    SimpleAccountMenu.overlayEntry = _overlayEntryBuilder();
+    Overlay.of(context).insert(SimpleAccountMenu.overlayEntry);
+    SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
   }
 
   @override
@@ -83,7 +82,7 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
         ),
         color: Colors.white,
         onPressed: () {
-          if (isMenuOpen) {
+          if (SimpleAccountMenu.isMenuOpen) {
             closeMenu();
           } else {
             openMenu();
