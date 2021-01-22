@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'DetailsScreen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -84,7 +83,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Все конкурсы"),
+        title: Text("Мои конкурсы"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
@@ -132,7 +131,8 @@ class _MyGiveawaysState extends State<MyGiveaways> {
   Widget dataList(Post d) {
     return GestureDetector(
       onTap: () async {
-        DocumentSnapshot document = await firestore.collection("post").doc(d.id).get();
+        DocumentSnapshot document =
+            await firestore.collection("post").doc(d.id).get();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -247,4 +247,3 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     }
   }
 }
-

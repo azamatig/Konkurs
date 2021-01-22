@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:konkurs_app/models/date_model.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/event_type.dart';

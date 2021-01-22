@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -76,18 +75,14 @@ class _HomeScreen1State extends State<HomeScreen1>
   }
 
   void _onDaySelected(DateTime day, List events, List holidays) {
-    print('CALLBACK: _onDaySelected');
     setState(() {});
   }
 
   void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
-  }
+      DateTime first, DateTime last, CalendarFormat format) {}
 
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onCalendarCreated');
     service
         .getCurrentUser()
         .then((user) => service.fetchUserDetailsById(user.uid).then((user) => {
@@ -102,6 +97,145 @@ class _HomeScreen1State extends State<HomeScreen1>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(color: Color(0xff102733)),
+            ),
+            SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Image.asset(
+                          "assets/images/logo.png",
+                          height: 28,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        GestureDetector(
+                          onTap: () => AuthService.logout(),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "GIVE",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                              Text(
+                                "APP",
+                                style: TextStyle(
+                                    color: Color(0xffFCCD00),
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800),
+                              )
+                            ],
+                          ),
+                        ),
+                        Spacer(),
+                        Image.asset(
+                          "assets/images/notify.png",
+                          height: 22,
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Container(
+                          child: SimpleAccountMenu(
+                            icons: [
+                              Icon(Icons.person),
+                              Icon(Icons.share),
+                              Icon(Icons.exit_to_app),
+                            ],
+                            iconColor: Colors.white,
+                            onChange: (index) async {
+                              switch (index) {
+                                case 0:
+                                  {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DashBoardPage(userId)));
+                                  }
+                                  break;
+                                case 1:
+                                  {
+                                    var response = await FlutterShareMe()
+                                        .shareToSystem(
+                                            msg:
+                                                'ссылка на приложение будет здесь');
+                                    if (response == 'success') {
+                                      print('navigate success');
+                                    }
+                                  }
+                                  break;
+                                case 2:
+                                  {
+                                    AuthService.logout();
+                                  }
+                                  break;
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Привет, $userName" ?? "Привет",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 21),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              "Вот последние данные по конкурсам.",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                            )
+                          ],
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => DashBoardPage(userId)),
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 3, color: Color(0xffFAE072)),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: CircleAvatar(
+                              radius: 30,
+                              backgroundImage: userPhoto == null
+                                  ? AssetImage('assets/images/ph.png')
+                                  : NetworkImage(userPhoto),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
       body: GestureDetector(
         onTap: (){
            SimpleAccountMenu.overlayEntry.remove();
@@ -251,6 +385,30 @@ class _HomeScreen1State extends State<HomeScreen1>
 
                       _buildTableCalendarWithBuilders(),
 
+                    /// Events
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Конкурсы",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      height: 100,
+                      child: ListView.builder(
+                          itemCount: eventsType.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return EventTile(
+                              imgAssetPath: eventsType[index].imgAssetPath,
+                              eventType: eventsType[index].eventType,
+                            );
+                          }),
+                    ),
                       /// Events
                       SizedBox(
                         height: 16,
@@ -276,6 +434,37 @@ class _HomeScreen1State extends State<HomeScreen1>
                             }),
                       ),
 
+                    /// Popular Events
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Популярные конкурсы",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    StreamBuilder(
+                        stream: db
+                            .collection('post')
+                            .where('isFinished', isEqualTo: false)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Column(
+                              children: snapshot.data.docs
+                                  .map<Widget>((doc) => buildItems(doc))
+                                  .toList(),
+                            );
+                          }
+                          return SizedBox();
+                        })
+                  ],
+                ),
+              ),
+            ),
+          ],
                       /// Popular Events
                       SizedBox(
                         height: 16,
@@ -442,11 +631,11 @@ class _HomeScreen1State extends State<HomeScreen1>
 
   Widget buildItems(DocumentSnapshot doc) {
     return PopularEventTile(
-      doc: doc,
-      desc: doc.data()['description'],
-      imgeAssetPath: doc.data()['imagepost'],
-      date: doc.data()['date'],
-      address: doc.data()['name'],
+      doc: doc ?? " ",
+      desc: doc.data()['description'] ?? " ",
+      imgeAssetPath: doc.data()['imagepost'] ?? "",
+      date: doc.data()['date'] ?? "",
+      address: doc.data()['name'] ?? "",
     );
   }
 }

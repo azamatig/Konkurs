@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/screens/profile_screen.dart';
 import 'package:konkurs_app/utilities/utils.dart';
-import 'package:provider/provider.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override

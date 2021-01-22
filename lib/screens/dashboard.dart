@@ -5,6 +5,7 @@ import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'my_wins.dart';
 
 class DashBoardPage extends StatefulWidget {
@@ -207,13 +208,30 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   ),
                                   children: [
                                     TableRow(children: [
-                                      _actionList('assets/images/ic_send.png',
-                                          'Пригласить друга'),
                                       GestureDetector(
-                                        onTap: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => MyWins(widget.userId)));
+                                        onTap: () async {
+                                          var response = await FlutterShareMe()
+                                              .shareToSystem(
+                                                  msg:
+                                                      'ссылка на приложение будет здесь');
+                                          if (response == 'success') {
+                                            print('navigate success');
+                                          }
                                         },
-                                        child: _actionList('assets/images/ic_money.png',
+                                        child: _actionList(
+                                            'assets/images/ic_send.png',
+                                            'Пригласить друга'),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyWins(widget.userId)));
+                                        },
+                                        child: _actionList(
+                                            'assets/images/ic_money.png',
                                             'Выйгрыши'),
                                       ),
                                     ]),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'DetailsScreen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -8,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:konkurs_app/models/user_data.dart';
 
 class ClosedGiveaways extends StatefulWidget {
-
   @override
   _ClosedGiveawaysState createState() => _ClosedGiveawaysState();
 }
@@ -34,13 +32,15 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
     QuerySnapshot data;
     if (_lastVisible == null)
       data = await firestore
-          .collection(collectionName).where('isFinished', isEqualTo: true)
+          .collection(collectionName)
+          .where('isFinished', isEqualTo: true)
           .orderBy('date', descending: false)
           .limit(10)
           .get();
     else
       data = await firestore
-          .collection(collectionName).where('isFinished', isEqualTo: true)
+          .collection(collectionName)
+          .where('isFinished', isEqualTo: true)
           .orderBy('date', descending: false)
           .startAfter([_lastVisible['date']])
           .limit(10)
@@ -75,7 +75,7 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Все конкурсы"),
+        title: Text("Завершенные конкурсы"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
@@ -123,7 +123,8 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
   Widget dataList(Post d) {
     return GestureDetector(
       onTap: () async {
-        DocumentSnapshot document = await firestore.collection("post").doc(d.id).get();
+        DocumentSnapshot document =
+            await firestore.collection("post").doc(d.id).get();
         Navigator.push(
           context,
           MaterialPageRoute(
