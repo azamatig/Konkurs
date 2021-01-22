@@ -102,207 +102,216 @@ class _HomeScreen1State extends State<HomeScreen1>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(color: Color(0xff102733)),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 60, horizontal: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/images/logo.png",
-                          height: 28,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        GestureDetector(
-                          onTap: () => AuthService.logout(),
-                          child: Row(
+      body: GestureDetector(
+        onTap: (){
+           SimpleAccountMenu.overlayEntry.remove();
+           SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
+        },
+        child: Container(
+          child: Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(color: Color(0xff102733)),
+              ),
+              SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Image.asset(
+                            "assets/images/logo.png",
+                            height: 28,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          GestureDetector(
+                            onTap: () => AuthService.logout(),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "GIVE",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                                Text(
+                                  "APP",
+                                  style: TextStyle(
+                                      color: Color(0xffFCCD00),
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800),
+                                )
+                              ],
+                            ),
+                          ),
+                          Spacer(),
+                          Image.asset(
+                            "assets/images/notify.png",
+                            height: 22,
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Container(
+                            child: SimpleAccountMenu(
+                              icons: [
+                                Icon(Icons.person),
+                                Icon(Icons.share),
+                                Icon(Icons.exit_to_app),
+                              ],
+                              iconColor: Colors.white,
+                              onChange: (index) async {
+                                switch (index) {
+                                  case 0:
+                                    {
+                                       Navigator.push(
+                                           context,
+                                           MaterialPageRoute(
+                                             builder: (context) =>
+                                                   DashBoardPage(userId)));
+                                    }
+                                    break;
+                                  case 1:
+                                    {
+                                      var response = await FlutterShareMe()
+                                          .shareToSystem(msg: 'ссылка на приложение будет здесь');
+                                      if (response == 'success') {
+                                        print('navigate success');
+                                      }
+                                    }
+                                    break;
+                                  case 2:
+                                    {
+                                      AuthService.logout();
+                                    }
+                                    break;
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                "GIVE",
+                                "Привет, $userName",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 21),
+                              ),
+                              SizedBox(
+                                height: 6,
                               ),
                               Text(
-                                "APP",
+                                "Вот последние данные по конкурсам.",
                                 style: TextStyle(
-                                    color: Color(0xffFCCD00),
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800),
+                                    color: Colors.white, fontSize: 15),
                               )
                             ],
                           ),
-                        ),
-                        Spacer(),
-                        Image.asset(
-                          "assets/images/notify.png",
-                          height: 22,
-                        ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Container(
-                          child: SimpleAccountMenu(
-                            icons: [
-                              Icon(Icons.person),
-                              Icon(Icons.share),
-                              Icon(Icons.exit_to_app),
-                            ],
-                            iconColor: Colors.white,
-                            onChange: (index) async {
-                              switch (index) {
-                                case 0:
-                                  {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                DashBoardPage(userId)));
-                                  }
-                                  break;
-                                case 1:
-                                  {
-                                    var response = await FlutterShareMe()
-                                        .shareToSystem(
-                                            msg:
-                                                'ссылка на приложение будет здесь');
-                                    if (response == 'success') {
-                                      print('navigate success');
-                                    }
-                                  }
-                                  break;
-                                case 2:
-                                  {
-                                    AuthService.logout();
-                                  }
-                                  break;
-                              }
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              SimpleAccountMenu.overlayEntry.remove();
+                              SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => DashBoardPage(userId)),
+                              );
                             },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "Привет, $userName",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 21),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 3, color: Color(0xffFAE072)),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: userPhoto.isEmpty
+                                    ? AssetImage('assets/images/ph.png')
+                                    : CachedNetworkImageProvider(userPhoto),
+                              ),
                             ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              "Вот последние данные по конкурсам.",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            )
-                          ],
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => DashBoardPage(userId)),
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 3, color: Color(0xffFAE072)),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: CircleAvatar(
-                              radius: 30,
-                              backgroundImage: userPhoto.isEmpty
-                                  ? AssetImage('assets/images/ph.png')
-                                  : CachedNetworkImageProvider(userPhoto),
+                          )
+                        ],
+                      ),
 
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                      _buildTableCalendarWithBuilders(),
 
-                    _buildTableCalendarWithBuilders(),
+                      /// Events
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        "All Giveaways",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Container(
+                        height: 100,
+                        child: ListView.builder(
+                            itemCount: eventsType.length,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return EventTile(
+                                imgAssetPath: eventsType[index].imgAssetPath,
+                                eventType: eventsType[index].eventType,
+                              );
+                            }),
+                      ),
 
-                    /// Events
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Text(
-                      "All Giveaways",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Container(
-                      height: 100,
-                      child: ListView.builder(
-                          itemCount: eventsType.length,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return EventTile(
-                              imgAssetPath: eventsType[index].imgAssetPath,
-                              eventType: eventsType[index].eventType,
-                            );
-                          }),
-                    ),
-
-                    /// Popular Events
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Text(
-                      "Popular Giveaways",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    StreamBuilder(
-                        stream: db
-                            .collection('post')
-                            .where('isFinished', isEqualTo: false)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Column(
-                              children: snapshot.data.docs
-                                  .map<Widget>((doc) => buildItems(doc))
-                                  .toList(),
-                            );
-                          }
-                          return SizedBox();
-                        })
-                  ],
+                      /// Popular Events
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        "Popular Giveaways",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      StreamBuilder(
+                          stream: db
+                              .collection('post')
+                              .where('isFinished', isEqualTo: false)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Column(
+                                children: snapshot.data.docs
+                                    .map<Widget>((doc) => buildItems(doc))
+                                    .toList(),
+                              );
+                            }
+                            return SizedBox();
+                          })
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   var arr = new List(7);
+
   Widget _buildTableCalendarWithBuilders() {
     arr[0] = "Пн";
     arr[1] = "Вт";
@@ -494,18 +503,24 @@ class EventTile extends StatelessWidget {
         switch (eventType) {
           case "Все конкурсы":
             {
+              SimpleAccountMenu.overlayEntry.remove();
+              SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AllGiveaways()));
             }
             break;
           case "Мои конкурсы":
             {
+              SimpleAccountMenu.overlayEntry.remove();
+              SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => MyGiveaways(userId)));
             }
             break;
           case "Завершенные":
             {
+              SimpleAccountMenu.overlayEntry.remove();
+              SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ClosedGiveaways()));
             }
@@ -553,7 +568,9 @@ class PopularEventTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {
+      onTap: () {
+        SimpleAccountMenu.overlayEntry.remove();
+        SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -571,7 +588,7 @@ class PopularEventTile extends StatelessWidget {
                       postName: doc.data()['name'],
                       postDesc: doc.data()['description'],
                       isFinished: doc.data()['isFinished'],
-                    )))
+                    )));
       },
       child: Container(
         height: 100,
