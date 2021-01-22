@@ -9,6 +9,7 @@ class SimpleAccountMenu extends StatefulWidget {
   final ValueChanged<int> onChange;
   static OverlayEntry overlayEntry;
   static bool isMenuOpen = false;
+  static AnimationController animationController;
   SimpleAccountMenu({
     Key key,
     this.icons,
@@ -28,11 +29,10 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
   Offset buttonPosition;
   Size buttonSize;
   BorderRadius _borderRadius;
-  AnimationController _animationController;
 
   @override
   void initState() {
-    _animationController = AnimationController(
+    SimpleAccountMenu.animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 250),
     );
@@ -43,7 +43,7 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    SimpleAccountMenu.animationController.dispose();
     super.dispose();
   }
 
@@ -55,13 +55,13 @@ class _SimpleAccountMenuState extends State<SimpleAccountMenu>
 
   void closeMenu() {
     SimpleAccountMenu.overlayEntry.remove();
-    //_animationController.reverse();
+    SimpleAccountMenu.animationController.reverse();
     SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
   }
 
   void openMenu() {
     findButton();
-    _animationController.forward();
+    SimpleAccountMenu.animationController.forward();
     SimpleAccountMenu.overlayEntry = _overlayEntryBuilder();
     Overlay.of(context).insert(SimpleAccountMenu.overlayEntry);
     SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
