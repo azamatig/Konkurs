@@ -47,15 +47,12 @@ class _HomeScreen1State extends State<HomeScreen1>
   final db = FirebaseFirestore.instance;
   AnimationController _animationController;
   CalendarController _calendarController;
-  String todayDateIs = "12";
   bool isSelected;
 
   @override
   void initState() {
     super.initState();
-    dates = getDates();
     eventsType = getEventTypes();
-    events = getEvents();
     service.fetchUserDetailsById(widget.currentUserId).then((user) => {
           setState(() {
             userPhoto = user.profileImageUrl;
@@ -641,10 +638,10 @@ class EventTile extends StatelessWidget {
           children: <Widget>[
             Image.asset(
               imgAssetPath,
-              height: 27,
+              height: 30,
             ),
             SizedBox(
-              height: 12,
+              height: 15,
             ),
             Text(
               eventType,
