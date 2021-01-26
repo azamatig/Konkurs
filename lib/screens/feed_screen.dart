@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
 class FeedScreen extends StatefulWidget {
-  static final String id = 'feed_screen1';
   final String userId;
   final String postImage;
   final String postName;

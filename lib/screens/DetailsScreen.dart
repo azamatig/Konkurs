@@ -7,9 +7,11 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
-import 'package:konkurs_app/utilities/active_card.dart';
+import 'package:konkurs_app/screens/tasks_list.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/prize_widget.dart';
 import 'package:konkurs_app/utilities/task_column.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 
 import 'AchievementView.dart';
 import 'comments_screen.dart';
@@ -55,7 +57,13 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   final db = FirebaseFirestore.instance;
   List<dynamic> participants;
-  Dialogs dialogs = new Dialogs();
+  Dialogs dialogs = Dialogs();
+  String task1Type;
+  String task2Type;
+  String task3Type;
+  List<dynamic> shares;
+  List<dynamic> shares2;
+  List<dynamic> shares3;
 
   getParticipants() async {
     DocumentSnapshot document =
@@ -63,7 +71,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     participants = document['people'];
   }
 
-  void setParticipate() {
+  void setParticipate() async {
     var list = [widget.userId];
     db
         .collection('post')
@@ -71,18 +79,49 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .update({'people': FieldValue.arrayUnion(list)});
   }
 
-  void setShared() {
-    db.collection('post').doc(widget.docId).update({'shared': true});
+  void getTask1Type() async {
+    DocumentSnapshot document =
+        await db.collection('post').doc(widget.docId).get();
+    task1Type = document['task1Type'];
+    task2Type = document['task2Type'];
+    task3Type = document['task3Type'];
+  }
+
+  /* void getTask2Type() async {
+    DocumentSnapshot document =
+    await db.collection('post').doc(widget.docId).get();
+    task2Type = document['task2Type'];
+  }
+
+  void getTask3Type() async {
+    DocumentSnapshot document =
+    await db.collection('post').doc(widget.docId).get();
+    task3Type = document['task3Type'];
+  }
+*/
+  void setShared() async {
+    await db.collection('post').doc(widget.docId).update({'shared': true});
+  }
+
+  getShared() async {
+    DocumentSnapshot document =
+        await db.collection('post').doc(widget.docId).get();
+    shares = document['task1TypeShared'];
+    shares2 = document['task2TypeShared'];
+    shares3 = document['task3TypeShared'];
   }
 
   @override
   void initState() {
     super.initState();
+    final templates = [
+      TemplateBlueRocket,
+    ];
     getParticipants();
-  }
-
-  Widget _details() {
-    return Container();
+    getTask1Type();
+    getShared();
+    // getTask2Type();
+    // getTask3Type();
   }
 
   @override
@@ -105,16 +144,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   height: 5,
                 ),
                 _buildUserButtons(user),
-                Divider(
-                  thickness: 2,
-                ),
                 SizedBox(
-                  height: 5,
+                  height: 20,
                 ),
                 _buildContent(),
                 Spacer(),
                 Container(
-                  decoration: BoxDecoration(color: LightColors.kLightGreen),
+                  decoration: BoxDecoration(color: LightColors.kGreen),
                   height: 75,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15),
@@ -130,6 +166,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               child: Icon(
                                 FontAwesomeIcons.heart,
                                 size: 20,
+                                color: Colors.white70,
                               )),
                         ),
                         GestureDetector(
@@ -148,6 +185,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 child: Icon(
                                   FontAwesomeIcons.shareAlt,
                                   size: 20,
+                                  color: Colors.white70,
                                 )),
                           ),
                         ),
@@ -172,6 +210,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               icon: Icon(
                                 FontAwesomeIcons.commentAlt,
                                 size: 20,
+                                color: Colors.white70,
                               ),
                             ),
                           ),
@@ -198,37 +237,44 @@ class _DetailsScreenState extends State<DetailsScreen> {
           image: NetworkImage(widget.postImage),
         ),
       ),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 35.0),
-            child: Container(
-              height: 165,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, top: 15),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 35.0),
+              child: Container(
+                height: 165,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 15),
+                  child: Align(
+                    alignment: Alignment.topLeft,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(25)),
                       child: Container(
-                        color: Colors.white,
-                        height: 40,
-                        width: 40,
-                        child: Icon(
-                          FontAwesomeIcons.arrowLeft,
-                        ),
-                      ),
+                          color: LightColors.kLightYellow,
+                          height: 40,
+                          width: 40,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Icon(
+                                FontAwesomeIcons.chevronLeft,
+                                size: 25,
+                                color: LightColors.kDarkBlue,
+                              ),
+                            ),
+                          )),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ));
   }
@@ -346,7 +392,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           setParticipate(),
                           showAchievementView(context),
                         },
-                        color: Colors.pinkAccent,
+                        color: LightColors.kGreen,
                         padding: EdgeInsets.all(10.0),
                         child: Text(
                           'Участвовать',
@@ -368,61 +414,106 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   Widget _buildContent() {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return Container(
       child: Padding(
         padding: const EdgeInsets.only(left: 0.0, right: 15),
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: LightColors.kLightYellow2,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50))),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TaskColumn(
-                    icon: FontAwesomeIcons.clock,
-                    iconBackgroundColor: LightColors.kRed,
-                    title: 'Зачада 1',
-                    subtitle: 'Вы можете сделать это таким то образом'),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: LightColors.kPalePink,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50))),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TaskColumn(
-                  icon: Icons.alarm,
-                  iconBackgroundColor: LightColors.kRed,
-                  title: 'Задача 2',
-                  subtitle: 'Вы можете сделать это таким то образом',
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TaskList(
+                            userId: widget.userId,
+                            docId: widget.docId,
+                            task1type: task1Type,
+                            task2type: task2Type,
+                            task3type: task3Type,
+                            shares: shares,
+                            shares2: shares2,
+                            shares3: shares3,
+                            dates: widget.date,
+                            task1: widget.task1,
+                            task2: widget.task2,
+                            task3: widget.task3,
+                            currentUser: widget.currentUser,
+                            docRef: widget.docRef,
+                          )),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: LightColors.kPalePink,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        bottomRight: Radius.circular(50))),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TaskColumn(
+                      icon: FontAwesomeIcons.tasks,
+                      iconBackgroundColor: LightColors.kGreen,
+                      title: 'Список задач',
+                      subtitle: 'Нажмите сюда чтобы узнать про задания!'),
                 ),
               ),
             ),
             SizedBox(
               height: 10,
             ),
-            Container(
-              decoration: BoxDecoration(
-                  color: LightColors.kLavender,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50))),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TaskColumn(
-                  icon: Icons.alarm,
-                  iconBackgroundColor: LightColors.kRed,
-                  title: 'Задача 3',
-                  subtitle: 'Вы можете сделать это таким то образом',
+            GestureDetector(
+              onTap: () {
+                popup.show(
+                  title: 'Инфо по конкурсу',
+                  content: widget.postDesc,
+                  barrierDismissible: true,
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: LightColors.kDarkYellow,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        bottomRight: Radius.circular(50))),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TaskColumn(
+                    icon: FontAwesomeIcons.question,
+                    iconBackgroundColor: LightColors.kDarkBlue,
+                    title: 'Описание',
+                    subtitle: 'Информация по конкурсу!',
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => PrizeWidget(
+                              postImage: widget.prize,
+                            )));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: LightColors.kLightGreen,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        bottomRight: Radius.circular(50))),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TaskColumn(
+                    icon: FontAwesomeIcons.gift,
+                    iconBackgroundColor: LightColors.kRed,
+                    title: 'Приз',
+                    subtitle: 'Информация о призе!',
+                  ),
                 ),
               ),
             ),

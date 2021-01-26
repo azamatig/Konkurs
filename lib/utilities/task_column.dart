@@ -38,6 +38,8 @@ class TaskColumn extends StatelessWidget {
             ),
             Text(
               subtitle,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
               style: TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,

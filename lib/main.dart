@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/LoginScreen.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
-import 'package:konkurs_app/screens/feed_screen.dart';
 import 'package:konkurs_app/screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       builder: (context) => UserData(),
       child: MaterialApp(
-        title: 'Konkurs App',
+        title: 'GivrApp',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
@@ -50,7 +49,7 @@ class MyApp extends StatelessWidget {
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           SignupScreen.id: (context) => SignupScreen(),
-          FeedScreen.id: (context) => HomeScreen1(),
+          HomeScreen1.id: (context) => HomeScreen1(),
         },
       ),
     );

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -97,7 +96,7 @@ class _HomeScreen1State extends State<HomeScreen1>
     return Scaffold(
       body: GestureDetector(
         onTap: () {
-          if(SimpleAccountMenu.isMenuOpen) {
+          if (SimpleAccountMenu.isMenuOpen) {
             SimpleAccountMenu.overlayEntry.remove();
             SimpleAccountMenu.animationController.reverse();
             SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
@@ -126,10 +125,11 @@ class _HomeScreen1State extends State<HomeScreen1>
                           ),
                           GestureDetector(
                             onTap: () {
-                              if(SimpleAccountMenu.isMenuOpen) {
+                              if (SimpleAccountMenu.isMenuOpen) {
                                 SimpleAccountMenu.overlayEntry.remove();
                                 SimpleAccountMenu.animationController.reverse();
-                                SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
+                                SimpleAccountMenu.isMenuOpen =
+                                    !SimpleAccountMenu.isMenuOpen;
                               }
                               AuthService.logout();
                             },
@@ -172,10 +172,12 @@ class _HomeScreen1State extends State<HomeScreen1>
                                 switch (index) {
                                   case 0:
                                     {
-                                      if(SimpleAccountMenu.isMenuOpen) {
+                                      if (SimpleAccountMenu.isMenuOpen) {
                                         SimpleAccountMenu.overlayEntry.remove();
-                                        SimpleAccountMenu.animationController.reverse();
-                                        SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
+                                        SimpleAccountMenu.animationController
+                                            .reverse();
+                                        SimpleAccountMenu.isMenuOpen =
+                                            !SimpleAccountMenu.isMenuOpen;
                                       }
                                       Navigator.push(
                                           context,
@@ -234,10 +236,11 @@ class _HomeScreen1State extends State<HomeScreen1>
                           Spacer(),
                           GestureDetector(
                             onTap: () {
-                              if(SimpleAccountMenu.isMenuOpen) {
+                              if (SimpleAccountMenu.isMenuOpen) {
                                 SimpleAccountMenu.overlayEntry.remove();
                                 SimpleAccountMenu.animationController.reverse();
-                                SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
+                                SimpleAccountMenu.isMenuOpen =
+                                    !SimpleAccountMenu.isMenuOpen;
                               }
                               Navigator.push(
                                 context,
@@ -518,7 +521,7 @@ class EventTile extends StatelessWidget {
         switch (eventType) {
           case "Все конкурсы":
             {
-              if(SimpleAccountMenu.isMenuOpen) {
+              if (SimpleAccountMenu.isMenuOpen) {
                 SimpleAccountMenu.overlayEntry.remove();
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
@@ -529,7 +532,7 @@ class EventTile extends StatelessWidget {
             break;
           case "Мои конкурсы":
             {
-              if(SimpleAccountMenu.isMenuOpen) {
+              if (SimpleAccountMenu.isMenuOpen) {
                 SimpleAccountMenu.overlayEntry.remove();
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
@@ -540,7 +543,7 @@ class EventTile extends StatelessWidget {
             break;
           case "Завершенные":
             {
-              if(SimpleAccountMenu.isMenuOpen) {
+              if (SimpleAccountMenu.isMenuOpen) {
                 SimpleAccountMenu.overlayEntry.remove();
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
@@ -593,7 +596,7 @@ class PopularEventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if(SimpleAccountMenu.isMenuOpen) {
+        if (SimpleAccountMenu.isMenuOpen) {
           SimpleAccountMenu.overlayEntry.remove();
           SimpleAccountMenu.animationController.reverse();
           SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
