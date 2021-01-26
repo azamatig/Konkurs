@@ -31,7 +31,7 @@ class DetailsScreen extends StatefulWidget {
   final bool isFinished;
   final DocumentReference docRef;
   final User currentUser, user;
-  final int likesCount;
+  int likesCount;
 
   DetailsScreen({
     this.userId,
@@ -168,6 +168,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           GestureDetector(
+                            onTap: () async {
+                              var response = await FlutterShareMe()
+                                  .shareToSystem(
+                                      msg: 'ссылка на приложение будет здесь');
+                              if (response == 'success') {
+                                print('navigate success');
+                              }
+                            },
+                            child: Container(
+                                width: 40,
+                                height: 50,
+                                child: Icon(
+                                  FontAwesomeIcons.shareAlt,
+                                  size: 20,
+                                )),
+                          ),
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 postIsLiked = !postIsLiked;
@@ -180,9 +197,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   'userUid': widget.userId,
                                 });
                                 var doc =
-                                    db.collection('post').doc(widget.docId);
+                                db.collection('post').doc(widget.docId);
                                 doc.update(
                                     {'likesCount': FieldValue.increment(1)});
+                                setState(() {
+                                  widget.likesCount++;
+                                });
                               } else {
                                 db
                                     .collection('post/${widget.docId}/likes')
@@ -190,45 +210,55 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     .delete();
 
                                 var doc =
-                                    db.collection('post').doc(widget.docId);
+                                db.collection('post').doc(widget.docId);
                                 doc.update(
                                     {'likesCount': FieldValue.increment(-1)});
+                                setState(() {
+                                  widget.likesCount--;
+                                });
                               }
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Container(
-                                  width: 40,
-                                  height: 20,
-                                  child: Icon(
-                                    postIsLiked
-                                        ? FontAwesomeIcons.solidHeart
-                                        : FontAwesomeIcons.heart,
-                                    size: 20,
-                                    color:
-                                        postIsLiked ? Colors.pinkAccent : null,
-                                  )),
-                            ),
+                            child: Container(
+                                width: 40,
+                                height: 20,
+                                child: Icon(
+                                  postIsLiked
+                                      ? FontAwesomeIcons.solidHeart
+                                      : FontAwesomeIcons.heart,
+                                  size: 20,
+                                  color:
+                                  postIsLiked ? Colors.pinkAccent : null,
+                                )),
                           ),
-                          GestureDetector(
-                            onTap: () async {
-                              var response = await FlutterShareMe()
-                                  .shareToSystem(
-                                      msg: 'ссылка на приложение будет здесь');
-                              if (response == 'success') {
-                                print('navigate success');
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Container(
-                                  width: 40,
-                                  height: 50,
-                                  child: Icon(
-                                    FontAwesomeIcons.shareAlt,
-                                    size: 20,
-                                  )),
-                            ),
+                          SizedBox(width: 10,),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Понравилоcь: "),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              postIsLiked
+                                  ? Row(
+                                children: [
+                                  Text('Вам '),
+                                  CircleAvatar(
+                                    radius: 10,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      user.profileImageUrl,
+                                    ),
+                                  ),
+                                  Text(" и " +
+                                      (widget.likesCount - 1).toString() +
+                                      " людям")
+                                ],
+                              )
+                                  : Text(
+                                widget.likesCount.toString() + " людям",
+                                style: TextStyle(fontSize: 15),
+                              )
+                            ],
                           ),
                           Spacer(),
                           Padding(
@@ -447,48 +477,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ],
                 ),
               ),
-            ],
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Понравилоcь: "),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    postIsLiked
-                        ? Row(
-                            children: [
-                              Text('Вам '),
-                              CircleAvatar(
-                                radius: 10,
-                                backgroundImage: CachedNetworkImageProvider(
-                                  user.profileImageUrl,
-                                ),
-                              ),
-                              Text(" и " +
-                                  (widget.likesCount - 1).toString() +
-                                  " людям")
-                            ],
-                          )
-                        : Text(
-                      widget.likesCount.toString() + " людям",
-                            style: TextStyle(fontSize: 15),
-                          )
-                  ],
-                ),
-              ),
-              //Spacer(),
             ],
           ),
         ],
