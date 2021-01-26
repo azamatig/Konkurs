@@ -141,156 +141,176 @@ class _DetailsScreenState extends State<DetailsScreen> {
             }
             User user = User.fromDoc(snapshot.data);
             return SingleChildScrollView(
-              child: Flex(
-                direction: Axis.vertical,
-                children: [
-                  _postImage(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  _buildUserButtons(user),
-                  Divider(
-                    thickness: 2,
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  _buildContent(),
-                  Container(
-                    decoration: BoxDecoration(color: LightColors.kGreen),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () async {
-                              var response = await FlutterShareMe()
-                                  .shareToSystem(
-                                      msg: 'ссылка на приложение будет здесь');
-                              if (response == 'success') {
-                                print('navigate success');
-                              }
-                            },
-                            child: Container(
-                                width: 40,
-                                height: 50,
-                                child: Icon(
-                                  FontAwesomeIcons.shareAlt,
-                                  size: 20,
-                                )),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                postIsLiked = !postIsLiked;
-                              });
-                              if (postIsLiked) {
-                                db
-                                    .collection('post/${widget.docId}/likes')
-                                    .doc(widget.userId)
-                                    .set({
-                                  'userUid': widget.userId,
-                                });
-                                var doc =
-                                    db.collection('post').doc(widget.docId);
-                                doc.update(
-                                    {'likesCount': FieldValue.increment(1)});
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height),
+                child: Column(
+                  children: [
+                    _postImage(),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    _buildUserButtons(user),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    _buildContent(),
+                    Spacer(),
+                    Container(
+                      height: 75,
+                      decoration: BoxDecoration(color: LightColors.kGreen),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () async {
+                                var response = await FlutterShareMe()
+                                    .shareToSystem(
+                                        msg:
+                                            'ссылка на приложение будет здесь');
+                                if (response == 'success') {
+                                  print('navigate success');
+                                }
+                              },
+                              child: Container(
+                                  width: 40,
+                                  height: 50,
+                                  child: Icon(
+                                    FontAwesomeIcons.shareAlt,
+                                    size: 20,
+                                    color: LightColors.kLightYellow2,
+                                  )),
+                            ),
+                            GestureDetector(
+                              onTap: () {
                                 setState(() {
-                                  widget.likesCount++;
+                                  postIsLiked = !postIsLiked;
                                 });
-                              } else {
-                                db
-                                    .collection('post/${widget.docId}/likes')
-                                    .doc(widget.userId)
-                                    .delete();
+                                if (postIsLiked) {
+                                  db
+                                      .collection('post/${widget.docId}/likes')
+                                      .doc(widget.userId)
+                                      .set({
+                                    'userUid': widget.userId,
+                                  });
+                                  var doc =
+                                      db.collection('post').doc(widget.docId);
+                                  doc.update(
+                                      {'likesCount': FieldValue.increment(1)});
+                                  setState(() {
+                                    widget.likesCount++;
+                                  });
+                                } else {
+                                  db
+                                      .collection('post/${widget.docId}/likes')
+                                      .doc(widget.userId)
+                                      .delete();
 
-                                var doc =
-                                    db.collection('post').doc(widget.docId);
-                                doc.update(
-                                    {'likesCount': FieldValue.increment(-1)});
-                                setState(() {
-                                  widget.likesCount--;
-                                });
-                              }
-                            },
-                            child: Container(
+                                  var doc =
+                                      db.collection('post').doc(widget.docId);
+                                  doc.update(
+                                      {'likesCount': FieldValue.increment(-1)});
+                                  setState(() {
+                                    widget.likesCount--;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                  width: 40,
+                                  height: 20,
+                                  child: Icon(
+                                    postIsLiked
+                                        ? FontAwesomeIcons.solidHeart
+                                        : FontAwesomeIcons.heart,
+                                    size: 20,
+                                    color: postIsLiked
+                                        ? Colors.pinkAccent
+                                        : LightColors.kLightYellow2,
+                                  )),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Понравилоcь: ",
+                                  style: TextStyle(
+                                    color: LightColors.kLightYellow2,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                postIsLiked
+                                    ? Row(
+                                        children: [
+                                          Text('Вам '),
+                                          CircleAvatar(
+                                            radius: 10,
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                              user.profileImageUrl,
+                                            ),
+                                          ),
+                                          Text(
+                                            " и " +
+                                                (widget.likesCount - 1)
+                                                    .toString() +
+                                                " людям",
+                                            style: TextStyle(
+                                              color: LightColors.kLightYellow2,
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : Text(
+                                        widget.likesCount.toString() + " людям",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: LightColors.kLightYellow2,
+                                        ),
+                                      )
+                              ],
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 20.0, right: 20),
+                              child: Container(
                                 width: 40,
                                 height: 20,
-                                child: Icon(
-                                  postIsLiked
-                                      ? FontAwesomeIcons.solidHeart
-                                      : FontAwesomeIcons.heart,
-                                  size: 20,
-                                  color: postIsLiked ? Colors.pinkAccent : null,
-                                )),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Понравилоcь: "),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              postIsLiked
-                                  ? Row(
-                                      children: [
-                                        Text('Вам '),
-                                        CircleAvatar(
-                                          radius: 10,
-                                          backgroundImage:
-                                              CachedNetworkImageProvider(
-                                            user.profileImageUrl,
-                                          ),
-                                        ),
-                                        Text(" и " +
-                                            (widget.likesCount - 1).toString() +
-                                            " людям")
-                                      ],
-                                    )
-                                  : Text(
-                                      widget.likesCount.toString() + " людям",
-                                      style: TextStyle(fontSize: 15),
-                                    )
-                            ],
-                          ),
-                          Spacer(),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 20.0, right: 20),
-                            child: Container(
-                              width: 40,
-                              height: 20,
-                              child: IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => CommentsScreen(
-                                                userId: widget.userId,
-                                                documentReference:
-                                                    widget.docRef,
-                                                user: widget.currentUser,
-                                              )));
-                                },
-                                icon: Icon(
-                                  FontAwesomeIcons.commentAlt,
-                                  size: 20,
-                                  color: LightColors.kLightYellow,
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => CommentsScreen(
+                                                  userId: widget.userId,
+                                                  documentReference:
+                                                      widget.docRef,
+                                                  user: widget.currentUser,
+                                                )));
+                                  },
+                                  icon: Icon(
+                                    FontAwesomeIcons.commentAlt,
+                                    size: 20,
+                                    color: LightColors.kLightYellow2,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }),
@@ -468,7 +488,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         child: Text(
                           'Участвовать',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: LightColors.kLightYellow,
                             fontSize: 18.0,
                           ),
                         ),
