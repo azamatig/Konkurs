@@ -188,22 +188,25 @@ class _TaskListState extends State<TaskList> {
                               _dashedText(),
                               GestureDetector(
                                 onTap: () {
-                                  if (widget.task1type == 'comment') {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => CommentsScreen(
-                                                  userId: widget.userId,
-                                                  documentReference:
-                                                      widget.docRef,
-                                                  user: widget.currentUser,
-                                                )));
-                                  } else {
-                                    sharing(widget.task1type);
-                                  }
                                   if (widget.shares.contains(widget.userId)) {
                                   } else {
-                                    setShared();
+                                    if (widget.task1type == 'comment') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => CommentsScreen(
+                                                    userId: widget.userId,
+                                                    documentReference:
+                                                        widget.docRef,
+                                                    user: widget.currentUser,
+                                                  )));
+                                    } else {
+                                      sharing(widget.task1type);
+                                    }
+                                    if (widget.shares.contains(widget.userId)) {
+                                    } else {
+                                      setShared();
+                                    }
                                   }
                                 },
                                 child: TaskContainer(
@@ -222,22 +225,26 @@ class _TaskListState extends State<TaskList> {
                               _dashedText(),
                               GestureDetector(
                                 onTap: () {
-                                  if (widget.task2type == 'comment') {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => CommentsScreen(
-                                                  userId: widget.userId,
-                                                  documentReference:
-                                                      widget.docRef,
-                                                  user: widget.currentUser,
-                                                )));
-                                  } else {
-                                    sharing(widget.task2type);
-                                  }
                                   if (widget.shares2.contains(widget.userId)) {
                                   } else {
-                                    setShared2();
+                                    if (widget.task2type == 'comment') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => CommentsScreen(
+                                                    userId: widget.userId,
+                                                    documentReference:
+                                                        widget.docRef,
+                                                    user: widget.currentUser,
+                                                  )));
+                                    } else {
+                                      sharing(widget.task2type);
+                                    }
+                                    if (widget.shares2
+                                        .contains(widget.userId)) {
+                                    } else {
+                                      setShared2();
+                                    }
                                   }
                                 },
                                 child: TaskContainer(
@@ -256,22 +263,26 @@ class _TaskListState extends State<TaskList> {
                               _dashedText(),
                               GestureDetector(
                                 onTap: () {
-                                  if (widget.task3type == 'comment') {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => CommentsScreen(
-                                                  userId: widget.userId,
-                                                  documentReference:
-                                                      widget.docRef,
-                                                  user: widget.currentUser,
-                                                )));
-                                  } else {
-                                    sharing(widget.task3type);
-                                  }
                                   if (widget.shares3.contains(widget.userId)) {
                                   } else {
-                                    setShared3();
+                                    if (widget.task3type == 'comment') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => CommentsScreen(
+                                                    userId: widget.userId,
+                                                    documentReference:
+                                                        widget.docRef,
+                                                    user: widget.currentUser,
+                                                  )));
+                                    } else {
+                                      sharing(widget.task3type);
+                                    }
+                                    if (widget.shares3
+                                        .contains(widget.userId)) {
+                                    } else {
+                                      setShared3();
+                                    }
                                   }
                                 },
                                 child: TaskContainer(

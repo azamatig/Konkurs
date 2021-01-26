@@ -7,10 +7,11 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/alert_dialog_screen.dart';
-import 'package:konkurs_app/screens/home.dart';
-import 'package:konkurs_app/utilities/active_card.dart';
+import 'package:konkurs_app/screens/tasks_list.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/prize_widget.dart';
 import 'package:konkurs_app/utilities/task_column.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 
 import 'AchievementView.dart';
 import 'comments_screen.dart';
@@ -58,8 +59,14 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   final db = FirebaseFirestore.instance;
   List<dynamic> participants;
-  Dialogs dialogs = new Dialogs();
+  Dialogs dialogs = Dialogs();
   bool postIsLiked = false;
+  String task1Type;
+  String task2Type;
+  String task3Type;
+  List<dynamic> shares;
+  List<dynamic> shares2;
+  List<dynamic> shares3;
 
   getParticipants() async {
     DocumentSnapshot document =
@@ -68,16 +75,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   ifPostIsLiked(String docId) async {
-      try {
-        var collectionRef = db.collection('post/${widget.docId}/likes');
+    try {
+      var collectionRef = db.collection('post/${widget.docId}/likes');
 
-        var doc = await collectionRef.doc(docId).get();
-        setState(() {
-          postIsLiked = doc.exists;
-        });
-      } catch (e) {
-        throw e;
-      }
+      var doc = await collectionRef.doc(docId).get();
+      setState(() {
+        postIsLiked = doc.exists;
+      });
+    } catch (e) {
+      throw e;
+    }
   }
 
   void setParticipate() {
@@ -88,19 +95,36 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .update({'people': FieldValue.arrayUnion(list)});
   }
 
-  void setShared() {
-    db.collection('post').doc(widget.docId).update({'shared': true});
+  void getTask1Type() async {
+    DocumentSnapshot document =
+        await db.collection('post').doc(widget.docId).get();
+    task1Type = document['task1Type'];
+    task2Type = document['task2Type'];
+    task3Type = document['task3Type'];
+  }
+
+  void setShared() async {
+    await db.collection('post').doc(widget.docId).update({'shared': true});
+  }
+
+  getShared() async {
+    DocumentSnapshot document =
+        await db.collection('post').doc(widget.docId).get();
+    shares = document['task1TypeShared'];
+    shares2 = document['task2TypeShared'];
+    shares3 = document['task3TypeShared'];
   }
 
   @override
   void initState() {
     super.initState();
+    final templates = [
+      TemplateBlueRocket,
+    ];
     getParticipants();
-    ifPostIsLiked(userId);
-  }
-
-  Widget _details() {
-    return Container();
+    ifPostIsLiked(widget.userId);
+    getTask1Type();
+    getShared();
   }
 
   @override
@@ -148,29 +172,28 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               setState(() {
                                 postIsLiked = !postIsLiked;
                               });
-                                if(postIsLiked) {
-                                  db.collection('post/${widget.docId}/likes')
-                                      .doc(userId)
-                                      .set({
-                                    'userUid': userId,
-                                  });
-                                  var doc = db.collection('post')
-                                      .doc(widget.docId);
-                                  doc.update({
-                                    'likesCount': FieldValue.increment(1)
-                                  });
-                                }
-                                else {
-                                  db.collection('post/${widget.docId}/likes')
-                                      .doc(userId)
-                                      .delete();
+                              if (postIsLiked) {
+                                db
+                                    .collection('post/${widget.docId}/likes')
+                                    .doc(widget.userId)
+                                    .set({
+                                  'userUid': widget.userId,
+                                });
+                                var doc =
+                                    db.collection('post').doc(widget.docId);
+                                doc.update(
+                                    {'likesCount': FieldValue.increment(1)});
+                              } else {
+                                db
+                                    .collection('post/${widget.docId}/likes')
+                                    .doc(widget.userId)
+                                    .delete();
 
-                                  var doc = db.collection('post')
-                                      .doc(widget.docId);
-                                  doc.update({
-                                    'likesCount': FieldValue.increment(-1)
-                                  });
-                                }
+                                var doc =
+                                    db.collection('post').doc(widget.docId);
+                                doc.update(
+                                    {'likesCount': FieldValue.increment(-1)});
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
@@ -182,14 +205,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         ? FontAwesomeIcons.solidHeart
                                         : FontAwesomeIcons.heart,
                                     size: 20,
-                                    color: postIsLiked ? Colors.pinkAccent : null,
+                                    color:
+                                        postIsLiked ? Colors.pinkAccent : null,
                                   )),
                             ),
                           ),
                           GestureDetector(
                             onTap: () async {
-                              var response = await FlutterShareMe().shareToSystem(
-                                  msg: 'ссылка на приложение будет здесь');
+                              var response = await FlutterShareMe()
+                                  .shareToSystem(
+                                      msg: 'ссылка на приложение будет здесь');
                               if (response == 'success') {
                                 print('navigate success');
                               }
@@ -219,7 +244,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       MaterialPageRoute(
                                           builder: (_) => CommentsScreen(
                                                 userId: widget.userId,
-                                                documentReference: widget.docRef,
+                                                documentReference:
+                                                    widget.docRef,
                                                 user: widget.currentUser,
                                               )));
                                 },
@@ -269,13 +295,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(25)),
                       child: Container(
-                        color: Colors.white,
-                        height: 40,
-                        width: 40,
-                        child: Icon(
-                          FontAwesomeIcons.arrowLeft,
-                        ),
-                      ),
+                          color: LightColors.kLightYellow,
+                          height: 40,
+                          width: 40,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Icon(
+                                FontAwesomeIcons.chevronLeft,
+                                size: 25,
+                                color: LightColors.kDarkBlue,
+                              ),
+                            ),
+                          )),
                     ),
                   ),
                 ),
@@ -400,7 +433,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           setParticipate(),
                           showAchievementView(context),
                         },
-                        color: Colors.pinkAccent,
+                        color: LightColors.kGreen,
                         padding: EdgeInsets.all(10.0),
                         child: Text(
                           'Участвовать',
@@ -443,10 +476,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   user.profileImageUrl,
                                 ),
                               ),
-                              Text(" и " + (widget.likesCount - 1).toString() + " людям")
+                              Text(" и " +
+                                  (widget.likesCount - 1).toString() +
+                                  " людям")
                             ],
                           )
                         : Text(
+                            (widget.likesCount - 1).toString() + " людям",
                       widget.likesCount.toString() + " людям",
                             style: TextStyle(fontSize: 15),
                           )
@@ -462,61 +498,106 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   Widget _buildContent() {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return Container(
       child: Padding(
         padding: const EdgeInsets.only(left: 0.0, right: 15),
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: LightColors.kLightYellow2,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50))),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TaskColumn(
-                    icon: FontAwesomeIcons.clock,
-                    iconBackgroundColor: LightColors.kRed,
-                    title: 'Зачада 1',
-                    subtitle: 'Вы можете сделать это таким то образом'),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: LightColors.kPalePink,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50))),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TaskColumn(
-                  icon: Icons.alarm,
-                  iconBackgroundColor: LightColors.kRed,
-                  title: 'Задача 2',
-                  subtitle: 'Вы можете сделать это таким то образом',
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TaskList(
+                            userId: widget.userId,
+                            docId: widget.docId,
+                            task1type: task1Type,
+                            task2type: task2Type,
+                            task3type: task3Type,
+                            shares: shares,
+                            shares2: shares2,
+                            shares3: shares3,
+                            dates: widget.date,
+                            task1: widget.task1,
+                            task2: widget.task2,
+                            task3: widget.task3,
+                            currentUser: widget.currentUser,
+                            docRef: widget.docRef,
+                          )),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: LightColors.kPalePink,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        bottomRight: Radius.circular(50))),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TaskColumn(
+                      icon: FontAwesomeIcons.tasks,
+                      iconBackgroundColor: LightColors.kGreen,
+                      title: 'Список задач',
+                      subtitle: 'Нажмите сюда чтобы узнать про задания!'),
                 ),
               ),
             ),
             SizedBox(
               height: 10,
             ),
-            Container(
-              decoration: BoxDecoration(
-                  color: LightColors.kLavender,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      bottomRight: Radius.circular(50))),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TaskColumn(
-                  icon: Icons.alarm,
-                  iconBackgroundColor: LightColors.kRed,
-                  title: 'Задача 3',
-                  subtitle: 'Вы можете сделать это таким то образом',
+            GestureDetector(
+              onTap: () {
+                popup.show(
+                  title: 'Инфо по конкурсу',
+                  content: widget.postDesc,
+                  barrierDismissible: true,
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: LightColors.kDarkYellow,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        bottomRight: Radius.circular(50))),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TaskColumn(
+                    icon: FontAwesomeIcons.question,
+                    iconBackgroundColor: LightColors.kDarkBlue,
+                    title: 'Описание',
+                    subtitle: 'Информация по конкурсу!',
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => PrizeWidget(
+                              postImage: widget.prize,
+                            )));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: LightColors.kLightGreen,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        bottomRight: Radius.circular(50))),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: TaskColumn(
+                    icon: FontAwesomeIcons.gift,
+                    iconBackgroundColor: LightColors.kRed,
+                    title: 'Приз',
+                    subtitle: 'Информация о призе!',
+                  ),
                 ),
               ),
             ),
