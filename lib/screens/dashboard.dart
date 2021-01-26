@@ -10,6 +10,7 @@ import 'my_wins.dart';
 
 class DashBoardPage extends StatefulWidget {
   final userId;
+
   DashBoardPage(this.userId);
 
   @override
@@ -236,9 +237,14 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                       ),
                                     ]),
                                     TableRow(children: [
-                                      _actionList(
-                                          'assets/images/ic_transact.png',
-                                          'Настройки'),
+                                      GestureDetector(
+                                        child: _actionList(
+                                            'assets/images/ic_transact.png',
+                                            'Настройки'),
+                                        onTap: (){
+
+                                        },
+                                      ),
                                       _actionList('assets/images/ic_reward.png',
                                           'Задания'),
                                     ])

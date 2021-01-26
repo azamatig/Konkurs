@@ -447,7 +447,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             ],
                           )
                         : Text(
-                      (widget.likesCount - 1).toString() + " людям",
+                      widget.likesCount.toString() + " людям",
                             style: TextStyle(fontSize: 15),
                           )
                   ],
