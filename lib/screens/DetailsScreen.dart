@@ -141,7 +141,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
             }
             User user = User.fromDoc(snapshot.data);
             return SingleChildScrollView(
-              child: Column(
+              child: Flex(
+                direction: Axis.vertical,
                 children: [
                   _postImage(),
                   SizedBox(
@@ -155,12 +156,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     height: 25,
                   ),
                   _buildContent(),
-                  SizedBox(
-                    height: 25,
-                  ),
                   Container(
-                    decoration: BoxDecoration(color: LightColors.kLightGreen),
-                    height: 75,
+                    decoration: BoxDecoration(color: LightColors.kGreen),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15.0, right: 15),
                       child: Row(
@@ -205,8 +202,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         ? FontAwesomeIcons.solidHeart
                                         : FontAwesomeIcons.heart,
                                     size: 20,
-                                    color:
-                                        postIsLiked ? Colors.pinkAccent : null,
+                                    color: postIsLiked
+                                        ? LightColors.kRed
+                                        : LightColors.kLightYellow,
                                   )),
                             ),
                           ),
@@ -227,6 +225,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   child: Icon(
                                     FontAwesomeIcons.shareAlt,
                                     size: 20,
+                                    color: LightColors.kLightYellow,
                                   )),
                             ),
                           ),
@@ -252,6 +251,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 icon: Icon(
                                   FontAwesomeIcons.commentAlt,
                                   size: 20,
+                                  color: LightColors.kLightYellow,
                                 ),
                               ),
                             ),
