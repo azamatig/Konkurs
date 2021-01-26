@@ -690,6 +690,7 @@ class PopularEventTile extends StatelessWidget {
                       postName: doc.data()['name'],
                       postDesc: doc.data()['description'],
                       isFinished: doc.data()['isFinished'],
+                  likesCount: doc.data()['likesCount'],
                     )));
       },
       child: Container(
