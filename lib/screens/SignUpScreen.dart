@@ -11,13 +11,13 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _name, _email, _password;
+  String _phone, _name, _email, _password;
 
   _submit() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       // Logging in the user w/ Firebase
-      AuthService.signUpUser(context, _name, _email, _password);
+      AuthService.signUpUser(context, _phone, _name, _email, _password);
     }
   }
 
@@ -86,6 +86,30 @@ class _SignupScreenState extends State<SignupScreen> {
                             validator: (input) =>
                                 input.trim().isEmpty ? 'Введите имя' : null,
                             onSaved: (input) => _name = input,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 10.0,
+                          ),
+                          child: TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                labelText: 'Телефон',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                border: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white))),
+                            validator: (input) =>
+                                input.trim().isEmpty ? 'Телефон' : null,
+                            onSaved: (input) => _phone = input,
                           ),
                         ),
                         Padding(

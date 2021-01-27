@@ -71,7 +71,9 @@ class _TaskProfileListState extends State<TaskProfileList> {
     DocumentSnapshot document = await db.collection('post').doc(id).get();
     shares = document['task1TypeShared'];
     shares2 = document['task2TypeShared'];
+    print(shares2);
     shares3 = document['task3TypeShared'];
+    print(shares3);
   }
 
   @override
@@ -95,43 +97,50 @@ class _TaskProfileListState extends State<TaskProfileList> {
                 if (!snapshot.hasData) {
                   return CircularProgressIndicator();
                 }
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15.0, top: 15, bottom: 15),
-                      child: MyBackButton(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Задания',
-                            style: TextStyle(
-                                fontSize: 30.0, fontWeight: FontWeight.w700),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Ваши действующие задания',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height),
+                    child: Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15.0, top: 15, bottom: 15),
+                        child: MyBackButton(),
                       ),
-                    ),
-                    Column(
-                        children: snapshot.data.docs
-                            .map((doc) => _buildList(doc))
-                            .toList()),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 15.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Задания',
+                              style: TextStyle(
+                                  fontSize: 30.0, fontWeight: FontWeight.w700),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'Ваши действующие задания',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: ((context, index) =>
+                              _buildList(snapshot.data.docs[index])),
+                        ),
+                      )
+                    ]),
+                  ),
                 );
               }),
         ],

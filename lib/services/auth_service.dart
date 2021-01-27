@@ -8,8 +8,8 @@ class AuthService {
   static final _auth = FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
 
-  static void signUpUser(
-      BuildContext context, String name, String email, String password) async {
+  static void signUpUser(BuildContext context, String phone, String name,
+      String email, String password) async {
     var placeholder =
         'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
     try {
@@ -24,11 +24,22 @@ class AuthService {
           'email': email,
           'id': signedInUser.uid,
           'profileImageUrl': placeholder,
-          'phone': '',
+          'phone': phone,
           'insta': '@',
-          'bio': 'Напишите о себе',
-          'age': 'Возраст',
-          'location': 'Местонахождение'
+          'location': 'Местонахождение',
+          'points': 0,
+        });
+        _firestore
+            .collection('/users')
+            .doc(signedInUser.uid)
+            .collection('notifications')
+            .doc()
+            .set({
+          'is_Unread': true,
+          'message': 'Добро пожаловать в приложени GIVEAPP, ',
+          'title': 'Добро пожаловать, $name!',
+          'ts': FieldValue.serverTimestamp(),
+          'type': 1,
         });
         Provider.of<UserData>(context).currentUserId = signedInUser.uid;
         Navigator.pop(context);

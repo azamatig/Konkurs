@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/services/storage_service.dart';
+import 'package:konkurs_app/utilities/constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -25,7 +25,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _phone = '';
   String _location = '';
   bool _isLoading = false;
-  bool _isChecked = false;
 
   @override
   void initState() {
@@ -103,13 +102,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xff102733),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xff102733),
         title: Text(
           'Редактировать профиль',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: LightColors.kLightYellow),
         ),
+        centerTitle: true,
+        iconTheme: IconThemeData(
+          color: LightColors.kLightYellow, //change your color here
+        ),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: GestureDetector(
@@ -137,20 +141,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Text(
                         'Загрузить фото профиля',
                         style: TextStyle(
-                            color: Theme.of(context).accentColor,
-                            fontSize: 16.0),
+                            color: LightColors.kLightYellow, fontSize: 16.0),
                       ),
                     ),
                     TextFormField(
                       initialValue: _name,
-                      style: TextStyle(fontSize: 18.0),
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.person,
-                          size: 30.0,
-                        ),
-                        labelText: 'ФИО',
-                      ),
+                          icon: Icon(
+                            Icons.person,
+                            size: 30.0,
+                            color: LightColors.kLightYellow,
+                          ),
+                          labelText: 'ФИО',
+                          labelStyle: TextStyle(color: Colors.white),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white))),
                       validator: (input) => input.trim().length < 1
                           ? 'Пожалуйста введите действительное ФИО'
                           : null,
@@ -158,14 +170,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     TextFormField(
                       initialValue: _insta,
-                      style: TextStyle(fontSize: 18.0),
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.book,
-                          size: 30.0,
-                        ),
-                        labelText: 'Ваш логин в instagram',
-                      ),
+                          icon: Icon(
+                            Icons.book,
+                            size: 30.0,
+                            color: LightColors.kLightYellow,
+                          ),
+                          labelText: 'Ваш логин в instagram',
+                          labelStyle: TextStyle(color: Colors.white),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white))),
                       validator: (input) => input.trim().length > 150
                           ? 'Не больше 150 символов'
                           : null,
@@ -173,28 +194,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     TextFormField(
                       initialValue: _phone,
-                      style: TextStyle(fontSize: 18.0),
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.account_circle,
-                          size: 30.0,
-                        ),
-                        labelText: 'Телефон',
-                      ),
+                          icon: Icon(
+                            Icons.account_circle,
+                            size: 30.0,
+                            color: LightColors.kLightYellow,
+                          ),
+                          labelText: 'Телефон',
+                          labelStyle: TextStyle(color: Colors.white),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white))),
                       validator: (input) =>
                           input.trim().length < 1 ? 'Введите возраст' : null,
                       onSaved: (input) => _phone = input,
                     ),
                     TextFormField(
                       initialValue: _location,
-                      style: TextStyle(fontSize: 18.0),
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
-                        icon: Icon(
-                          Icons.pin_drop,
-                          size: 30.0,
-                        ),
-                        labelText: 'Город',
-                      ),
+                          icon: Icon(
+                            Icons.pin_drop,
+                            size: 30.0,
+                            color: LightColors.kLightYellow,
+                          ),
+                          labelText: 'Город',
+                          labelStyle: TextStyle(color: Colors.white),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white))),
                       validator: (input) => input.trim().length < 1
                           ? 'Пожалуйста введите действительно местоположение'
                           : null,
@@ -206,12 +245,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         children: [
                           Container(
                             margin: EdgeInsets.all(40.0),
-                            height: 40.0,
+                            height: 55.0,
                             width: 250.0,
                             child: FlatButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
                               onPressed: _submit,
-                              color: Colors.blue,
-                              textColor: Colors.white,
+                              color: Color(0xffFCCD00),
+                              textColor: LightColors.kDarkBlue,
                               child: Text(
                                 'Сохранить',
                                 style: TextStyle(fontSize: 18.0),

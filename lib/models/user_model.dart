@@ -26,8 +26,8 @@ class User {
         name: doc['name'],
         profileImageUrl: doc['profileImageUrl'] ?? '',
         email: doc['email'],
-        insta: doc['bio'] ?? '',
-        phone: doc['age'] ?? '',
+        insta: doc['insta'] ?? '',
+        phone: doc['phone'] ?? '',
         location: doc['location'] ?? 'Местоположение',
         points: doc['points'] ?? 0);
   }
@@ -40,8 +40,8 @@ class User {
       profileImageUrl: d['profileImageUrl'] ??
           'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png',
       email: d['email'],
-      insta: d['bio'],
-      phone: d['age'],
+      insta: d['insta'],
+      phone: d['phone'],
       location: d['location'],
       points: d['points'],
     );

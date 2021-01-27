@@ -33,8 +33,14 @@ class _SettingsState extends State<Settings> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfileScreen(user: widget.user,)),);
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditProfileScreen(
+                            user: widget.user,
+                          )),
+                );
               },
               child: Text(
                 'Настройки профиля',

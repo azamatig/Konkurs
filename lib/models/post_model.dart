@@ -46,7 +46,7 @@ class Post {
       this.winnerId,
       this.winnerUid,
       this.isFinished,
-        this.likesCount});
+      this.likesCount});
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
