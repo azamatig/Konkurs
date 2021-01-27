@@ -164,78 +164,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                   MaterialPageRoute(
                                       builder: (context) => Notifications()));
                             },
-                            child: userId != null
-                                ? StreamBuilder(
-                                    stream: db
-                                        .collection(
-                                            "users/$userId/notifications")
-                                        .orderBy('ts', descending: true)
-                                        .snapshots(),
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return Image.asset(
-                                          "assets/images/notify.png",
-                                          height: 22,
-                                        );
-                                      }
-                                      final notification =
-                                          snapshot.data.documents[0];
-                                      if (notification.data()['is_Unread']) {
-                                        WidgetsBinding.instance
-                                            .addPostFrameCallback((_) {
-                                          AchievementView(context,
-                                              title:
-                                                  notification.data()['title'],
-                                              subTitle: notification
-                                                  .data()['message'],
-                                              listener: (status) {})
-                                            ..show();
-                                        });
-                                      }
-                                      return notification.data()['is_Unread']
-                                          ? Stack(
-                                              children: <Widget>[
-                                                Image.asset(
-                                                  "assets/images/notify.png",
-                                                  height: 22,
-                                                ),
-                                                Positioned(
-                                                  right: 0,
-                                                  child: Container(
-                                                    //padding: EdgeInsets.all(1),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.red,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                    ),
-                                                    constraints: BoxConstraints(
-                                                      minWidth: 12,
-                                                      minHeight: 12,
-                                                    ),
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 8,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          : Image.asset(
-                                              "assets/images/notify.png",
-                                              height: 22,
-                                            );
-                                    })
-                                : Image.asset(
-                                    "assets/images/notify.png",
-                                    height: 22,
-                                  ),
-                            child: userId != null ? StreamBuilder(
+                            child:userId != null ? StreamBuilder(
                                 stream: db
                                     .collection(
                                         "users/$userId/notifications")

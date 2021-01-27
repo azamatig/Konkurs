@@ -260,13 +260,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         child: _actionList(
                                             'assets/images/ic_transact.png',
                                             'Настройки'),
-                                        onTap: (){
+                                        onTap: () {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       Settings(user)));
-                                        onTap: () {},
+                                        }
                                       ),
                                       GestureDetector(
                                         onTap: () {
