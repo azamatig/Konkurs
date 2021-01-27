@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/task_profile.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
@@ -52,10 +53,10 @@ class _DashBoardPageState extends State<DashBoardPage> {
         logoImage = 'assets/images/wallet_logo.png';
         _borderContainer = Color.fromRGBO(252, 233, 187, 1);
         _backgroundColor = [
-          Color.fromRGBO(249, 249, 249, 1),
-          Color.fromRGBO(241, 241, 241, 1),
-          Color.fromRGBO(233, 233, 233, 1),
-          Color.fromRGBO(222, 222, 222, 1),
+          LightColors.kLightYellow,
+          LightColors.kLightYellow,
+          LightColors.kLightYellow,
+          LightColors.kLightYellow,
         ];
         _iconColor = Colors.black;
         _textColor = Colors.black;
@@ -112,17 +113,30 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     children: <Widget>[
                       Align(
                         alignment: Alignment.topLeft,
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 0.0, top: 0),
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              child: Icon(
-                                FontAwesomeIcons.arrowLeft,
-                                color: Colors.black,
-                              ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15.0, top: 15),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
+                              child: Container(
+                                  color: LightColors.kLightYellow,
+                                  height: 40,
+                                  width: 40,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 5.0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Icon(
+                                        FontAwesomeIcons.chevronLeft,
+                                        size: 25,
+                                        color: LightColors.kDarkBlue,
+                                      ),
+                                    ),
+                                  )),
                             ),
                           ),
                         ),
@@ -175,12 +189,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  height: 70,
+                                  height: 100,
                                   child: Center(
-                                    child: ListView(
+                                    child: Column(
                                       children: <Widget>[
+                                        Icon(
+                                          FontAwesomeIcons.coins,
+                                          size: 30,
+                                        ),
                                         Text(
-                                          '790',
+                                          user.points.toString(),
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: _textColor,
@@ -248,10 +266,22 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       Settings(user)));
-                                        },
+                                        onTap: () {},
                                       ),
-                                      _actionList('assets/images/ic_reward.png',
-                                          'Задания'),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      TaskProfileList(
+                                                        userId: user.id,
+                                                      )));
+                                        },
+                                        child: _actionList(
+                                            'assets/images/ic_reward.png',
+                                            'Задания'),
+                                      ),
                                     ])
                                   ],
                                 ),
