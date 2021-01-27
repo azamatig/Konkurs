@@ -177,7 +177,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             size: 30.0,
                             color: LightColors.kLightYellow,
                           ),
-                          labelText: 'Ваш логин в instagram',
+                          labelText: 'Ваш профиль в instagram',
                           labelStyle: TextStyle(color: Colors.white),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),

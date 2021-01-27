@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:konkurs_app/models/notification_class.dart' as nC;
 import 'package:konkurs_app/screens/home.dart';
 
 class Notifications extends StatefulWidget {
@@ -44,22 +43,29 @@ class _NotificationsState extends State<Notifications> {
             var type = v.data()['type'];
             var title = v.data()['title'];
             var isUnread = v.data()['is_Unread'];
-            if(isUnread) {
-              _database.doc("users/$userId/notifications/${v.id}").update({'is_Unread': false});
+            if (isUnread) {
+              _database
+                  .doc("users/$userId/notifications/${v.id}")
+                  .update({'is_Unread': false});
             }
             var notificationWidget = Container(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                height: 100,
-                margin: EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                    color: Color(0xff29404E),
-                    borderRadius: BorderRadius.circular(8)),
+              height: 100,
+              margin: EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                  color: Color(0xff29404E),
+                  borderRadius: BorderRadius.circular(8)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(title, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
-                SizedBox(height: 7),
-                Text(message, style: TextStyle(color: Colors.white, fontSize: 14)),
+                  Text(title,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700)),
+                  SizedBox(height: 7),
+                  Text(message,
+                      style: TextStyle(color: Colors.white, fontSize: 14)),
                 ],
               ),
             );

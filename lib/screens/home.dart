@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/date_model.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/event_type.dart';
 import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/screens/AchievementView.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
 import 'package:konkurs_app/services/auth_service.dart';
@@ -20,7 +18,6 @@ import 'my_giveaways.dart';
 import 'closed_giveaways.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:achievement_view/achievement_view.dart';
 import 'package:konkurs_app/screens/notifications.dart';
 
 class HomeScreen1 extends StatefulWidget {
@@ -164,60 +161,65 @@ class _HomeScreen1State extends State<HomeScreen1>
                                   MaterialPageRoute(
                                       builder: (context) => Notifications()));
                             },
-                            child:userId != null ? StreamBuilder(
-                                stream: db
-                                    .collection(
-                                        "users/$userId/notifications")
-                                    .orderBy('ts', descending: true)
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Image.asset(
-                                      "assets/images/notify.png",
-                                      height: 22,
-                                    );
-                                  }
-                                  final notification =
-                                  snapshot.data.documents[0];
-                                  return notification.data()['is_Unread']
-                                  ? Stack(
-                                    children: <Widget>[
-                                      Image.asset(
-                                        "assets/images/notify.png",
-                                        height: 22,
-                                      ),
-                                      Positioned(
-                                        right: 0,
-                                        child:  Container(
-                                          //padding: EdgeInsets.all(1),
-                                          decoration:  BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          constraints: BoxConstraints(
-                                            minWidth: 12,
-                                            minHeight: 12,
-                                          ),
-                                          child:  Text(
-                                            '',
-                                            style:  TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 8,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                  : Image.asset(
+                            child: userId != null
+                                ? StreamBuilder(
+                                    stream: db
+                                        .collection(
+                                            "users/$userId/notifications")
+                                        .orderBy('ts', descending: true)
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Image.asset(
+                                          "assets/images/notify.png",
+                                          height: 22,
+                                        );
+                                      }
+                                      final notification =
+                                          snapshot.data.documents[0];
+                                      return notification.data()['is_Unread']
+                                          ? Stack(
+                                              children: <Widget>[
+                                                Image.asset(
+                                                  "assets/images/notify.png",
+                                                  height: 22,
+                                                ),
+                                                Positioned(
+                                                  right: 0,
+                                                  child: Container(
+                                                    //padding: EdgeInsets.all(1),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6),
+                                                    ),
+                                                    constraints: BoxConstraints(
+                                                      minWidth: 12,
+                                                      minHeight: 12,
+                                                    ),
+                                                    child: Text(
+                                                      '',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 8,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          : Image.asset(
+                                              "assets/images/notify.png",
+                                              height: 22,
+                                            );
+                                    })
+                                : Image.asset(
                                     "assets/images/notify.png",
                                     height: 22,
-                                  );
-                                }) : Image.asset(
-                              "assets/images/notify.png",
-                              height: 22,
-                            ),
+                                  ),
                           ),
                           SizedBox(
                             width: 16,
@@ -643,6 +645,7 @@ class EventTile extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class PopularEventTile extends StatelessWidget {
   String desc;
   Timestamp date;

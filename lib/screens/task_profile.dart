@@ -2,15 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/comments_screen.dart';
 import 'package:konkurs_app/services/database_service.dart';
 import 'package:konkurs_app/utilities/back_button.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:konkurs_app/utilities/task_container.dart';
 import 'package:konkurs_app/utilities/task_type.dart';
 
 class TaskProfileList extends StatefulWidget {
