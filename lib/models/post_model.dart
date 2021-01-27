@@ -22,6 +22,7 @@ class Post {
   final String winner;
   final int winnerId;
   final String winnerUid;
+  final int likesCount;
 
   Post(
       {this.name,
@@ -44,7 +45,8 @@ class Post {
       this.winner,
       this.winnerId,
       this.winnerUid,
-      this.isFinished});
+      this.isFinished,
+        this.likesCount});
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
@@ -69,6 +71,7 @@ class Post {
       winnerId: doc.data()['winnerId'],
       winnerUid: doc.data()['winnerUid'],
       isFinished: doc.data()['isFinished'],
+      likesCount: doc.data()['likesCount'],
     );
   }
 }

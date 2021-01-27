@@ -8,6 +8,7 @@ import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'my_wins.dart';
+import 'settings.dart';
 
 class DashBoardPage extends StatefulWidget {
   final userId;
@@ -259,7 +260,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         child: _actionList(
                                             'assets/images/ic_transact.png',
                                             'Настройки'),
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Settings(user)));
+                                        }
                                       ),
                                       GestureDetector(
                                         onTap: () {

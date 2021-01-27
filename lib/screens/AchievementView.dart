@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:achievement_view/achievement_view.dart';
 
-void showAchievementView(BuildContext context) {
+bool pushIsOn = true;
+
+void showAchievementView1(BuildContext context) {
+  if(pushIsOn)
   AchievementView(context,
       title: "Ура!", subTitle: "Вы теперь участник конкурса!",
       //onTab: _onTabAchievement,
@@ -21,4 +24,13 @@ void showAchievementView(BuildContext context) {
     //AchievementState.closed
   })
     ..show();
+}
+
+void showAchievementView2(BuildContext context, var title, var subTitle) {
+  if(pushIsOn)
+    AchievementView(context,
+        title: title, subTitle: subTitle,
+        listener: (status) {
+        })
+      ..show();
 }
