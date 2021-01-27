@@ -180,15 +180,6 @@ class _HomeScreen1State extends State<HomeScreen1>
                                   }
                                   final notification =
                                   snapshot.data.documents[0];
-                                  if(notification.data()['is_Unread']){
-                                    WidgetsBinding.instance.addPostFrameCallback((_){
-                                      AchievementView(context,
-                                          title: notification.data()['title'], subTitle: notification.data()['message'],
-                                          listener: (status) {
-                                          })
-                                        ..show();
-                                    });
-                                  }
                                   return notification.data()['is_Unread']
                                   ? Stack(
                                     children: <Widget>[

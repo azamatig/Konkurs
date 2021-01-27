@@ -139,6 +139,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
             builder: (_) => DetailsScreen(
               docId: d.id,
               docRef: document.reference,
+              date: d.date,
               userId: Provider.of<UserData>(context).currentUserId,
               isShared: d.shared,
               prize: d.prize,
@@ -149,6 +150,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
               postName: d.name,
               postDesc: d.description,
               isFinished: d.isFinished,
+              likesCount: d.likesCount,
             ),
           ),
         );

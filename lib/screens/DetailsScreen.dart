@@ -461,7 +461,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             borderRadius: BorderRadius.circular(15)),
                         onPressed: () => {
                           setParticipate(),
-                          showAchievementView(context),
+                          showAchievementView1(context),
                         },
                         color: LightColors.kGreen,
                         padding: EdgeInsets.all(10.0),

@@ -13,6 +13,7 @@ class Post {
   final String task2;
   final String task3;
   final bool isFinished;
+  final likesCount;
 
   Post(
       {this.name,
@@ -26,7 +27,9 @@ class Post {
       this.task1,
       this.task2,
       this.task3,
-      this.isFinished});
+      this.isFinished,
+        this.likesCount,
+      });
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
@@ -42,6 +45,7 @@ class Post {
         task3: doc.data()['task3'],
         description: doc.data()['description'],
       isFinished: doc.data()['isFinished'],
+      likesCount: doc.data()['likesCount'],
     );
   }
 }

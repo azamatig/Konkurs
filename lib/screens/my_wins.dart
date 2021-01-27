@@ -137,6 +137,7 @@ class _MyWinsState extends State<MyWins> {
             builder: (_) => DetailsScreen(
               docId: d.id,
               docRef: document.reference,
+              date: d.date,
               userId: Provider.of<UserData>(context).currentUserId,
               isShared: d.shared,
               prize: d.prize,
@@ -147,6 +148,7 @@ class _MyWinsState extends State<MyWins> {
               postName: d.name,
               postDesc: d.description,
               isFinished: d.isFinished,
+              likesCount: d.likesCount,
             ),
           ),
         );
