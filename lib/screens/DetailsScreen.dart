@@ -250,7 +250,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 postIsLiked
                                     ? Row(
                                         children: [
-                                          Text('Вам '),
+                                          Text('Вам ',
+                                              style: TextStyle(
+                                                  color: LightColors
+                                                      .kLightYellow2)),
                                           CircleAvatar(
                                             radius: 10,
                                             backgroundImage:
