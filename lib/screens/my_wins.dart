@@ -144,6 +144,7 @@ class _MyWinsState extends State<MyWins> {
               task1: d.task1,
               task2: d.task2,
               task3: d.task3,
+              winner: d.winner,
               endDate: d.endDate,
               postImage: d.imagepost,
               postName: d.name,

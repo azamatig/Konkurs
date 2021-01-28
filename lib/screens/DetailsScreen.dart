@@ -29,30 +29,31 @@ class DetailsScreen extends StatefulWidget {
   final bool isShared;
   final String docId;
   final bool isFinished;
+  final String winner;
   final DocumentReference docRef;
   final User currentUser, user;
   final Timestamp endDate;
   int likesCount;
 
-  DetailsScreen({
-    this.userId,
-    this.postImage,
-    this.postName,
-    this.postDesc,
-    this.task1,
-    this.task2,
-    this.task3,
-    this.prize,
-    this.isShared,
-    this.isFinished,
-    this.docId,
-    this.docRef,
-    this.currentUser,
-    this.user,
-    this.date,
-    this.endDate,
-    this.likesCount,
-  });
+  DetailsScreen(
+      {this.userId,
+      this.postImage,
+      this.postName,
+      this.postDesc,
+      this.task1,
+      this.task2,
+      this.task3,
+      this.prize,
+      this.isShared,
+      this.isFinished,
+      this.docId,
+      this.docRef,
+      this.currentUser,
+      this.user,
+      this.date,
+      this.endDate,
+      this.likesCount,
+      this.winner});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -407,6 +408,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     height: 5,
                   ),
                   Text("Дата " + formatOnlyDate(widget.date.toDate())),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  widget.winner == user.name
+                      ? Text("Победитель - " + widget.winner)
+                      : SizedBox(),
                 ],
               ),
               Spacer(),

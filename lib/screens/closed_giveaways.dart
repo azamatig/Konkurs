@@ -148,78 +148,97 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
           ),
         );
       },
-      child: Container(
-        height: 100,
-        margin: EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-            color: Color(0xff29404E), borderRadius: BorderRadius.circular(8)),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: 16),
-                width: MediaQuery.of(context).size.width - 100,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      d.name,
-                      maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/images/calender.png",
-                          height: 15,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          formatOnlyDate(d.date.toDate()),
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/images/location.png",
-                          height: 12,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          '${d.description.substring(0, 10)} ...',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Победитель - " + d.winner,
+            style: TextStyle(
+              color: LightColors.kLightYellow,
+              fontSize: 18,
             ),
-            ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(8),
-                    bottomRight: Radius.circular(8)),
-                child: Image.network(
-                  d.imagepost,
-                  height: 100,
-                  width: 120,
-                  fit: BoxFit.cover,
-                )),
-          ],
-        ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Container(
+            height: 100,
+            margin: EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+                color: Color(0xff29404E),
+                borderRadius: BorderRadius.circular(8)),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 16),
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          d.name,
+                          maxLines: 2,
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Image.asset(
+                              "assets/images/calender.png",
+                              height: 15,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              formatOnlyDate(d.date.toDate()),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Image.asset(
+                              "assets/images/location.png",
+                              height: 12,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              '${d.description.substring(0, 10)} ...',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        bottomRight: Radius.circular(8)),
+                    child: Image.network(
+                      d.imagepost,
+                      height: 100,
+                      width: 120,
+                      fit: BoxFit.cover,
+                    )),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

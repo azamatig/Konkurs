@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="konkurs.aza.com.konkurs_app">
     <application
-        android:label="konkurs_app"
-        android:icon="@mipmap/ic_launcher">
+        android:label="GIVEAPP"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
