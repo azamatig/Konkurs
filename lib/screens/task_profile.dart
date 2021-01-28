@@ -63,6 +63,14 @@ class _TaskProfileListState extends State<TaskProfileList> {
   List<dynamic> shares;
   List<dynamic> shares2;
   List<dynamic> shares3;
+  bool isClaimed = false;
+  bool isClaimed2 = false;
+  bool isClaimed3 = false;
+
+  void awardPoints() async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': FieldValue.increment(1)});
+  }
 
   Future getShared(String id) async {
     DocumentSnapshot document = await db.collection('post').doc(id).get();
@@ -156,8 +164,9 @@ class _TaskProfileListState extends State<TaskProfileList> {
                 semanticContainer: true,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 color: LightColors.kDarkBlue,
+                elevation: 5,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(25)),
                 child: Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: Column(
@@ -176,13 +185,15 @@ class _TaskProfileListState extends State<TaskProfileList> {
                       Column(
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15.0, bottom: 10),
                                 child: Container(
                                   height: 75,
-                                  width: 250,
+                                  width: 275,
                                   decoration: BoxDecoration(
                                     color: LightColors.kLightYellow2,
                                     borderRadius: BorderRadius.circular(30),
@@ -191,55 +202,44 @@ class _TaskProfileListState extends State<TaskProfileList> {
                                     child: ListTile(
                                       title: Text('Задание #1'),
                                       subtitle: Text(post.task1),
-                                      trailing: Icon(
-                                        shares.contains(widget.userId)
-                                            ? FontAwesomeIcons.check
-                                            : FontAwesomeIcons.times,
-                                        color: shares.contains(widget.userId)
-                                            ? LightColors.kGreen
-                                            : LightColors.kRed,
-                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                               Text(
-                                '   - - - - - -',
+                                '   - - - - - - - - ',
                                 style:
                                     TextStyle(color: LightColors.kLightYellow),
                               ),
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Icon(
                                       shares.contains(widget.userId)
-                                          ? FontAwesomeIcons.gift
-                                          : FontAwesomeIcons.solidDotCircle,
+                                          ? FontAwesomeIcons.check
+                                          : FontAwesomeIcons.times,
                                       color: shares.contains(widget.userId)
-                                          ? LightColors.kLightGreen
-                                          : LightColors.kLightYellow2,
+                                          ? LightColors.kGreen
+                                          : LightColors.kRed,
                                     ),
                                   ),
-                                  Text(
-                                    shares.contains(widget.userId)
-                                        ? 'Выполенено'
-                                        : 'Не выполнено',
-                                    style: TextStyle(
-                                        color: LightColors.kLightYellow),
-                                  )
                                 ],
                               )
                             ],
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15.0, bottom: 10),
                                 child: Container(
                                   height: 75,
-                                  width: 250,
+                                  width: 275,
                                   decoration: BoxDecoration(
                                     color: LightColors.kLavender,
                                     borderRadius: BorderRadius.circular(30),
@@ -248,20 +248,12 @@ class _TaskProfileListState extends State<TaskProfileList> {
                                     child: ListTile(
                                       title: Text('Задание #2'),
                                       subtitle: Text(post.task2),
-                                      trailing: Icon(
-                                        shares2.contains(widget.userId)
-                                            ? FontAwesomeIcons.check
-                                            : FontAwesomeIcons.times,
-                                        color: shares2.contains(widget.userId)
-                                            ? LightColors.kGreen
-                                            : LightColors.kRed,
-                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                               Text(
-                                '   - - - - - -',
+                                '   - - - - - - - - ',
                                 style:
                                     TextStyle(color: LightColors.kLightYellow),
                               ),
@@ -271,32 +263,27 @@ class _TaskProfileListState extends State<TaskProfileList> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Icon(
                                       shares2.contains(widget.userId)
-                                          ? FontAwesomeIcons.gift
-                                          : FontAwesomeIcons.solidDotCircle,
+                                          ? FontAwesomeIcons.check
+                                          : FontAwesomeIcons.times,
                                       color: shares2.contains(widget.userId)
-                                          ? LightColors.kLightGreen
-                                          : LightColors.kLightYellow2,
+                                          ? LightColors.kGreen
+                                          : LightColors.kRed,
                                     ),
                                   ),
-                                  Text(
-                                    shares2.contains(widget.userId)
-                                        ? 'Выполенено'
-                                        : 'Не выполнено',
-                                    style: TextStyle(
-                                        color: LightColors.kLightYellow),
-                                  )
                                 ],
                               )
                             ],
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15.0, bottom: 10),
                                 child: Container(
                                   height: 75,
-                                  width: 250,
+                                  width: 275,
                                   decoration: BoxDecoration(
                                     color: LightColors.kLightGreen,
                                     borderRadius: BorderRadius.circular(30),
@@ -305,20 +292,12 @@ class _TaskProfileListState extends State<TaskProfileList> {
                                     child: ListTile(
                                       title: Text('Задание #3'),
                                       subtitle: Text(post.task3),
-                                      trailing: Icon(
-                                        shares3.contains(widget.userId)
-                                            ? FontAwesomeIcons.check
-                                            : FontAwesomeIcons.times,
-                                        color: shares3.contains(widget.userId)
-                                            ? LightColors.kGreen
-                                            : LightColors.kRed,
-                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                               Text(
-                                '   - - - - - -',
+                                '   - - - - - - - - ',
                                 style:
                                     TextStyle(color: LightColors.kLightYellow),
                               ),
@@ -328,20 +307,13 @@ class _TaskProfileListState extends State<TaskProfileList> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Icon(
                                       shares3.contains(widget.userId)
-                                          ? FontAwesomeIcons.gift
-                                          : FontAwesomeIcons.solidDotCircle,
+                                          ? FontAwesomeIcons.check
+                                          : FontAwesomeIcons.times,
                                       color: shares3.contains(widget.userId)
-                                          ? LightColors.kLightGreen
-                                          : LightColors.kLightYellow2,
+                                          ? LightColors.kGreen
+                                          : LightColors.kRed,
                                     ),
                                   ),
-                                  Text(
-                                    shares3.contains(widget.userId)
-                                        ? 'Выполенено'
-                                        : 'Не выполнено',
-                                    style: TextStyle(
-                                        color: LightColors.kLightYellow),
-                                  )
                                 ],
                               )
                             ],

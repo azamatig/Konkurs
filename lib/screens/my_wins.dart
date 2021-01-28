@@ -144,6 +144,7 @@ class _MyWinsState extends State<MyWins> {
               task1: d.task1,
               task2: d.task2,
               task3: d.task3,
+              endDate: d.endDate,
               postImage: d.imagepost,
               postName: d.name,
               postDesc: d.description,
@@ -169,7 +170,7 @@ class _MyWinsState extends State<MyWins> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      d.description,
+                      d.name,
                       maxLines: 2,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
@@ -198,7 +199,7 @@ class _MyWinsState extends State<MyWins> {
                       children: <Widget>[
                         Image.asset(
                           "assets/images/location.png",
-                          height: 12,
+                          height: 15,
                         ),
                         SizedBox(
                           width: 8,

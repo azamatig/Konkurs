@@ -25,6 +25,7 @@ class TaskList extends StatefulWidget {
   final List shares3;
   final DocumentReference docRef;
   final User currentUser, user;
+  final bool postIsLiked;
 
   const TaskList(
       {Key key,
@@ -42,6 +43,7 @@ class TaskList extends StatefulWidget {
       this.shares3,
       this.docRef,
       this.currentUser,
+      this.postIsLiked,
       this.user})
       : super(key: key);
 
@@ -51,6 +53,9 @@ class TaskList extends StatefulWidget {
 
 final db = FirebaseFirestore.instance;
 TaskType tasks = TaskType();
+AnimationController _animationController;
+Animation _animation;
+Animation _animation2;
 File file;
 
 void sharing(String type) async {
@@ -66,13 +71,18 @@ void sharing(String type) async {
   }
 }
 
-class _TaskListState extends State<TaskList> {
+class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
   void setShared() async {
     var list = [widget.userId];
     db
         .collection('post')
         .doc(widget.docId)
         .update({'task1TypeShared': FieldValue.arrayUnion(list)});
+  }
+
+  void awardPoints() async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': FieldValue.increment(5)});
   }
 
   void setShared2() async {
@@ -93,7 +103,22 @@ class _TaskListState extends State<TaskList> {
 
   @override
   void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController.repeat(reverse: true);
+    _animation = Tween(begin: 0.0, end: 2.0).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+    _animation2 = Tween(begin: 0.0, end: 0.0).animate(_animationController)
+      ..addListener(() {});
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Widget _dashedText() {
@@ -125,6 +150,17 @@ class _TaskListState extends State<TaskList> {
             children: <Widget>[
               MyBackButton(),
               SizedBox(height: 30.0),
+              Center(
+                child: Text(
+                  'Статус задания обновляется не сразу, перезайдите в раздел заданий чтобы увидеть изменения! ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w700,
+                      color: LightColors.kRed),
+                ),
+              ),
+              SizedBox(height: 10.0),
               Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -191,6 +227,7 @@ class _TaskListState extends State<TaskList> {
                                   if (widget.shares.contains(widget.userId)) {
                                   } else {
                                     if (widget.task1type == 'comment') {
+                                      awardPoints();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -201,6 +238,7 @@ class _TaskListState extends State<TaskList> {
                                                     user: widget.currentUser,
                                                   )));
                                     } else {
+                                      awardPoints();
                                       sharing(widget.task1type);
                                     }
                                     if (widget.shares.contains(widget.userId)) {
@@ -220,6 +258,15 @@ class _TaskListState extends State<TaskList> {
                                   title: 'Задание #1',
                                   subtitle: widget.task1,
                                   boxColor: LightColors.kLightYellow2,
+                                  shadowColor: LightColors.kLightYellow2Shadow,
+                                  blurRadius:
+                                      widget.shares.contains(widget.userId)
+                                          ? _animation2.value
+                                          : _animation.value,
+                                  spreadRadius:
+                                      widget.shares.contains(widget.userId)
+                                          ? _animation2.value
+                                          : _animation.value,
                                 ),
                               ),
                               _dashedText(),
@@ -228,6 +275,7 @@ class _TaskListState extends State<TaskList> {
                                   if (widget.shares2.contains(widget.userId)) {
                                   } else {
                                     if (widget.task2type == 'comment') {
+                                      awardPoints();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -239,6 +287,7 @@ class _TaskListState extends State<TaskList> {
                                                   )));
                                     } else {
                                       sharing(widget.task2type);
+                                      awardPoints();
                                     }
                                     if (widget.shares2
                                         .contains(widget.userId)) {
@@ -257,7 +306,16 @@ class _TaskListState extends State<TaskList> {
                                           : LightColors.kRed,
                                   title: 'Задание #2',
                                   subtitle: widget.task2,
-                                  boxColor: LightColors.kLavender,
+                                  boxColor: LightColors.kLightGreen,
+                                  shadowColor: LightColors.kLightGreenShadow,
+                                  blurRadius:
+                                      widget.shares2.contains(widget.userId)
+                                          ? _animation2.value
+                                          : _animation.value,
+                                  spreadRadius:
+                                      widget.shares2.contains(widget.userId)
+                                          ? _animation2.value
+                                          : _animation.value,
                                 ),
                               ),
                               _dashedText(),
@@ -266,6 +324,7 @@ class _TaskListState extends State<TaskList> {
                                   if (widget.shares3.contains(widget.userId)) {
                                   } else {
                                     if (widget.task3type == 'comment') {
+                                      awardPoints();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -277,6 +336,7 @@ class _TaskListState extends State<TaskList> {
                                                   )));
                                     } else {
                                       sharing(widget.task3type);
+                                      awardPoints();
                                     }
                                     if (widget.shares3
                                         .contains(widget.userId)) {
@@ -296,6 +356,15 @@ class _TaskListState extends State<TaskList> {
                                   title: 'Задание #3',
                                   subtitle: widget.task3,
                                   boxColor: LightColors.kPalePink,
+                                  shadowColor: LightColors.kPalePinkShadow,
+                                  blurRadius:
+                                      widget.shares3.contains(widget.userId)
+                                          ? _animation2.value
+                                          : _animation.value,
+                                  spreadRadius:
+                                      widget.shares3.contains(widget.userId)
+                                          ? _animation2.value
+                                          : _animation.value,
                                 ),
                               ),
                             ],

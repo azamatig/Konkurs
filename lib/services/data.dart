@@ -13,7 +13,7 @@ List<EventTypeModel> getEventTypes() {
 
   //1
   eventModel.imgAssetPath = "assets/images/rewards.png";
-  eventModel.eventType = "Мои конкурсы";
+  eventModel.eventType = "Мои участия";
   events.add(eventModel);
 
   eventModel = new EventTypeModel();

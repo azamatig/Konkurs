@@ -83,7 +83,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Мои конкурсы"),
+        title: Text("Мои участия"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
@@ -146,6 +146,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
               task1: d.task1,
               task2: d.task2,
               task3: d.task3,
+              endDate: d.endDate,
               postImage: d.imagepost,
               postName: d.name,
               postDesc: d.description,
@@ -171,7 +172,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      d.description,
+                      d.name,
                       maxLines: 2,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
@@ -194,13 +195,13 @@ class _MyGiveawaysState extends State<MyGiveaways> {
                       ],
                     ),
                     SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                     Row(
                       children: <Widget>[
                         Image.asset(
                           "assets/images/location.png",
-                          height: 12,
+                          height: 15,
                         ),
                         SizedBox(
                           width: 8,

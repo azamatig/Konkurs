@@ -137,6 +137,7 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
               prize: d.prize,
               task1: d.task1,
               task2: d.task2,
+              endDate: d.endDate,
               task3: d.task3,
               postImage: d.imagepost,
               postName: d.name,
@@ -163,9 +164,9 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      d.description,
+                      d.name,
                       maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     SizedBox(
                       height: 8,
@@ -174,7 +175,7 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
                       children: <Widget>[
                         Image.asset(
                           "assets/images/calender.png",
-                          height: 12,
+                          height: 15,
                         ),
                         SizedBox(
                           width: 8,

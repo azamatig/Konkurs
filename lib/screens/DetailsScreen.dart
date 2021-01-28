@@ -31,6 +31,7 @@ class DetailsScreen extends StatefulWidget {
   final bool isFinished;
   final DocumentReference docRef;
   final User currentUser, user;
+  final Timestamp endDate;
   int likesCount;
 
   DetailsScreen({
@@ -49,6 +50,7 @@ class DetailsScreen extends StatefulWidget {
     this.currentUser,
     this.user,
     this.date,
+    this.endDate,
     this.likesCount,
   });
 
@@ -440,8 +442,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Дата окончания " +
-                            formatOnlyDate(widget.date.toDate())),
+                        Text(
+                          "Дата окончания " +
+                              formatOnlyDate(widget.endDate.toDate()),
+                          style: TextStyle(color: LightColors.kRed),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
@@ -477,22 +482,34 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(
-                      width: 160.0,
-                      child: FlatButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        onPressed: () => {
-                          setParticipate(),
-                          showAchievementView1(context),
-                        },
-                        color: LightColors.kGreen,
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          'Участвовать',
-                          style: TextStyle(
-                            color: LightColors.kLightYellow,
-                            fontSize: 18.0,
+                    Visibility(
+                      visible: widget.isFinished == true ? false : true,
+                      child: Container(
+                        width: 160.0,
+                        child: FlatButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          onPressed: () => {
+                            if (participants.contains(widget.userId))
+                              {}
+                            else
+                              {
+                                setParticipate(),
+                                showAchievementView1(context),
+                              }
+                          },
+                          color: participants.contains(widget.userId)
+                              ? Colors.grey
+                              : LightColors.kGreen,
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(
+                            participants.contains(widget.userId)
+                                ? 'Вы участвуете'
+                                : 'Участвовать',
+                            style: TextStyle(
+                              color: LightColors.kLightYellow,
+                              fontSize: 18.0,
+                            ),
                           ),
                         ),
                       ),
@@ -517,26 +534,43 @@ class _DetailsScreenState extends State<DetailsScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TaskList(
-                            userId: widget.userId,
-                            docId: widget.docId,
-                            task1type: task1Type,
-                            task2type: task2Type,
-                            task3type: task3Type,
-                            shares: shares,
-                            shares2: shares2,
-                            shares3: shares3,
-                            dates: widget.date,
-                            task1: widget.task1,
-                            task2: widget.task2,
-                            task3: widget.task3,
-                            currentUser: widget.currentUser,
-                            docRef: widget.docRef,
-                          )),
-                );
+                if (participants.contains(widget.userId) &&
+                    widget.isFinished == false) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TaskList(
+                              userId: widget.userId,
+                              docId: widget.docId,
+                              task1type: task1Type,
+                              task2type: task2Type,
+                              task3type: task3Type,
+                              shares: shares,
+                              shares2: shares2,
+                              shares3: shares3,
+                              dates: widget.date,
+                              task1: widget.task1,
+                              task2: widget.task2,
+                              task3: widget.task3,
+                              currentUser: widget.currentUser,
+                              docRef: widget.docRef,
+                            )),
+                  );
+                } else if (widget.isFinished == true) {
+                  popup.show(
+                    title: 'Данный конкурс завершен!',
+                    content:
+                        'К сожалению этот конкурс уже завершен, и доступ к нему закрыт!',
+                    barrierDismissible: true,
+                  );
+                } else {
+                  popup.show(
+                    title: 'Вы не участник!',
+                    content:
+                        'Для доступа к заданиям, нажмите кнопку участвовать, для начала!',
+                    barrierDismissible: true,
+                  );
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -549,7 +583,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   child: TaskColumn(
                       icon: FontAwesomeIcons.tasks,
                       iconBackgroundColor: LightColors.kGreen,
-                      title: 'Список задач',
+                      title: 'Список задач, ',
                       subtitle: 'Нажмите сюда чтобы узнать про задания!'),
                 ),
               ),

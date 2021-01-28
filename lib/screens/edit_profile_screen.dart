@@ -70,10 +70,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {
         _isLoading = true;
       });
-
       // Update user in database
       String _profileImageUrl = '';
-
       if (_profileImage == null) {
         _profileImageUrl = widget.user.profileImageUrl;
       } else {
@@ -82,7 +80,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           _profileImage,
         );
       }
-
       User user = User(
         id: widget.user.id,
         name: _name,
@@ -94,7 +91,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       // Database update
       DatabaseService.updateUser(user);
-
       Navigator.pop(context);
     }
   }

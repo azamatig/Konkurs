@@ -138,6 +138,7 @@ class _AllGiveawaysState extends State<AllGiveaways> {
               task1: d.task1,
               task2: d.task2,
               task3: d.task3,
+              endDate: d.endDate,
               postImage: d.imagepost,
               postName: d.name,
               postDesc: d.description,
@@ -163,7 +164,7 @@ class _AllGiveawaysState extends State<AllGiveaways> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      d.description,
+                      d.name,
                       maxLines: 2,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
@@ -186,13 +187,13 @@ class _AllGiveawaysState extends State<AllGiveaways> {
                       ],
                     ),
                     SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                     Row(
                       children: <Widget>[
                         Image.asset(
                           "assets/images/location.png",
-                          height: 12,
+                          height: 15,
                         ),
                         SizedBox(
                           width: 8,

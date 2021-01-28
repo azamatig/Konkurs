@@ -528,7 +528,7 @@ class _HomeScreen1State extends State<HomeScreen1>
       desc: doc.data()['description'],
       imgeAssetPath: doc.data()['imagepost'],
       date: doc.data()['date'],
-      address: doc.data()['name'],
+      name: doc.data()['name'],
     );
   }
 }
@@ -594,7 +594,7 @@ class EventTile extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => AllGiveaways()));
             }
             break;
-          case "Мои конкурсы":
+          case "Мои участия":
             {
               if (SimpleAccountMenu.isMenuOpen) {
                 SimpleAccountMenu.overlayEntry.remove();
@@ -649,13 +649,13 @@ class EventTile extends StatelessWidget {
 class PopularEventTile extends StatelessWidget {
   String desc;
   Timestamp date;
-  String address;
+  String name;
   String imgeAssetPath;
   DocumentSnapshot doc;
 
   /// later can be changed with imgUrl
   PopularEventTile(
-      {this.address, this.date, this.imgeAssetPath, this.desc, this.doc});
+      {this.name, this.date, this.imgeAssetPath, this.desc, this.doc});
 
   @override
   Widget build(BuildContext context) {
@@ -678,6 +678,7 @@ class PopularEventTile extends StatelessWidget {
                       prize: doc.data()['prize'],
                       task1: doc.data()['task1'],
                       task2: doc.data()['task2'],
+                      endDate: doc.data()['endDate'],
                       task3: doc.data()['task3'],
                       postImage: doc.data()['imagepost'],
                       postName: doc.data()['name'],
@@ -702,7 +703,7 @@ class PopularEventTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      desc,
+                      name,
                       maxLines: 2,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
@@ -725,19 +726,19 @@ class PopularEventTile extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                     Row(
                       children: <Widget>[
                         Image.asset(
                           "assets/images/location.png",
-                          height: 12,
+                          height: 15,
                         ),
                         SizedBox(
                           width: 8,
                         ),
                         Text(
-                          address,
+                          '${desc.substring(0, 20)} ...',
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         )
                       ],

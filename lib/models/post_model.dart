@@ -22,6 +22,7 @@ class Post {
   final String winner;
   final int winnerId;
   final String winnerUid;
+  final Timestamp endDate;
   final int likesCount;
 
   Post(
@@ -46,6 +47,7 @@ class Post {
       this.winnerId,
       this.winnerUid,
       this.isFinished,
+      this.endDate,
       this.likesCount});
 
   factory Post.fromDoc(DocumentSnapshot doc) {
@@ -68,6 +70,7 @@ class Post {
       task3TypeShared: doc.data()['task3TypeShared'],
       description: doc.data()['description'],
       winner: doc.data()['winner'],
+      endDate: doc.data()['endDate'],
       winnerId: doc.data()['winnerId'],
       winnerUid: doc.data()['winnerUid'],
       isFinished: doc.data()['isFinished'],
