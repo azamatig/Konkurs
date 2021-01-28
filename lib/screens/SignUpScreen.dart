@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/services/auth_service.dart';
+import 'package:konkurs_app/utilities/constants.dart';
 
 class SignupScreen extends StatefulWidget {
   static final String id = 'signup_screen';
@@ -12,10 +13,15 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   String _phone, _name, _email, _password;
+  bool _isLoading = false;
 
   _submit() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+
+      setState(() {
+        _isLoading = true;
+      });
       // Logging in the user w/ Firebase
       AuthService.signUpUser(context, _phone, _name, _email, _password);
     }
@@ -169,24 +175,31 @@ class _SignupScreenState extends State<SignupScreen> {
                             _submit();
                           },
                           child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "Регистрация",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 17),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  FontAwesomeIcons.arrowCircleRight,
-                                  color: Colors.orangeAccent,
-                                )
-                              ],
-                            ),
+                            child: _isLoading
+                                ? CircularProgressIndicator(
+                                    backgroundColor: LightColors.kLightYellow,
+                                    valueColor: AlwaysStoppedAnimation(
+                                        LightColors.kBlue),
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Регистрация",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 17),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Icon(
+                                        FontAwesomeIcons.arrowCircleRight,
+                                        color: Colors.orangeAccent,
+                                      )
+                                    ],
+                                  ),
                           ),
                         ),
                         SizedBox(height: 20.0),
