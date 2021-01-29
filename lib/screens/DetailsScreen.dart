@@ -503,6 +503,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               {
                                 setParticipate(),
                                 showAchievementView1(context),
+                                getParticipants(),
                               }
                           },
                           color: participants.contains(widget.userId)
