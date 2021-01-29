@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/services/auth_service.dart';
+import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 
-class SplashScreen extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
-  String _email, _password;
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
+class _SplashScreenState extends State<SplashScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  String _email, _password;
+  bool _isLoading = false;
   _submit() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       // Logging in the user w/ Firebase
+      setState(() {
+        _isLoading = true;
+      });
+
       AuthService.login(_email, _password);
     }
   }
@@ -72,24 +83,29 @@ class SplashScreen extends StatelessWidget {
                 onTap: () {
                   _submit();
                 },
-                child: Container(
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        "Войти",
-                        style:
-                            TextStyle(color: Colors.orangeAccent, fontSize: 17),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Colors.orangeAccent,
+                child: _isLoading
+                    ? LinearProgressIndicator(
+                        backgroundColor: LightColors.kLightYellow2,
+                        valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
                       )
-                    ],
-                  ),
-                ),
+                    : Container(
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Войти",
+                              style: TextStyle(
+                                  color: Colors.orangeAccent, fontSize: 17),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: Colors.orangeAccent,
+                            )
+                          ],
+                        ),
+                      ),
               ),
               Form(
                 key: _formKey,
