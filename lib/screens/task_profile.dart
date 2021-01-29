@@ -100,7 +100,11 @@ class _TaskProfileListState extends State<TaskProfileList> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
+                  return Center(
+                      child: LinearProgressIndicator(
+                          backgroundColor: LightColors.kLightYellow2,
+                          valueColor:
+                              AlwaysStoppedAnimation(LightColors.kBlue)));
                 }
                 return SingleChildScrollView(
                   child: ConstrainedBox(

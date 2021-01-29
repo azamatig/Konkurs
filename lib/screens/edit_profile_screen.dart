@@ -118,8 +118,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: <Widget>[
               _isLoading
                   ? LinearProgressIndicator(
-                      backgroundColor: Colors.blue[200],
-                      valueColor: AlwaysStoppedAnimation(Colors.blue),
+                      backgroundColor: LightColors.kLightYellow2,
+                      valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
                     )
                   : SizedBox.shrink(),
               Padding(
