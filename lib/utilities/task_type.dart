@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:konkurs_app/screens/svinstagram/instaEmbed.dart';
 import 'package:social_share/social_share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TaskType {
   File file;
@@ -10,8 +13,9 @@ class TaskType {
   void setInsta() async {
     PickedFile pick = await _picker.getImage(source: ImageSource.gallery);
     file = File(pick.path);
-    SocialShare.shareInstagramStory(
-            file.path, "#ffffff", "#000000", "https://this-is-a-test")
+    SocialShare.checkInstalledAppsForShare();
+    SocialShare.shareInstagramStory(file.path, "#ffffff", "#000000",
+            "https://www.facebook.com/pegastouristik")
         .then((data) {
       print(data);
     });
@@ -38,8 +42,27 @@ class TaskType {
   void setFacebook() async {
     PickedFile pick = await _picker.getImage(source: ImageSource.gallery);
     file = File(pick.path);
-    SocialShare.shareFacebookStory(
-        file.path, "#ffffff", "#000000", "https://this-is-a-test",
+    SocialShare.shareFacebookStory(file.path, "#ffffff", "#000000",
+        "https://www.facebook.com/pegastouristik",
         appId: "229775418626099");
+  }
+
+  void setUrl(String urlString) async {
+    var url = urlString;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void setInstaEmbed(BuildContext context, String url) async {
+    print('$url');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => InstaEmbed(
+                  instaUrl: url,
+                )));
   }
 }

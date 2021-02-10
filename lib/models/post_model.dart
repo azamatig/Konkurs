@@ -14,6 +14,12 @@ class Post {
   final dynamic task1TypeShared;
   final dynamic task2TypeShared;
   final dynamic task3TypeShared;
+  final String task1CustomTypeLink;
+  final String task2CustomTypeLink;
+  final String task3CustomTypeLink;
+  final String task1InstaLink;
+  final String task2InstaLink;
+  final String task3InstaLink;
   final String task2;
   final String task2Type;
   final String task3;
@@ -48,6 +54,12 @@ class Post {
       this.winnerUid,
       this.isFinished,
       this.endDate,
+      this.task1CustomTypeLink,
+      this.task2CustomTypeLink,
+      this.task3CustomTypeLink,
+      this.task1InstaLink,
+      this.task2InstaLink,
+      this.task3InstaLink,
       this.likesCount});
 
   factory Post.fromDoc(DocumentSnapshot doc) {

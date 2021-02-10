@@ -51,3 +51,9 @@ class LightColors {
 
   static const Color kDarkBlue = Color(0xFF0D253F);
 }
+
+class InstagramApiConstants {
+  static const igClientId = "180791680501065";
+  static const igClientSecret = "9ae0b395f19b0d1a649339533a9633c0";
+  static const igRedirectURL = "https://pegast.ru/";
+}

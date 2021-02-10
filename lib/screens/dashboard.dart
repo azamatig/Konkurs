@@ -7,6 +7,10 @@ import 'package:konkurs_app/screens/task_profile.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_auth/simple_auth.dart' as simpleAuth;
+import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 import 'my_wins.dart';
 import 'settings.dart';
 
@@ -27,6 +31,10 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Color _borderContainer;
   bool colorSwitched = false;
   var logoImage;
+  String _errorMsg;
+  Map _userData;
+  bool _isSignedIn = false;
+  bool get isSignedIn => _isSignedIn;
 
   void changeTheme() async {
     if (colorSwitched) {
@@ -70,9 +78,61 @@ class _DashBoardPageState extends State<DashBoardPage> {
     }
   }
 
+  Future setSignIn() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool('signed_in', true);
+    _isSignedIn = true;
+  }
+
+  void checkSignIn() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    _isSignedIn = sp.getBool('signed_in') ?? false;
+  }
+
+  final simpleAuth.InstagramApi _igApi = simpleAuth.InstagramApi(
+    "instagram",
+    InstagramApiConstants.igClientId,
+    InstagramApiConstants.igClientSecret,
+    InstagramApiConstants.igRedirectURL,
+    scopes: [
+      'user_profile', // For getting username, account type, etc.
+      'user_media', // For accessing media count & data like posts, videos etc.
+    ],
+  );
+
+  Future<void> _loginAndGetData() async {
+    _igApi.authenticate().then(
+      (simpleAuth.Account _user) async {
+        simpleAuth.OAuthAccount user = _user;
+
+        var igUserResponse =
+            await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
+          '/me',
+          queryParameters: {
+            // Get the fields you need.
+            // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
+            "fields": "username,id,account_type,media_count",
+            "access_token": user.token,
+          },
+        );
+        setState(() {
+          _userData = igUserResponse.data;
+          _errorMsg = null;
+          setSignIn();
+        });
+      },
+    ).catchError(
+      (Object e) {
+        setState(() => _errorMsg = e.toString());
+      },
+    );
+  }
+
   @override
   void initState() {
     changeTheme();
+    checkSignIn();
+    SimpleAuthFlutter.init(context);
     super.initState();
   }
 
@@ -141,9 +201,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
                       CircleAvatar(
                           radius: 60,
                           backgroundImage: CachedNetworkImageProvider(
@@ -161,7 +218,25 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                 fontSize: 24,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
-                          )
+                          ),
+                          FlatButton(
+                            onPressed: () => {
+                              _isSignedIn == false ? _loginAndGetData : null
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.instagram,
+                                  size: 25,
+                                ),
+                                _isSignedIn == false
+                                    ? Text('Подключить instagram')
+                                    : Text('Вы подключены к Инстаграм'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                       Container(
@@ -257,17 +332,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     ]),
                                     TableRow(children: [
                                       GestureDetector(
-                                        child: _actionList(
-                                            'assets/images/ic_transact.png',
-                                            'Настройки'),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Settings(user)));
-                                        }
-                                      ),
+                                          child: _actionList(
+                                              'assets/images/ic_transact.png',
+                                              'Настройки'),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Settings(user)));
+                                          }),
                                       GestureDetector(
                                         onTap: () {
                                           Navigator.push(

@@ -40,19 +40,6 @@ TaskType tasks = TaskType();
 File file;
 DatabaseService ds = DatabaseService();
 
-void sharing(String type) async {
-  switch (type) {
-    case ('instagram'):
-      return tasks.setInsta();
-    case ('tweeter'):
-      return tasks.setTweet();
-    case ('system'):
-      return tasks.setSystem();
-    case ('facebook'):
-      return tasks.setFacebook();
-  }
-}
-
 class _TaskProfileListState extends State<TaskProfileList> {
   String userName;
   String userPhoto;

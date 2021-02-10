@@ -25,6 +25,12 @@ class DetailsScreen extends StatefulWidget {
   final String task2;
   final String task3;
   final String prize;
+  final String customLink1;
+  final String customLink2;
+  final String customLink3;
+  final String instaLink1;
+  final String instaLink2;
+  final String instaLink3;
   final Timestamp date;
   final bool isShared;
   final String docId;
@@ -53,6 +59,12 @@ class DetailsScreen extends StatefulWidget {
       this.date,
       this.endDate,
       this.likesCount,
+      this.customLink1,
+      this.customLink2,
+      this.customLink3,
+      this.instaLink1,
+      this.instaLink2,
+      this.instaLink3,
       this.winner});
 
   @override
@@ -556,6 +568,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               shares: shares,
                               shares2: shares2,
                               shares3: shares3,
+                              customLink1: widget.customLink1,
+                              customLink2: widget.customLink2,
+                              customLink3: widget.customLink3,
+                              instaLink1: widget.instaLink1,
+                              instaLink2: widget.instaLink2,
+                              instaLink3: widget.instaLink3,
                               dates: widget.date,
                               task1: widget.task1,
                               task2: widget.task2,

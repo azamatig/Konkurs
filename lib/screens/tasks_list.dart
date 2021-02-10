@@ -20,6 +20,12 @@ class TaskList extends StatefulWidget {
   final String task1type;
   final String task2type;
   final String task3type;
+  final String instaLink1;
+  final String instaLink2;
+  final String instaLink3;
+  final String customLink1;
+  final String customLink2;
+  final String customLink3;
   final List shares;
   final List shares2;
   final List shares3;
@@ -44,6 +50,12 @@ class TaskList extends StatefulWidget {
       this.docRef,
       this.currentUser,
       this.postIsLiked,
+      this.customLink1,
+      this.customLink2,
+      this.customLink3,
+      this.instaLink1,
+      this.instaLink2,
+      this.instaLink3,
       this.user})
       : super(key: key);
 
@@ -57,17 +69,23 @@ AnimationController _animationController;
 Animation _animation;
 Animation _animation2;
 File file;
+String urlString;
 
-void sharing(String type) async {
+void sharing(
+    BuildContext context, String type, String url, String instaUrl) async {
   switch (type) {
-    case ('instagram'):
+    case ('сторис в instagram'):
       return tasks.setInsta();
-    case ('tweeter'):
+    case (' репост в twitter'):
       return tasks.setTweet();
-    case ('system'):
+    case ('задание в GiveApp'):
       return tasks.setSystem();
-    case ('facebook'):
+    case ('сторис в facebook'):
       return tasks.setFacebook();
+    case ('произвольное задание'):
+      return tasks.setUrl(url);
+    case ('подписаться на instagram'):
+      return tasks.setUrl(instaUrl);
   }
 }
 
@@ -226,7 +244,8 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                 onTap: () {
                                   if (widget.shares.contains(widget.userId)) {
                                   } else {
-                                    if (widget.task1type == 'comment') {
+                                    if (widget.task1type ==
+                                        'комментарий под конкурсом') {
                                       awardPoints();
                                       Navigator.push(
                                           context,
@@ -239,7 +258,11 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                                   )));
                                     } else {
                                       awardPoints();
-                                      sharing(widget.task1type);
+                                      sharing(
+                                          context,
+                                          widget.task1type,
+                                          widget.customLink1,
+                                          widget.instaLink1);
                                     }
                                     if (widget.shares.contains(widget.userId)) {
                                     } else {
@@ -274,7 +297,8 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                 onTap: () {
                                   if (widget.shares2.contains(widget.userId)) {
                                   } else {
-                                    if (widget.task2type == 'comment') {
+                                    if (widget.task2type ==
+                                        'комментарий под конкурсом') {
                                       awardPoints();
                                       Navigator.push(
                                           context,
@@ -286,7 +310,11 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                                     user: widget.currentUser,
                                                   )));
                                     } else {
-                                      sharing(widget.task2type);
+                                      sharing(
+                                          context,
+                                          widget.task2type,
+                                          widget.customLink2,
+                                          widget.instaLink2);
                                       awardPoints();
                                     }
                                     if (widget.shares2
@@ -323,7 +351,8 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                 onTap: () {
                                   if (widget.shares3.contains(widget.userId)) {
                                   } else {
-                                    if (widget.task3type == 'comment') {
+                                    if (widget.task3type ==
+                                        'комментарий под конкурсом') {
                                       awardPoints();
                                       Navigator.push(
                                           context,
@@ -335,7 +364,11 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                                     user: widget.currentUser,
                                                   )));
                                     } else {
-                                      sharing(widget.task3type);
+                                      sharing(
+                                          context,
+                                          widget.task3type,
+                                          widget.customLink3,
+                                          widget.instaLink3);
                                       awardPoints();
                                     }
                                     if (widget.shares3
