@@ -54,6 +54,9 @@ dependencies:
   simple_auth_flutter: ^2.0.7
   dio: ^3.0.9
   webview_flutter: ^1.0.7
+  firebase_messaging: ^7.0.3
+  overlay_support: ^1.0.5
+
 
 dev_dependencies:
   flutter_test:

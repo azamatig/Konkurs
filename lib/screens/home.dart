@@ -19,6 +19,7 @@ import 'closed_giveaways.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:konkurs_app/screens/notifications.dart';
+import 'package:konkurs_app/utilities/PushNotifications.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static final String id = 'feed_screen';
@@ -45,9 +46,14 @@ class _HomeScreen1State extends State<HomeScreen1>
   CalendarController _calendarController;
   bool isSelected;
 
+  initPush() async {
+    await PushNotifications().initialise();
+  }
   @override
   void initState() {
     super.initState();
+    PushNotifications().userId = widget.currentUserId;
+    initPush();
     eventsType = getEventTypes();
     service.fetchUserDetailsById(widget.currentUserId).then((user) => {
           setState(() {
