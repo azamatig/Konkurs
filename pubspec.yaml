@@ -50,6 +50,8 @@ dependencies:
   dio: ^3.0.10
   another_flushbar: ^1.10.8
   firebase_admob: ^0.11.0+1
+  firebase_messaging: 8.0.0-dev.14
+  overlay_support: ^1.0.5
   nanoid: ^0.1.0
 
 dev_dependencies:

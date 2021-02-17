@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:konkurs_app/screens/home.dart';
 
 class Notifications extends StatefulWidget {
+  static final String id = 'notifications';
   @override
   _NotificationsState createState() => _NotificationsState();
 }

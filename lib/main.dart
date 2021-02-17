@@ -5,8 +5,13 @@ import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/LoginScreen.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/screens/home.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'utilities/PushNotifications.dart';
+import 'package:konkurs_app/screens/notifications.dart';
+import 'utilities/constants.dart';
+import 'screens/AchievementView.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,20 +42,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => UserData(),
-      child: MaterialApp(
-        title: 'GivrApp',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
-                color: Colors.black,
-              ),
+      child: OverlaySupport(
+        child: MaterialApp(
+          title: 'GivrApp',
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
+                  color: Colors.black,
+                ),
+          ),
+          home: _getScreenId(),
+          routes: {
+            LoginScreen.id: (context) => LoginScreen(),
+            SignupScreen.id: (context) => SignupScreen(),
+            HomeScreen1.id: (context) => HomeScreen1(),
+            Notifications.id: (context) => Notifications(),
+          },
         ),
-        home: _getScreenId(),
-        routes: {
-          LoginScreen.id: (context) => LoginScreen(),
-          SignupScreen.id: (context) => SignupScreen(),
-          HomeScreen1.id: (context) => HomeScreen1(),
-        },
       ),
     );
   }

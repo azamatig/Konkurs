@@ -8,6 +8,8 @@ final storageRef = FirebaseStorage.instance.ref();
 final usersRef = _firestore.collection('users');
 final postsRef = _firestore.collection('post');
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 String formatOnlyDate(DateTime dateTime) {
   if (dateTime == null) {
     return ' ';
