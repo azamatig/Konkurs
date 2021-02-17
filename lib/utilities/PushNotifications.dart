@@ -23,44 +23,16 @@ class PushNotifications {
 
   Future initialise() async {
     if (Platform.isIOS) {
-      _fcm.requestNotificationPermissions(IosNotificationSettings());
+      _fcm.requestPermission();
     }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
 
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        var notificationData = message['data'];
-        if((notificationData['type'] == '1' && notificationData['to'] == userId.toString()) || notificationData['type'] == '0') {
-          _firestore
-              .collection('/users')
-              .doc(userId)
-              .collection('notifications')
-              .doc()
-              .set({
-            'is_Unread': true,
-            'message': notificationData['message'],
-            'title': notificationData['title'],
-            'ts': FieldValue.serverTimestamp(),
-            'type': 1,
-          });
-          showSimpleNotification(
-            Text(notificationData['title'], style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black),),
-            position: NotificationPosition.top,
-            background: Colors.white,
-            leading: Image.asset(
-              "assets/images/logo.png",
-              //height: 20,
-            ),
-            subtitle: Text(notificationData['message'],
-                style: TextStyle(color: Colors.black)),
-            //trailing: Text(notificationData['title']),
-          );
-        }
-        //notificationNavigation(message);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        var notificationData = message['data'];
-
+      var notificationData = message.data;
+      if ((notificationData['type'] == '1' &&
+              notificationData['to'] == userId.toString()) ||
+          notificationData['type'] == '0') {
         _firestore
             .collection('/users')
             .doc(userId)
@@ -73,29 +45,31 @@ class PushNotifications {
           'ts': FieldValue.serverTimestamp(),
           'type': 1,
         });
-        notificationNavigation(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        var notificationData = message['data'];
+        showSimpleNotification(
+          Text(
+            notificationData['title'],
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          position: NotificationPosition.top,
+          background: Colors.white,
+          leading: Image.asset(
+            "assets/images/logo.png",
+            //height: 20,
+          ),
+          subtitle: Text(notificationData['message'],
+              style: TextStyle(color: Colors.black)),
+          //trailing: Text(notificationData['title']),
+        );
+      }
+    });
 
-        _firestore
-            .collection('/users')
-            .doc(userId)
-            .collection('notifications')
-            .doc()
-            .set({
-          'is_Unread': true,
-          'message': notificationData['message'],
-          'title': notificationData['title'],
-          'ts': FieldValue.serverTimestamp(),
-          'type': 1,
-        });
-        notificationNavigation(message);
-      },
-    );
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      notificationNavigation(message.data);
+    });
   }
 
-  notificationNavigation(Map<String, dynamic> message){
+  notificationNavigation(Map<String, dynamic> message) {
     navigatorKey.currentState.pushNamed(Notifications.id);
   }
 }

@@ -53,6 +53,7 @@ dependencies:
   firebase_messaging: 8.0.0-dev.14
   overlay_support: ^1.0.5
   nanoid: ^0.1.0
+  flutter_local_notifications: ^4.0.1
 
 dev_dependencies:
   flutter_test:

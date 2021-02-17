@@ -37,7 +37,7 @@ class _NotificationsState extends State<Notifications> {
               child: CircularProgressIndicator(),
             );
           }
-          final notifications = snapshot.data.documents; //.reversed;
+          final notifications = snapshot.data.docs; //.reversed;
           List<Widget> notificationWidgets = [];
           for (var v in notifications) {
             var message = v.data()['message'];
