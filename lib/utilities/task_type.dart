@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:konkurs_app/screens/svinstagram/instaEmbed.dart';
+import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/comments_screen.dart';
 import 'package:social_share/social_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -56,13 +58,15 @@ class TaskType {
     }
   }
 
-  void setInstaEmbed(BuildContext context, String url) async {
-    print('$url');
+  void setGiveComment(
+      BuildContext context, String userId, DocumentReference ref, User user) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (_) => InstaEmbed(
-                  instaUrl: url,
+            builder: (_) => CommentsScreen(
+                  userId: userId,
+                  documentReference: ref,
+                  user: user,
                 )));
   }
 }

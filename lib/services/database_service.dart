@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:konkurs_app/models/message.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -9,9 +9,9 @@ import 'package:konkurs_app/utilities/constants.dart';
 
 class DatabaseService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  StorageReference _storageReference;
+  Reference _storageReference;
   final _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   Message _message;
 
   static void updateUser(User user) {
@@ -36,9 +36,9 @@ class DatabaseService {
     return post;
   }
 
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser currentUser;
-    currentUser = await _auth.currentUser();
+  Future<auth.User> getCurrentUser() async {
+    auth.User currentUser;
+    currentUser = _auth.currentUser;
     return currentUser;
   }
 
@@ -58,7 +58,7 @@ class DatabaseService {
         .add(map);
   }
 
-  Future<List<User>> fetchAllUsers(FirebaseUser user) async {
+  Future<List<User>> fetchAllUsers(auth.User user) async {
     List<User> userList = List<User>();
     QuerySnapshot querySnapshot = await _firestore.collection("users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
@@ -75,8 +75,8 @@ class DatabaseService {
     _storageReference = FirebaseStorage.instance
         .ref()
         .child('${DateTime.now().millisecondsSinceEpoch}');
-    StorageUploadTask storageUploadTask = _storageReference.putFile(imageFile);
-    var url = await (await storageUploadTask.onComplete).ref.getDownloadURL();
+    UploadTask storageUploadTask = _storageReference.putFile(imageFile);
+    var url = await (await storageUploadTask).ref.getDownloadURL();
     return url;
   }
 
@@ -84,7 +84,7 @@ class DatabaseService {
     User currentUser;
     FirebaseFirestore.instance
         .collection('users')
-        .doc((await FirebaseAuth.instance.currentUser()).uid)
+        .doc((auth.FirebaseAuth.instance.currentUser).uid)
         .get();
     return currentUser;
   }

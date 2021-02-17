@@ -64,7 +64,7 @@ class Post {
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
-      id: doc.id,
+      id: doc.data()['postId'],
       name: doc.data()['name'],
       imagepost: doc.data()['imagepost'],
       prize: doc.data()['prize'],

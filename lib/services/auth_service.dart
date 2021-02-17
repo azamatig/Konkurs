@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:provider/provider.dart';
 
 class AuthService {
-  static final _auth = FirebaseAuth.instance;
+  static final _auth = auth.FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
 
   static void signUpUser(BuildContext context, String phone, String name,
@@ -13,11 +13,12 @@ class AuthService {
     var placeholder =
         'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
     try {
-      AuthResult authResult = await _auth.createUserWithEmailAndPassword(
+      auth.UserCredential authResult =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      FirebaseUser signedInUser = authResult.user;
+      auth.User signedInUser = authResult.user;
       if (signedInUser != null) {
         _firestore.collection('/users').doc(signedInUser.uid).set({
           'name': name,

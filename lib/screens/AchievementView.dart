@@ -1,36 +1,57 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:achievement_view/achievement_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 bool pushIsOn = true;
 
 void showAchievementView1(BuildContext context) {
-  if(pushIsOn)
-  AchievementView(context,
-      title: "Ура!", subTitle: "Вы теперь участник конкурса!",
-      //onTab: _onTabAchievement,
-      //icon: Icon(Icons.insert_emoticon, color: Colors.white,),
-      //typeAnimationContent: AnimationTypeAchievement.fadeSlideToUp,
-      //borderRadius: 5.0,
-      //color: Colors.blueGrey,
-      //textStyleTitle: TextStyle(),
-      //textStyleSubTitle: TextStyle(),
-      //alignment: Alignment.topCenter,
-      //duration: Duration(seconds: 3),
-      //isCircle: false,
-      listener: (status) {
-    //AchievementState.opening
-    //AchievementState.open
-    //AchievementState.closing
-    //AchievementState.closed
-  })
-    ..show();
+  if (pushIsOn)
+    Flushbar(
+        title: "Ура!",
+        message: "Вы теперь участник конкурса!",
+        flushbarStyle: FlushbarStyle.FLOATING,
+        flushbarPosition: FlushbarPosition.TOP,
+        icon: Icon(
+          FontAwesomeIcons.checkCircle,
+          color: Colors.green[300],
+        ),
+        leftBarIndicatorColor: Colors.green[300],
+        duration: Duration(seconds: 3))
+      ..show(context);
 }
 
-void showAchievementView2(BuildContext context, var title, var subTitle) {
-  if(pushIsOn)
-    AchievementView(context,
-        title: title, subTitle: subTitle,
-        listener: (status) {
-        })
-      ..show();
+void showAchievementView2(BuildContext context, var title, var message) {
+  if (pushIsOn)
+    Flushbar(
+        maxWidth: 250,
+        icon: Icon(
+          FontAwesomeIcons.infoCircle,
+          size: 28.0,
+          color: Colors.blue[300],
+        ),
+        flushbarStyle: FlushbarStyle.FLOATING,
+        leftBarIndicatorColor: Colors.blue[300],
+        flushbarPosition: FlushbarPosition.TOP,
+        title: title,
+        message: message,
+        duration: Duration(seconds: 3))
+      ..show(context);
+}
+
+void showError(BuildContext context, var title, var message) {
+  if (pushIsOn)
+    Flushbar(
+        maxWidth: 250,
+        icon: Icon(
+          FontAwesomeIcons.times,
+          size: 28.0,
+          color: Colors.red[300],
+        ),
+        flushbarStyle: FlushbarStyle.FLOATING,
+        leftBarIndicatorColor: Colors.red[300],
+        flushbarPosition: FlushbarPosition.TOP,
+        title: title,
+        message: message,
+        duration: Duration(seconds: 3))
+      ..show(context);
 }

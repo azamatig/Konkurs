@@ -15,9 +15,10 @@ import 'my_wins.dart';
 import 'settings.dart';
 
 class DashBoardPage extends StatefulWidget {
-  final userId;
+  final String userId;
+  final String userPhoto;
 
-  DashBoardPage(this.userId);
+  DashBoardPage(this.userId, this.userPhoto);
 
   @override
   _DashBoardPageState createState() => _DashBoardPageState();
@@ -271,6 +272,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         Icon(
                                           FontAwesomeIcons.coins,
                                           size: 30,
+                                          color: _iconColor,
                                         ),
                                         Text(
                                           user.points.toString(),
@@ -322,8 +324,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MyWins(widget.userId)));
+                                                  builder: (context) => MyWins(
+                                                      widget.userId,
+                                                      widget.userPhoto)));
                                         },
                                         child: _actionList(
                                             'assets/images/ic_money.png',

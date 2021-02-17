@@ -7,6 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:konkurs_app/models/user_data.dart';
 
 class AllGiveaways extends StatefulWidget {
+  final String userPhoto;
+
+  const AllGiveaways({Key key, this.userPhoto}) : super(key: key);
+
   @override
   _AllGiveawaysState createState() => _AllGiveawaysState();
 }
@@ -132,23 +136,12 @@ class _AllGiveawaysState extends State<AllGiveaways> {
               docId: d.id,
               docRef: document.reference,
               date: d.date,
+              userPhoto: widget.userPhoto,
               userId: Provider.of<UserData>(context).currentUserId,
-              isShared: d.shared,
-              prize: d.prize,
-              task1: d.task1,
-              task2: d.task2,
-              task3: d.task3,
-              customLink1: d.task1CustomTypeLink,
-              customLink2: d.task2CustomTypeLink,
-              customLink3: d.task3CustomTypeLink,
-              instaLink1: d.task1InstaLink,
-              instaLink2: d.task2InstaLink,
-              instaLink3: d.task3InstaLink,
+              instaLink1: document.data()['task1InstaLink'],
+              instaLink2: document.data()['task2InstaLink'],
+              instaLink3: document.data()['task3InstaLink'],
               endDate: d.endDate,
-              postImage: d.imagepost,
-              postName: d.name,
-              postDesc: d.description,
-              isFinished: d.isFinished,
               likesCount: d.likesCount,
             ),
           ),

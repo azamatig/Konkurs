@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:konkurs_app/models/user_data.dart';
 
 class MyWins extends StatefulWidget {
-  final userId;
-  MyWins(this.userId);
+  final String userPhoto;
+  final String userId;
+  MyWins(this.userId, this.userPhoto);
 
   @override
   _MyWinsState createState() => _MyWinsState();
@@ -138,18 +139,12 @@ class _MyWinsState extends State<MyWins> {
               docId: d.id,
               docRef: document.reference,
               date: d.date,
+              userPhoto: widget.userPhoto,
               userId: Provider.of<UserData>(context).currentUserId,
-              isShared: d.shared,
-              prize: d.prize,
-              task1: d.task1,
-              task2: d.task2,
-              task3: d.task3,
-              winner: d.winner,
+              instaLink1: document.data()['task1InstaLink'],
+              instaLink2: document.data()['task2InstaLink'],
+              instaLink3: document.data()['task3InstaLink'],
               endDate: d.endDate,
-              postImage: d.imagepost,
-              postName: d.name,
-              postDesc: d.description,
-              isFinished: d.isFinished,
               likesCount: d.likesCount,
             ),
           ),

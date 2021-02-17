@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:konkurs_app/models/date_model.dart';
 import 'package:konkurs_app/models/event.dart';
-import 'package:konkurs_app/models/event_type.dart';
 import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
 import 'package:konkurs_app/services/auth_service.dart';
@@ -36,9 +37,11 @@ String userId;
 
 class _HomeScreen1State extends State<HomeScreen1>
     with TickerProviderStateMixin {
-  List<DateModel> dates = List<DateModel>();
-  List<EventTypeModel> eventsType = List();
-  List<EventsModel> events = List<EventsModel>();
+  GlobalKey<ScaffoldMessengerState> scaffoldState =
+      GlobalKey<ScaffoldMessengerState>();
+  // List<DateModel> dates = List<DateModel>();
+  List<EventTypeModel> eventsType;
+  // List<EventsModel> events = List<EventsModel>();
   DatabaseService service = DatabaseService();
   final db = FirebaseFirestore.instance;
   AnimationController _animationController;
@@ -96,6 +99,7 @@ class _HomeScreen1State extends State<HomeScreen1>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldState,
       body: GestureDetector(
         onTap: () {
           if (SimpleAccountMenu.isMenuOpen) {
@@ -176,7 +180,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                         );
                                       }
                                       final notification =
-                                          snapshot.data.documents[0];
+                                          snapshot.data.docs[0];
                                       return notification.data()['is_Unread']
                                           ? Stack(
                                               children: <Widget>[
@@ -247,7 +251,8 @@ class _HomeScreen1State extends State<HomeScreen1>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  DashBoardPage(userId)));
+                                                  DashBoardPage(
+                                                      userId, userPhoto)));
                                     }
                                     break;
                                   case 1:
@@ -256,9 +261,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                           .shareToSystem(
                                               msg:
                                                   'ссылка на приложение будет здесь');
-                                      if (response == 'success') {
-                                        print('navigate success');
-                                      }
+                                      if (response == 'success') {}
                                     }
                                     break;
                                   case 2:
@@ -291,7 +294,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                 height: 6,
                               ),
                               Text(
-                                "Вот последние данные по конкурсам.",
+                                "Добро пожаловать к нам!",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )
@@ -309,7 +312,8 @@ class _HomeScreen1State extends State<HomeScreen1>
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => DashBoardPage(userId)),
+                                    builder: (_) =>
+                                        DashBoardPage(userId, userPhoto)),
                               );
                             },
                             child: Container(
@@ -380,7 +384,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                               );
                             }
                             return SizedBox();
-                          })
+                          }),
                     ],
                   ),
                 ),
@@ -392,7 +396,7 @@ class _HomeScreen1State extends State<HomeScreen1>
     );
   }
 
-  var arr = new List(7);
+  var arr = List(7);
 
   Widget _buildTableCalendarWithBuilders() {
     arr[0] = "Пн";
@@ -524,6 +528,7 @@ class _HomeScreen1State extends State<HomeScreen1>
 
   Widget buildItems(DocumentSnapshot doc) {
     return PopularEventTile(
+      userId: Provider.of<UserData>(context).currentUserId,
       doc: doc,
       desc: doc.data()['description'],
       imgeAssetPath: doc.data()['imagepost'],
@@ -590,8 +595,12 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AllGiveaways()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AllGiveaways(
+                            userPhoto: userPhoto,
+                          )));
             }
             break;
           case "Мои участия":
@@ -601,8 +610,10 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyGiveaways(userId)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyGiveaways(userId, userPhoto)));
             }
             break;
           case "Завершенные":
@@ -612,8 +623,12 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ClosedGiveaways()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ClosedGiveaways(
+                            userPhoto: userPhoto,
+                          )));
             }
             break;
         }
@@ -649,18 +664,25 @@ class EventTile extends StatelessWidget {
 class PopularEventTile extends StatelessWidget {
   String desc;
   Timestamp date;
+  String userId;
   String name;
   String imgeAssetPath;
   DocumentSnapshot doc;
+  final db = FirebaseFirestore.instance;
 
   /// later can be changed with imgUrl
   PopularEventTile(
-      {this.name, this.date, this.imgeAssetPath, this.desc, this.doc});
+      {this.name,
+      this.date,
+      this.imgeAssetPath,
+      this.desc,
+      this.doc,
+      this.userId});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (SimpleAccountMenu.isMenuOpen) {
           SimpleAccountMenu.overlayEntry.remove();
           SimpleAccountMenu.animationController.reverse();
@@ -673,23 +695,12 @@ class PopularEventTile extends StatelessWidget {
                       docId: doc.id,
                       docRef: doc.reference,
                       date: doc.data()['date'],
-                      userId: Provider.of<UserData>(context).currentUserId,
-                      isShared: doc.data()['shared'],
-                      prize: doc.data()['prize'],
-                      task1: doc.data()['task1'],
-                      task2: doc.data()['task2'],
-                      customLink1: doc.data()['task1CustomTypeLink'],
-                      customLink2: doc.data()['task2CustomTypeLink'],
-                      customLink3: doc.data()['task3CustomTypeLink'],
+                      userId: userId,
+                      userPhoto: userPhoto,
                       instaLink1: doc.data()['task1InstaLink'],
                       instaLink2: doc.data()['task2InstaLink'],
                       instaLink3: doc.data()['task3InstaLink'],
                       endDate: doc.data()['endDate'],
-                      task3: doc.data()['task3'],
-                      postImage: doc.data()['imagepost'],
-                      postName: doc.data()['name'],
-                      postDesc: doc.data()['description'],
-                      isFinished: doc.data()['isFinished'],
                       likesCount: doc.data()['likesCount'],
                     )));
       },

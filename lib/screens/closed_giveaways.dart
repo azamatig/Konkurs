@@ -7,6 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:konkurs_app/models/user_data.dart';
 
 class ClosedGiveaways extends StatefulWidget {
+  final String userPhoto;
+
+  const ClosedGiveaways({
+    Key key,
+    this.userPhoto,
+  }) : super(key: key);
   @override
   _ClosedGiveawaysState createState() => _ClosedGiveawaysState();
 }
@@ -132,17 +138,12 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
               docId: d.id,
               docRef: document.reference,
               date: d.date,
+              userPhoto: widget.userPhoto,
               userId: Provider.of<UserData>(context).currentUserId,
-              isShared: d.shared,
-              prize: d.prize,
-              task1: d.task1,
-              task2: d.task2,
+              instaLink1: document.data()['task1InstaLink'],
+              instaLink2: document.data()['task2InstaLink'],
+              instaLink3: document.data()['task3InstaLink'],
               endDate: d.endDate,
-              task3: d.task3,
-              postImage: d.imagepost,
-              postName: d.name,
-              postDesc: d.description,
-              isFinished: d.isFinished,
               likesCount: d.likesCount,
             ),
           ),

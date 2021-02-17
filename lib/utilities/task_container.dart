@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'constants.dart';
-
 class TaskContainer extends StatelessWidget {
   final String title;
   final String subtitle;

@@ -63,9 +63,7 @@ class _TaskProfileListState extends State<TaskProfileList> {
     DocumentSnapshot document = await db.collection('post').doc(id).get();
     shares = document['task1TypeShared'];
     shares2 = document['task2TypeShared'];
-    print(shares2);
     shares3 = document['task3TypeShared'];
-    print(shares3);
   }
 
   @override
@@ -146,7 +144,7 @@ class _TaskProfileListState extends State<TaskProfileList> {
 
   FutureBuilder _buildList(DocumentSnapshot doc) {
     Post post = Post.fromDoc(doc);
-    if (doc.exists == true) {
+    if (doc != null) {
       return FutureBuilder(
           future: getShared(doc.id),
           builder: (context, snapshot) {
@@ -321,5 +319,6 @@ class _TaskProfileListState extends State<TaskProfileList> {
             );
           });
     }
+    return null;
   }
 }

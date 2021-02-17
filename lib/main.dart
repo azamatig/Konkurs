@@ -17,8 +17,8 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   Widget _getScreenId() {
-    return StreamBuilder<FirebaseUser>(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
+    return StreamBuilder<User>(
+      stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      builder: (context) => UserData(),
+      create: (context) => UserData(),
       child: MaterialApp(
         title: 'GivrApp',
         debugShowCheckedModeBanner: false,

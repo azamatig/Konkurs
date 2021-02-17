@@ -18,10 +18,10 @@ class StorageService {
       photoId = exp.firstMatch(url)[1];
     }*/
 
-    StorageUploadTask uploadTask = storageRef
+    UploadTask uploadTask = storageRef
         .child('images/users/userProfile_$photoId.jpg')
         .putFile(image);
-    StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
+    TaskSnapshot storageSnap = await uploadTask;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
   }
