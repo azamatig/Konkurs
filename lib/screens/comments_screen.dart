@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -83,16 +84,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
             margin: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: <Widget>[
-                Container(
-                  width: 40.0,
-                  height: 40.0,
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 4.0, vertical: 4.0),
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40.0),
-                      image: DecorationImage(
-                          image: NetworkImage(userImg.profileImageUrl))),
+                CircleAvatar(
+                  radius: 15,
+                  backgroundImage:
+                      CachedNetworkImageProvider(userImg.profileImageUrl),
                 ),
                 Flexible(
                   child: Padding(
