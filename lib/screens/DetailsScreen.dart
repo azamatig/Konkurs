@@ -7,6 +7,7 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/all_users_giveaways.dart';
 import 'package:konkurs_app/screens/tasks_list.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/prize_widget.dart';
@@ -452,25 +453,36 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        post.people.contains(widget.userId)
-                            ? Row(
-                                children: [
-                                  Text('Вы '),
-                                  CircleAvatar(
-                                      radius: 10,
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(
-                                              widget.userPhoto)),
-                                  Text(" и " +
-                                      post.people.length.toString() +
-                                      " участников")
-                                ],
-                              )
-                            : Text(
-                                "Участников " + post.people.length.toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15),
-                              )
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => AllGivesUsers(
+                                          doc: post,
+                                        )));
+                          },
+                          child: post.people.contains(widget.userId)
+                              ? Row(
+                                  children: [
+                                    Text('Вы '),
+                                    CircleAvatar(
+                                        radius: 10,
+                                        backgroundImage:
+                                            CachedNetworkImageProvider(
+                                                widget.userPhoto)),
+                                    Text(" и " +
+                                        post.people.length.toString() +
+                                        " участников")
+                                  ],
+                                )
+                              : Text(
+                                  "Участников " + post.people.length.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                ),
+                        )
                       ],
                     ),
                   ],

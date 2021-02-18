@@ -47,7 +47,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               color: Colors.black,
             )),
         title: Text(
-          'Комменты',
+          'Комментарии',
           style: TextStyle(
               fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
         ),
