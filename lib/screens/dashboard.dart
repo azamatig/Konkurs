@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
@@ -204,7 +203,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                       ),
                       CircleAvatar(
                           radius: 60,
-                          backgroundImage: CachedNetworkImageProvider(
+                          backgroundImage: NetworkImage(
                             user.profileImageUrl,
                           )),
                       Column(

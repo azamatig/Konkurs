@@ -71,11 +71,11 @@ class DatabaseService {
     return userList;
   }
 
-  Future<String> uploadImageToStorage(File imageFile) async {
-    _storageReference = FirebaseStorage.instance
+  static Future<String> uploadImageToStorage(File imageFile) async {
+    Reference sb = FirebaseStorage.instance
         .ref()
         .child('${DateTime.now().millisecondsSinceEpoch}');
-    UploadTask storageUploadTask = _storageReference.putFile(imageFile);
+    UploadTask storageUploadTask = sb.putFile(imageFile);
     var url = await (await storageUploadTask).ref.getDownloadURL();
     return url;
   }

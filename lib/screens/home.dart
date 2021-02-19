@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
 import 'package:konkurs_app/services/auth_service.dart';
@@ -52,6 +49,7 @@ class _HomeScreen1State extends State<HomeScreen1>
   initPush() async {
     await PushNotifications().initialise();
   }
+
   @override
   void initState() {
     super.initState();

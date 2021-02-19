@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:konkurs_app/screens/home.dart';
 
 class Notifications extends StatefulWidget {
@@ -10,7 +9,6 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  final _auth = FirebaseAuth.instance;
   final _database = FirebaseFirestore.instance;
 
   @override

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -262,8 +261,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                           color: LightColors.kLightYellow2)),
                                   CircleAvatar(
                                     radius: 10,
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        widget.userPhoto),
+                                    backgroundImage:
+                                        NetworkImage(widget.userPhoto),
                                   ),
                                   Text(
                                     " и " +
@@ -420,8 +419,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage:
-                        CachedNetworkImageProvider(widget.userPhoto),
+                    backgroundImage: NetworkImage(widget.userPhoto),
                   ),
                   SizedBox(
                     width: 10,
@@ -469,8 +467,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     CircleAvatar(
                                         radius: 10,
                                         backgroundImage:
-                                            CachedNetworkImageProvider(
-                                                widget.userPhoto)),
+                                            NetworkImage(widget.userPhoto)),
                                     Text(" и " +
                                         post.people.length.toString() +
                                         " участников")

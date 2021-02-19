@@ -27,7 +27,6 @@ dependencies:
   firebase_auth: ^0.20.0+1
   cloud_firestore: ^0.16.0
   image_picker: ^0.6.7+22
-  cached_network_image: ^2.5.0
   firebase_storage: ^7.0.0
   flutter_image_compress: ^0.7.0
   font_awesome_flutter: ^8.11.0
@@ -49,11 +48,11 @@ dependencies:
   simple_auth_flutter: ^2.0.7
   dio: ^3.0.10
   another_flushbar: ^1.10.8
-  firebase_admob: ^0.11.0+1
   firebase_messaging: 8.0.0-dev.14
   overlay_support: ^1.0.5
   nanoid: ^0.1.0
   flutter_local_notifications: ^4.0.1
+  flutter_automation: ^1.4.0
 
 dev_dependencies:
   flutter_test:

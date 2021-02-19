@@ -1,5 +1,4 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:konkurs_app/screens/AchievementView.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/notifications.dart';
@@ -19,7 +18,7 @@ class PushNotifications {
 
   PushNotifications._internal();
 
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   Future initialise() async {
     if (Platform.isIOS) {

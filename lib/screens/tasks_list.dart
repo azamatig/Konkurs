@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/AchievementView.dart';
-import 'package:konkurs_app/screens/comments_screen.dart';
 import 'package:konkurs_app/utilities/back_button.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/task_container.dart';
@@ -75,7 +73,6 @@ Animation _animation2;
 File file;
 String urlString;
 int _coins = 0;
-bool _adEvent = false;
 
 void sharing(BuildContext context, String type, String url, String instaUrl,
     String userId, DocumentReference ref, User user) async {
@@ -98,15 +95,6 @@ void sharing(BuildContext context, String type, String url, String instaUrl,
 }
 
 class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
-  static const String testDevice = 'YOUR_DEVICE_ID';
-  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: testDevice != null ? <String>[testDevice] : null,
-    keywords: <String>['foo', 'bar'],
-    contentUrl: 'http://foo.com/bar.html',
-    childDirected: true,
-    nonPersonalizedAds: true,
-  );
-
   void setShared() async {
     var list = [widget.userId];
     db
@@ -143,22 +131,6 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    FirebaseAdMob.instance
-        .initialize(appId: 'ca-app-pub-7479544369020585~3651727363');
-    RewardedVideoAd.instance.listener =
-        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      if (event == RewardedVideoAdEvent.rewarded) {
-        setState(() {
-          _coins += rewardAmount;
-          awardAdPoints(_coins);
-        });
-      } else {}
-      if (event == RewardedVideoAdEvent.failedToLoad) {
-        setState(() {
-          _adEvent = true;
-        });
-      }
-    };
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController.repeat(reverse: true);
@@ -285,38 +257,16 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                     showAchievementView2(context, 'Спасибо!',
                                         'Условие уже выполнено!');
                                   } else {
-                                    if (widget.task1type == 'rewardAd') {
-                                      RewardedVideoAd.instance
-                                          .load(
-                                              adUnitId:
-                                                  'ca-app-pub-7479544369020585/1910543933',
-                                              targetingInfo: targetingInfo)
-                                          .whenComplete(() => RewardedVideoAd
-                                              .instance
-                                              .show()
-                                              .whenComplete(() => {
-                                                    if (_adEvent == true)
-                                                      {
-                                                        showError(
-                                                            context,
-                                                            'Ошибка',
-                                                            'Не удалось загрузить!')
-                                                      }
-                                                    else
-                                                      {setShared()}
-                                                  }));
-                                    } else {
-                                      awardPoints();
-                                      sharing(
-                                          context,
-                                          widget.task1type,
-                                          widget.customLink1,
-                                          widget.instaLink1,
-                                          widget.userId,
-                                          widget.docRef,
-                                          widget.currentUser);
-                                      setShared();
-                                    }
+                                    awardPoints();
+                                    sharing(
+                                        context,
+                                        widget.task1type,
+                                        widget.customLink1,
+                                        widget.instaLink1,
+                                        widget.userId,
+                                        widget.docRef,
+                                        widget.currentUser);
+                                    setShared();
                                   }
                                 },
                                 child: TaskContainer(
@@ -348,38 +298,16 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                     showAchievementView2(context, 'Спасибо!',
                                         'Условие уже выполнено!');
                                   } else {
-                                    if (widget.task2type == 'rewardAd') {
-                                      RewardedVideoAd.instance
-                                          .load(
-                                              adUnitId:
-                                                  'ca-app-pub-7479544369020585/1910543933',
-                                              targetingInfo: targetingInfo)
-                                          .whenComplete(() => RewardedVideoAd
-                                              .instance
-                                              .show()
-                                              .whenComplete(() => {
-                                                    if (_adEvent == true)
-                                                      {
-                                                        showError(
-                                                            context,
-                                                            'Ошибка',
-                                                            'Не удалось загрузить!')
-                                                      }
-                                                    else
-                                                      {setShared2()}
-                                                  }));
-                                    } else {
-                                      sharing(
-                                          context,
-                                          widget.task2type,
-                                          widget.customLink2,
-                                          widget.instaLink2,
-                                          widget.userId,
-                                          widget.docRef,
-                                          widget.currentUser);
-                                      awardPoints();
-                                      setShared2();
-                                    }
+                                    sharing(
+                                        context,
+                                        widget.task2type,
+                                        widget.customLink2,
+                                        widget.instaLink2,
+                                        widget.userId,
+                                        widget.docRef,
+                                        widget.currentUser);
+                                    awardPoints();
+                                    setShared2();
                                   }
                                 },
                                 child: TaskContainer(
@@ -411,38 +339,16 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                     showAchievementView2(context, 'Спасибо!',
                                         'Условие уже выполнено!');
                                   } else {
-                                    if (widget.task3type == 'rewardAd') {
-                                      RewardedVideoAd.instance
-                                          .load(
-                                              adUnitId:
-                                                  'ca-app-pub-7479544369020585/1910543933',
-                                              targetingInfo: targetingInfo)
-                                          .whenComplete(() => RewardedVideoAd
-                                              .instance
-                                              .show()
-                                              .whenComplete(() => {
-                                                    if (_adEvent == true)
-                                                      {
-                                                        showError(
-                                                            context,
-                                                            'Ошибка',
-                                                            'Не удалось загрузить!')
-                                                      }
-                                                    else
-                                                      {setShared3()}
-                                                  }));
-                                    } else {
-                                      awardPoints();
-                                      setShared3();
-                                      sharing(
-                                          context,
-                                          widget.task3type,
-                                          widget.customLink3,
-                                          widget.instaLink3,
-                                          widget.userId,
-                                          widget.docRef,
-                                          widget.currentUser);
-                                    }
+                                    awardPoints();
+                                    setShared3();
+                                    sharing(
+                                        context,
+                                        widget.task3type,
+                                        widget.customLink3,
+                                        widget.instaLink3,
+                                        widget.userId,
+                                        widget.docRef,
+                                        widget.currentUser);
                                   }
                                 },
                                 child: TaskContainer(

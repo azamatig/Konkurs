@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -36,9 +35,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   _handleImageFromGallery() async {
-    PickedFile imageFile =
+    final PickedFile imageFile =
         await ImagePicker().getImage(source: ImageSource.gallery);
-    File selected = File(imageFile.path);
+    final File selected = File(imageFile.path);
     if (imageFile != null) {
       setState(() {
         _profileImage = selected;
@@ -55,7 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return AssetImage('assets/images/ph.png');
       } else {
         // User profile image exists
-        return CachedNetworkImageProvider(widget.user.profileImageUrl);
+        return NetworkImage(widget.user.profileImageUrl);
       }
     } else {
       // New profile image
@@ -75,8 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (_profileImage == null) {
         _profileImageUrl = widget.user.profileImageUrl;
       } else {
-        _profileImageUrl = await StorageService.uploadUserProfileImage(
-          widget.user.profileImageUrl,
+        _profileImageUrl = await DatabaseService.uploadImageToStorage(
           _profileImage,
         );
       }
