@@ -53,6 +53,7 @@ dependencies:
   nanoid: ^0.1.0
   flutter_local_notifications: ^4.0.1
   flutter_automation: ^1.4.0
+  firebase_dynamic_links: ^0.7.0+1
 
 dev_dependencies:
   flutter_test:

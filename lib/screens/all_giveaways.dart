@@ -143,6 +143,7 @@ class _AllGiveawaysState extends State<AllGiveaways> {
               instaLink3: document.data()['task3InstaLink'],
               endDate: d.endDate,
               likesCount: d.likesCount,
+              giveawayCost: d.giveawayCost,
             ),
           ),
         );

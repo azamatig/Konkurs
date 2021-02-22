@@ -28,6 +28,7 @@ class DetailsScreen extends StatefulWidget {
   final DocumentReference docRef;
   final User currentUser, user;
   final Timestamp endDate;
+  final String giveawayCost;
   int likesCount;
 
   DetailsScreen({
@@ -43,6 +44,7 @@ class DetailsScreen extends StatefulWidget {
     this.instaLink2,
     this.instaLink3,
     this.userPhoto,
+    this.giveawayCost
   });
 
   @override

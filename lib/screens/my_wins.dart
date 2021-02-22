@@ -146,6 +146,7 @@ class _MyWinsState extends State<MyWins> {
               instaLink3: document.data()['task3InstaLink'],
               endDate: d.endDate,
               likesCount: d.likesCount,
+              giveawayCost: d.giveawayCost,
             ),
           ),
         );

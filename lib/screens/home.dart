@@ -706,6 +706,7 @@ class PopularEventTile extends StatelessWidget {
                       instaLink3: doc.data()['task3InstaLink'],
                       endDate: doc.data()['endDate'],
                       likesCount: doc.data()['likesCount'],
+                  giveawayCost: doc.data()['giveawayCost'],
                     )));
       },
       child: Container(
