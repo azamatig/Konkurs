@@ -30,37 +30,40 @@ class Post {
   final String winnerUid;
   final Timestamp endDate;
   final int likesCount;
+  final String giveawayCost;
 
-  Post(
-      {this.name,
-      this.id,
-      this.imagepost,
-      this.prize,
-      this.people,
-      this.shared,
-      this.date,
-      this.description,
-      this.task1,
-      this.task1Type,
-      this.task1TypeShared,
-      this.task2,
-      this.task2Type,
-      this.task2TypeShared,
-      this.task3,
-      this.task3Type,
-      this.task3TypeShared,
-      this.winner,
-      this.winnerId,
-      this.winnerUid,
-      this.isFinished,
-      this.endDate,
-      this.task1CustomTypeLink,
-      this.task2CustomTypeLink,
-      this.task3CustomTypeLink,
-      this.task1InstaLink,
-      this.task2InstaLink,
-      this.task3InstaLink,
-      this.likesCount});
+  Post({
+    this.name,
+    this.id,
+    this.imagepost,
+    this.prize,
+    this.people,
+    this.shared,
+    this.date,
+    this.description,
+    this.task1,
+    this.task1Type,
+    this.task1TypeShared,
+    this.task2,
+    this.task2Type,
+    this.task2TypeShared,
+    this.task3,
+    this.task3Type,
+    this.task3TypeShared,
+    this.winner,
+    this.winnerId,
+    this.winnerUid,
+    this.isFinished,
+    this.endDate,
+    this.task1CustomTypeLink,
+    this.task2CustomTypeLink,
+    this.task3CustomTypeLink,
+    this.task1InstaLink,
+    this.task2InstaLink,
+    this.task3InstaLink,
+    this.likesCount,
+    this.giveawayCost,
+  });
 
   factory Post.fromDoc(DocumentSnapshot doc) {
     return Post(
@@ -87,6 +90,7 @@ class Post {
       winnerUid: doc.data()['winnerUid'],
       isFinished: doc.data()['isFinished'],
       likesCount: doc.data()['likesCount'],
+      giveawayCost: doc.data()['giveawayCost'],
     );
   }
 }

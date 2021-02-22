@@ -12,6 +12,7 @@ import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 import 'my_wins.dart';
 import 'settings.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class DashBoardPage extends StatefulWidget {
   final String userId;
@@ -77,6 +78,21 @@ class _DashBoardPageState extends State<DashBoardPage> {
       });
     }
   }
+
+  final DynamicLinkParameters parameters =
+  DynamicLinkParameters(
+      uriPrefix: 'https://giveapp.page.link',
+      link: Uri.parse('https://dynamic.link.example/SignUpScreen'),
+      androidParameters: AndroidParameters(
+        packageName: 'konkurs.aza.com.konkurs_app',
+        minimumVersion: 25,
+      ),
+      iosParameters: IosParameters(
+        bundleId: 'com.example',
+        minimumVersion: '1.0.1',
+        appStoreId: '1405860595',
+      )
+  );
 
   Future setSignIn() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -306,13 +322,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     TableRow(children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          var response = await FlutterShareMe()
-                                              .shareToSystem(
-                                                  msg:
-                                                      'ссылка на приложение будет здесь');
-                                          if (response == 'success') {
-                                            print('navigate success');
-                                          }
+                                          // var response = await FlutterShareMe()
+                                          //     .shareToSystem(
+                                          //         msg:
+                                          //             'ссылка на приложение будет здесь');
+                                          // if (response == 'success') {
+                                          //   print('navigate success');
+                                          // }
+                                          final Uri dynamicUrl = await parameters.buildUrl();
+                                          print(dynamicUrl);
                                         },
                                         child: _actionList(
                                             'assets/images/ic_send.png',
