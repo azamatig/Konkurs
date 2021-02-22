@@ -79,8 +79,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
     }
   }
 
-  final DynamicLinkParameters parameters =
-  DynamicLinkParameters(
+  final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://giveapp.page.link',
       link: Uri.parse('https://giveapp.page.link/lib/screens/SignUpScreen'),
       androidParameters: AndroidParameters(
@@ -91,8 +90,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
         bundleId: 'com.example',
         minimumVersion: '1.0.1',
         appStoreId: '1405860595',
-      )
-  );
+      ));
 
   Future setSignIn() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -322,15 +320,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     TableRow(children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          // var response = await FlutterShareMe()
-                                          //     .shareToSystem(
-                                          //         msg:
-                                          //             'ссылка на приложение будет здесь');
-                                          // if (response == 'success') {
-                                          //   print('navigate success');
-                                          // }
-                                          final Uri dynamicUrl = await parameters.buildUrl();
+                                          final Uri dynamicUrl =
+                                              await parameters.buildUrl();
                                           print(dynamicUrl);
+                                          var response = await FlutterShareMe()
+                                              .shareToSystem(
+                                                  msg: dynamicUrl.toString());
+                                          if (response == 'success') {
+                                            print('navigate success');
+                                          }
                                         },
                                         child: _actionList(
                                             'assets/images/ic_send.png',

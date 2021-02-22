@@ -53,11 +53,11 @@ void main() async {
 
 Future<void> retrieveDynamicLink() async {
   final PendingDynamicLinkData data =
-  await FirebaseDynamicLinks.instance.getInitialLink();
+      await FirebaseDynamicLinks.instance.getInitialLink();
   final Uri deepLink = data?.link;
-
+  print(deepLink);
   if (deepLink != null) {
-    navigatorKey.currentState.pushNamed(HomeScreen1.id);
+    MyApp()._getScreenId();
     return deepLink.toString();
   }
 }
