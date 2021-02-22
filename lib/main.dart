@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:konkurs_app/screens/notifications.dart';
 import 'utilities/constants.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -46,7 +47,19 @@ void main() async {
     badge: true,
     sound: true,
   );
+  await retrieveDynamicLink();
   runApp(MyApp());
+}
+
+Future<void> retrieveDynamicLink() async {
+  final PendingDynamicLinkData data =
+  await FirebaseDynamicLinks.instance.getInitialLink();
+  final Uri deepLink = data?.link;
+
+  if (deepLink != null) {
+    navigatorKey.currentState.pushNamed(HomeScreen1.id);
+    return deepLink.toString();
+  }
 }
 
 class MyApp extends StatelessWidget {

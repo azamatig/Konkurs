@@ -4,7 +4,7 @@ import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
 class SignupScreen extends StatefulWidget {
-  static final String id = 'signup_screen';
+  static final String id = 'SignupScreen';
 
   @override
   _SignupScreenState createState() => _SignupScreenState();

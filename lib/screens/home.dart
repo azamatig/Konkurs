@@ -34,7 +34,7 @@ String userPhoto;
 String userId;
 
 class _HomeScreen1State extends State<HomeScreen1>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   GlobalKey<ScaffoldMessengerState> scaffoldState =
       GlobalKey<ScaffoldMessengerState>();
   // List<DateModel> dates = List<DateModel>();

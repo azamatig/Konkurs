@@ -82,7 +82,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
   final DynamicLinkParameters parameters =
   DynamicLinkParameters(
       uriPrefix: 'https://giveapp.page.link',
-      link: Uri.parse('https://dynamic.link.example/SignUpScreen'),
+      link: Uri.parse('https://giveapp.page.link/lib/screens/SignUpScreen'),
       androidParameters: AndroidParameters(
         packageName: 'konkurs.aza.com.konkurs_app',
         minimumVersion: 25,
