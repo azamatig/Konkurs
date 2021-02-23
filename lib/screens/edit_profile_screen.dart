@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -54,7 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return AssetImage('assets/images/ph.png');
       } else {
         // User profile image exists
-        return NetworkImage(widget.user.profileImageUrl);
+        return CachedNetworkImageProvider(widget.user.profileImageUrl);
       }
     } else {
       // New profile image

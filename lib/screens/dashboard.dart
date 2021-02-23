@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
@@ -12,6 +13,7 @@ import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 import 'my_wins.dart';
 import 'settings.dart';
+import 'package:konkurs_app/screens/wallet_page.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class DashBoardPage extends StatefulWidget {
@@ -33,6 +35,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
   bool colorSwitched = false;
   var logoImage;
   String _errorMsg;
+  String _instaName;
   Map _userData;
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
@@ -92,14 +95,16 @@ class _DashBoardPageState extends State<DashBoardPage> {
         appStoreId: '1405860595',
       ));
 
-  Future setSignIn() async {
+  Future setSignIn(String data) async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setBool('signed_in', true);
+    sp.setString('instaName', data);
     _isSignedIn = true;
   }
 
   void checkSignIn() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
+    _instaName = sp.getString('instaName') ?? '';
     _isSignedIn = sp.getBool('signed_in') ?? false;
   }
 
@@ -125,14 +130,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
           queryParameters: {
             // Get the fields you need.
             // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
-            "fields": "username,id,account_type,media_count",
+            "fields": "username",
             "access_token": user.token,
           },
         );
         setState(() {
           _userData = igUserResponse.data;
+          var instaName = _userData['username'];
           _errorMsg = null;
-          setSignIn();
+          setSignIn(instaName);
         });
       },
     ).catchError(
@@ -185,43 +191,82 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 15.0, top: 15),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25)),
-                              child: Container(
-                                  color: LightColors.kLightYellow,
-                                  height: 40,
-                                  width: 40,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 5.0),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Icon(
-                                        FontAwesomeIcons.chevronLeft,
-                                        size: 25,
-                                        color: LightColors.kDarkBlue,
-                                      ),
-                                    ),
-                                  )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 15.0, top: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25)),
+                                  child: Container(
+                                      color: LightColors.kLightYellow,
+                                      height: 40,
+                                      width: 40,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 5.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Icon(
+                                            FontAwesomeIcons.chevronLeft,
+                                            size: 25,
+                                            color: LightColors.kDarkBlue,
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => WalletPage()));
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 15.0, right: 15),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Купить',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _iconColor, fontSize: 12),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Icon(FontAwesomeIcons.wallet,
+                                      size: 22, color: _iconColor),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      CircleAvatar(
-                          radius: 60,
-                          backgroundImage: NetworkImage(
-                            user.profileImageUrl,
-                          )),
                       Column(
                         children: <Widget>[
+                          CircleAvatar(
+                              radius: 60,
+                              backgroundImage: CachedNetworkImageProvider(
+                                user.profileImageUrl,
+                              )),
+                          SizedBox(
+                            height: 25,
+                          ),
                           Text(
                             'Привет!',
                             style: TextStyle(fontSize: 18, color: Colors.black),
@@ -229,13 +274,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           Text(
                             user.name,
                             style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 22,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                           ),
-                          FlatButton(
-                            onPressed: () => {
-                              _isSignedIn == false ? _loginAndGetData : null
+                          GestureDetector(
+                            onTap: () => {
+                              _isSignedIn == false ? _loginAndGetData() : null
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -245,9 +290,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   FontAwesomeIcons.instagram,
                                   size: 25,
                                 ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 _isSignedIn == false
                                     ? Text('Подключить instagram')
-                                    : Text('Вы подключены к Инстаграм'),
+                                    : Text('@' + _instaName),
                               ],
                             ),
                           ),
@@ -259,15 +307,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         decoration: BoxDecoration(
                             color: _borderContainer,
                             borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(15),
-                                topRight: Radius.circular(15))),
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25))),
                         child: Padding(
-                          padding: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15)),
+                                    topLeft: Radius.circular(25),
+                                    topRight: Radius.circular(25)),
                                 gradient: LinearGradient(
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,

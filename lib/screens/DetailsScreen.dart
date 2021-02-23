@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,21 +32,20 @@ class DetailsScreen extends StatefulWidget {
   final String giveawayCost;
   int likesCount;
 
-  DetailsScreen({
-    this.userId,
-    this.docId,
-    this.docRef,
-    this.currentUser,
-    this.user,
-    this.date,
-    this.endDate,
-    this.likesCount,
-    this.instaLink1,
-    this.instaLink2,
-    this.instaLink3,
-    this.userPhoto,
-    this.giveawayCost
-  });
+  DetailsScreen(
+      {this.userId,
+      this.docId,
+      this.docRef,
+      this.currentUser,
+      this.user,
+      this.date,
+      this.endDate,
+      this.likesCount,
+      this.instaLink1,
+      this.instaLink2,
+      this.instaLink3,
+      this.userPhoto,
+      this.giveawayCost});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -64,12 +64,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
   List<dynamic> shares3;
 
   DocumentSnapshot nanoUid;
-
-  getParticipants() async {
-    DocumentSnapshot document =
-        await db.collection('post').doc(widget.docId).get();
-    participants = document['people'];
-  }
 
   setGiveUid() async {
     var nanoUid = nanoid(5);
@@ -102,36 +96,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .update({'people': FieldValue.arrayUnion(list)});
   }
 
-  void getTask1Type() async {
-    DocumentSnapshot document =
-        await db.collection('post').doc(widget.docId).get();
-    task1Type = document['task1Type'];
-    task2Type = document['task2Type'];
-    task3Type = document['task3Type'];
-  }
-
-  void setShared() async {
-    await db.collection('post').doc(widget.docId).update({'shared': true});
-  }
-
-  getShared() async {
-    DocumentSnapshot document =
-        await db.collection('post').doc(widget.docId).get();
-    shares = document['task1TypeShared'];
-    shares2 = document['task2TypeShared'];
-    shares3 = document['task3TypeShared'];
-  }
-
   @override
   void initState() {
     super.initState();
     final templates = [
       TemplateBlueRocket,
     ];
-    getParticipants();
     ifPostIsLiked(widget.userId);
-    getTask1Type();
-    getShared();
   }
 
   @override
@@ -263,8 +234,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                           color: LightColors.kLightYellow2)),
                                   CircleAvatar(
                                     radius: 10,
-                                    backgroundImage:
-                                        NetworkImage(widget.userPhoto),
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        widget.userPhoto),
                                   ),
                                   Text(
                                     " и " +
@@ -328,7 +299,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         color: LightColors.kLightYellow2,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(post.imagepost),
+          image: CachedNetworkImageProvider(post.imagepost),
         ),
       ),
       child: Column(
@@ -421,7 +392,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage(widget.userPhoto),
+                    backgroundImage:
+                        CachedNetworkImageProvider(widget.userPhoto),
                   ),
                   SizedBox(
                     width: 10,
@@ -469,7 +441,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     CircleAvatar(
                                         radius: 10,
                                         backgroundImage:
-                                            NetworkImage(widget.userPhoto)),
+                                            CachedNetworkImageProvider(
+                                                widget.userPhoto)),
                                     Text(" и " +
                                         post.people.length.toString() +
                                         " участников")
@@ -516,7 +489,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       {
                                         setParticipate(),
                                         showAchievementView1(context),
-                                        getParticipants(),
                                         setGiveUid(),
                                       }
                                   },
@@ -564,7 +536,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                if (participants.contains(widget.userId) &&
+                if (post.people.contains(widget.userId) &&
                     post.isFinished == false) {
                   Navigator.push(
                     context,
@@ -572,22 +544,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         builder: (context) => TaskList(
                               userId: widget.userId,
                               docId: widget.docId,
-                              task1type: task1Type,
-                              task2type: task2Type,
-                              task3type: task3Type,
-                              shares: shares,
-                              shares2: shares2,
-                              shares3: shares3,
-                              customLink1: post.task1CustomTypeLink,
-                              customLink2: post.task2CustomTypeLink,
-                              customLink3: post.task3CustomTypeLink,
-                              instaLink1: widget.instaLink1,
-                              instaLink2: widget.instaLink2,
-                              instaLink3: widget.instaLink3,
                               dates: post.date,
-                              task1: post.task1,
-                              task2: post.task2,
-                              task3: post.task3,
                               currentUser: widget.currentUser,
                               docRef: widget.docRef,
                             )),

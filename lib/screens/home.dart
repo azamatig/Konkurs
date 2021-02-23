@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
 import 'package:konkurs_app/services/auth_service.dart';
@@ -88,17 +90,7 @@ class _HomeScreen1State extends State<HomeScreen1>
       DateTime first, DateTime last, CalendarFormat format) {}
 
   void _onCalendarCreated(
-      DateTime first, DateTime last, CalendarFormat format) {
-    service
-        .getCurrentUser()
-        .then((user) => service.fetchUserDetailsById(user.uid).then((user) => {
-              setState(() {
-                userPhoto = user.profileImageUrl;
-                userName = user.name;
-                userId = user.id;
-              })
-            }));
-  }
+      DateTime first, DateTime last, CalendarFormat format) {}
 
   @override
   Widget build(BuildContext context) {
@@ -326,12 +318,29 @@ class _HomeScreen1State extends State<HomeScreen1>
                                     width: 3, color: Color(0xffFAE072)),
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: CircleAvatar(
-                                radius: 30,
-                                backgroundImage: userPhoto == null
-                                    ? AssetImage('assets/images/ph.png')
-                                    : NetworkImage(userPhoto),
-                              ),
+                              child: StreamBuilder(
+                                  stream: db
+                                      .collection('users')
+                                      .doc(userId)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return CircularProgressIndicator(
+                                        backgroundColor:
+                                            LightColors.kLightYellow,
+                                        valueColor: AlwaysStoppedAnimation(
+                                            LightColors.kBlue),
+                                      );
+                                    }
+                                    User u = User.fromDoc(snapshot.data);
+                                    return CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: userPhoto == null
+                                          ? AssetImage('assets/images/ph.png')
+                                          : CachedNetworkImageProvider(
+                                              u.profileImageUrl),
+                                    );
+                                  }),
                             ),
                           )
                         ],
@@ -706,7 +715,7 @@ class PopularEventTile extends StatelessWidget {
                       instaLink3: doc.data()['task3InstaLink'],
                       endDate: doc.data()['endDate'],
                       likesCount: doc.data()['likesCount'],
-                  giveawayCost: doc.data()['giveawayCost'],
+                      giveawayCost: doc.data()['giveawayCost'],
                     )));
       },
       child: Container(
@@ -773,8 +782,8 @@ class PopularEventTile extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(8),
                     bottomRight: Radius.circular(8)),
-                child: Image.network(
-                  imgeAssetPath,
+                child: CachedNetworkImage(
+                  imageUrl: imgeAssetPath,
                   height: 100,
                   width: 120,
                   fit: BoxFit.cover,

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:konkurs_app/models/post_model.dart';
@@ -47,8 +48,8 @@ class _AllGiveawaysState extends State<AllGivesUsers> {
                   Padding(
                     padding: const EdgeInsets.only(left: 5.0),
                     child: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(participant['profileImageUrl']),
+                      backgroundImage: CachedNetworkImageProvider(
+                          participant['profileImageUrl']),
                       radius: 20,
                     ),
                   ),

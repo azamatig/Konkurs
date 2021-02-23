@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:konkurs_app/models/post_model.dart';
@@ -217,8 +218,8 @@ class _MyGiveawaysState extends State<MyGiveaways> {
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(8),
                     bottomRight: Radius.circular(8)),
-                child: Image.network(
-                  d.imagepost,
+                child: CachedNetworkImage(
+                  imageUrl: d.imagepost,
                   height: 100,
                   width: 120,
                   fit: BoxFit.cover,
