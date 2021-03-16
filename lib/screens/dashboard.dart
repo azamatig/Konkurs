@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/task_profile.dart';
+import 'package:konkurs_app/screens/wallet_transfer.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
@@ -13,7 +14,6 @@ import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 import 'my_wins.dart';
 import 'settings.dart';
-import 'package:konkurs_app/screens/wallet_page.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class DashBoardPage extends StatefulWidget {
@@ -104,7 +104,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   void checkSignIn() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
-    _instaName = sp.getString('instaName') ?? '';
+    _instaName = sp.getString('instaName');
     _isSignedIn = sp.getBool('signed_in') ?? false;
   }
 
@@ -228,30 +228,33 @@ class _DashBoardPageState extends State<DashBoardPage> {
                             ),
                           ),
                           Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => WalletPage()));
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15.0, right: 15),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Купить',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: _iconColor, fontSize: 12),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Icon(FontAwesomeIcons.wallet,
-                                      size: 22, color: _iconColor),
-                                ],
+                          Visibility(
+                            visible: true,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MoneyTransferPage()));
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 15.0, right: 15),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Купить',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: _iconColor, fontSize: 12),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Icon(FontAwesomeIcons.wallet,
+                                        size: 22, color: _iconColor),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -293,7 +296,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                _isSignedIn == false
+                                _isSignedIn == false && _instaName == null
                                     ? Text('Подключить instagram')
                                     : Text('@' + _instaName),
                               ],

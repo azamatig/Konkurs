@@ -1,5 +1,7 @@
+import 'package:bch_wallet/bch_wallet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
@@ -9,6 +11,10 @@ class MoneyTransferPage extends StatefulWidget {
   @override
   _MoneyTransferPageState createState() => _MoneyTransferPageState();
 }
+
+final _formKey = GlobalKey<FormState>();
+
+String _address;
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
   Align _buttonWidget() {
@@ -39,11 +45,48 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
             ),
             SizedBox(width: 10),
             TitleText(
-              text: "Transfer",
+              text: "Оплата",
               color: Colors.white,
             ),
           ],
         ));
+  }
+
+  Widget _walletButton() {
+    return GestureDetector(
+      onTap: () {
+        createWallet();
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  Icons.swap_calls,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              TitleText(
+                text: "Create Wallet",
+                color: Colors.white,
+              ),
+            ],
+          )),
+    );
+  }
+
+  void createWallet() async {
+    await BchWallet.createWallet(
+        defaultAccountName: "wallet's first account",
+        name: "new wallet",
+        password: "q7PWSLDQduXEvBE");
   }
 
   @override
@@ -67,15 +110,13 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                     Container(
                       height: 55,
                       width: 60,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1214428300?k=6&m=1214428300&s=170667a&w=0&h=hMQs-822xLWFz66z3Xfd8vPog333rNFHU6Q_kc9Sues="),
-                              fit: BoxFit.cover),
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Icon(
+                        FontAwesomeIcons.coins,
+                        color: LightColors.yellow2,
+                      ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 3,
                     ),
                     Text(
                       'Оплата коинов',
@@ -89,17 +130,35 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                     ),
                     Container(
                         width: 130,
+                        height: 50,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             color: LightColors.lightBlue1,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
-                        child: TitleText(
-                          text: "\$10,000",
-                          color: Colors.white,
-                        )),
+                        child: TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: LightColors.lightBlue1),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: LightColors.lightBlue1),
+                                ),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: LightColors.lightBlue1))))),
+                    Text(
+                      'Оплата временно не работает!',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    ),
                     Expanded(
                       flex: 2,
                       child: SizedBox(),

@@ -16,9 +16,7 @@ class TaskType {
     PickedFile pick = await _picker.getImage(source: ImageSource.gallery);
     file = File(pick.path);
     SocialShare.checkInstalledAppsForShare();
-    SocialShare.shareInstagramStory(file.path, "#ffffff", "#000000",
-            "https://www.facebook.com/pegastouristik")
-        .then((data) {
+    SocialShare.shareInstagramStory(file.path).then((data) {
       print(data);
     });
   }
@@ -26,7 +24,8 @@ class TaskType {
   void setTweet() async {
     SocialShare.shareTwitter("Приходи в GIVEAPP, тут много призов!",
             hashtags: ["giveapp", "prizes", "giveaway", "gifts"],
-            url: "https://google.com/#/hello",
+            url:
+                "https://play.google.com/store/apps/details?id=konkurs.aza.com.konkurs_app",
             trailingText: "\nGIVEAPP")
         .then((data) {
       print(data);
@@ -34,8 +33,9 @@ class TaskType {
   }
 
   void setSystem() async {
-    var response = await FlutterShareMe()
-        .shareToSystem(msg: 'ссылка на приложение будет здесь');
+    var response = await FlutterShareMe().shareToSystem(
+        msg:
+            'https://play.google.com/store/apps/details?id=konkurs.aza.com.konkurs_app');
     if (response == 'success') {
       print('navigate success');
     }
@@ -45,7 +45,7 @@ class TaskType {
     PickedFile pick = await _picker.getImage(source: ImageSource.gallery);
     file = File(pick.path);
     SocialShare.shareFacebookStory(file.path, "#ffffff", "#000000",
-        "https://www.facebook.com/pegastouristik",
+        "https://play.google.com/store/apps/details?id=konkurs.aza.com.konkurs_app",
         appId: "229775418626099");
   }
 

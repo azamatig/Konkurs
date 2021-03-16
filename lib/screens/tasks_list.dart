@@ -47,12 +47,12 @@ File file;
 String urlString;
 int _coins = 0;
 
-void sharing(BuildContext context, String type, String url, String instaUrl,
-    String userId, DocumentReference ref, User user) async {
+Future<void> sharing(BuildContext context, String type, String url,
+    String instaUrl, String userId, DocumentReference ref, User user) async {
   switch (type) {
     case ('сторис в instagram'):
       return tasks.setInsta();
-    case (' репост в twitter'):
+    case ('репост в twitter'):
       return tasks.setTweet();
     case ('задание в GiveApp'):
       return tasks.setSystem();
@@ -247,16 +247,16 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                               'Спасибо!',
                                               'Условие уже выполнено!');
                                         } else {
-                                          awardPoints();
                                           sharing(
-                                              context,
-                                              p.task1Type,
-                                              p.task1CustomTypeLink,
-                                              p.task1InstaLink,
-                                              widget.userId,
-                                              widget.docRef,
-                                              widget.currentUser);
-                                          setShared();
+                                                  context,
+                                                  p.task1Type,
+                                                  p.task1CustomTypeLink,
+                                                  p.task1InstaLink,
+                                                  widget.userId,
+                                                  widget.docRef,
+                                                  widget.currentUser)
+                                              .then((value) =>
+                                                  [setShared(), awardPoints()]);
                                         }
                                       },
                                       child: TaskContainer(
@@ -289,15 +289,17 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                               'Условие уже выполнено!');
                                         } else {
                                           sharing(
-                                              context,
-                                              p.task2Type,
-                                              p.task2CustomTypeLink,
-                                              p.task2InstaLink,
-                                              widget.userId,
-                                              widget.docRef,
-                                              widget.currentUser);
-                                          awardPoints();
-                                          setShared2();
+                                                  context,
+                                                  p.task2Type,
+                                                  p.task2CustomTypeLink,
+                                                  p.task2InstaLink,
+                                                  widget.userId,
+                                                  widget.docRef,
+                                                  widget.currentUser)
+                                              .whenComplete(() => [
+                                                    setShared2(),
+                                                    awardPoints()
+                                                  ]);
                                         }
                                       },
                                       child: TaskContainer(
@@ -329,16 +331,18 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                               'Спасибо!',
                                               'Условие уже выполнено!');
                                         } else {
-                                          awardPoints();
-                                          setShared3();
                                           sharing(
-                                              context,
-                                              p.task3Type,
-                                              p.task3CustomTypeLink,
-                                              p.task3InstaLink,
-                                              widget.userId,
-                                              widget.docRef,
-                                              widget.currentUser);
+                                                  context,
+                                                  p.task3Type,
+                                                  p.task3CustomTypeLink,
+                                                  p.task3InstaLink,
+                                                  widget.userId,
+                                                  widget.docRef,
+                                                  widget.currentUser)
+                                              .whenComplete(() => [
+                                                    setShared3(),
+                                                    awardPoints()
+                                                  ]);
                                         }
                                       },
                                       child: TaskContainer(
