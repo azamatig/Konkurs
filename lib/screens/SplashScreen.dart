@@ -5,6 +5,8 @@ import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/utils.dart';
 
 class SplashScreen extends StatefulWidget {
+  String inviterId;
+  SplashScreen([this.inviterId]);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }

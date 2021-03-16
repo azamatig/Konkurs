@@ -9,6 +9,7 @@ class User {
   String phone;
   String location;
   int points;
+  List eventDays;
 
   User(
       {this.id,
@@ -18,7 +19,8 @@ class User {
       this.insta,
       this.phone,
       this.location,
-      this.points});
+      this.points,
+      this.eventDays});
 
   factory User.fromDoc(DocumentSnapshot doc) {
     return User(
@@ -29,7 +31,9 @@ class User {
         insta: doc['insta'] ?? '',
         phone: doc['phone'] ?? '',
         location: doc['location'] ?? 'Местоположение',
-        points: doc['points'] ?? 0);
+        points: doc['points'] ?? 0,
+        eventDays: doc['eventDays'],
+    );
   }
 
   factory User.fromFirestore(DocumentSnapshot snapshot) {
@@ -44,6 +48,7 @@ class User {
       phone: d['phone'],
       location: d['location'],
       points: d['points'],
+      eventDays: d['eventDays'],
     );
   }
 
@@ -56,5 +61,6 @@ class User {
     this.insta = mapData['insta'];
     this.phone = mapData['phone'];
     this.points = mapData['points'];
+    this.eventDays = mapData['eventDays'];
   }
 }

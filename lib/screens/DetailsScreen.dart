@@ -14,6 +14,7 @@ import 'package:konkurs_app/utilities/prize_widget.dart';
 import 'package:konkurs_app/utilities/task_column.dart';
 import 'package:flutter_beautiful_popup/main.dart';
 import 'package:nanoid/nanoid.dart';
+import 'package:konkurs_app/utilities/date_widget.dart';
 
 import 'AchievementView.dart';
 import 'comments_screen.dart';
@@ -31,6 +32,7 @@ class DetailsScreen extends StatefulWidget {
   final Timestamp endDate;
   final String giveawayCost;
   int likesCount;
+  List<String> eventDays;
 
   DetailsScreen(
       {this.userId,
@@ -45,7 +47,8 @@ class DetailsScreen extends StatefulWidget {
       this.instaLink2,
       this.instaLink3,
       this.userPhoto,
-      this.giveawayCost});
+      this.giveawayCost,
+      this.eventDays});
 
   @override
   _DetailsScreenState createState() => _DetailsScreenState();
@@ -73,6 +76,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .collection('uids')
         .doc(widget.userId)
         .set({'nanoUid': nanoUid});
+  }
+
+  addEventDay(DateTime endDate){
+    var obj = [endDate.toString().substring(0, 10)];
+    db
+        .collection('users')
+        .doc(widget.userId)
+        .update({'eventDays': FieldValue.arrayUnion(obj)});
+    widget.eventDays.add(endDate.toString().substring(0, 10));
   }
 
   ifPostIsLiked(String docId) async {
@@ -490,6 +502,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         setParticipate(),
                                         showAchievementView1(context),
                                         setGiveUid(),
+                                        addEventDay(widget.endDate.toDate()),
                                       }
                                   },
                                   color: post.people.contains(widget.userId)

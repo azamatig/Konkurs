@@ -9,7 +9,7 @@ class AuthService {
   static final _firestore = FirebaseFirestore.instance;
 
   static void signUpUser(BuildContext context, String phone, String name,
-      String email, String password) async {
+      String email, String password, String inviterId) async {
     var placeholder =
         'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
     try {
@@ -29,6 +29,8 @@ class AuthService {
           'insta': '@',
           'location': 'Местонахождение',
           'points': 0,
+          'eventDays': [],
+          'inviter' : inviterId,
         });
         _firestore
             .collection('/users')

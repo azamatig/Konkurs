@@ -13,6 +13,7 @@ import 'package:konkurs_app/screens/notifications.dart';
 import 'utilities/constants.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -52,17 +53,41 @@ void main() async {
 }
 
 Future<void> retrieveDynamicLink() async {
+  String inviterId;
   final PendingDynamicLinkData data =
       await FirebaseDynamicLinks.instance.getInitialLink();
   final Uri deepLink = data?.link;
-  print(deepLink);
   if (deepLink != null) {
-    MyApp()._getScreenId();
+    deepLink.queryParameters.forEach((k, v) async {
+      if(k == "invitedby")
+        {
+          var firestore = FirebaseFirestore.instance;
+          inviterId = v;
+          firestore.collection('users').doc(inviterId).update({'points': FieldValue.increment(15)});
+          var timestamp = FieldValue.serverTimestamp();
+          final DocumentReference ref =
+          firestore.collection('users/$inviterId/notifications').doc();
+          var docID = ref.id;
+          var _postData = {
+            'message': "+15! Вы пригласили нового пользователя!",
+            'type': 1,
+            'title': "Реферал!",
+            'is_Unread': true,
+            'ts': timestamp,
+          };
+          await ref.set(_postData);
+        }
+    }
+    );
+    MyApp(inviterId)._getScreenId();
     return deepLink.toString();
   }
 }
 
 class MyApp extends StatelessWidget {
+  String inviterId;
+  MyApp([this.inviterId]);
+
   Widget _getScreenId() {
     return StreamBuilder<User>(
       stream: FirebaseAuth.instance.authStateChanges(),
@@ -73,7 +98,7 @@ class MyApp extends StatelessWidget {
             currentUserId: Provider.of<UserData>(context).currentUserId,
           );
         } else {
-          return LoginScreen();
+          return LoginScreen(inviterId);
         }
       },
     );
