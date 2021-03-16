@@ -2,8 +2,10 @@ import 'package:bch_wallet/bch_wallet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
+import 'package:web3dart/web3dart.dart';
 
 class MoneyTransferPage extends StatefulWidget {
   MoneyTransferPage({Key key}) : super(key: key);
@@ -13,7 +15,8 @@ class MoneyTransferPage extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
-
+Client httpClient;
+Web3Client web3Client;
 String _address;
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
