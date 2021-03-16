@@ -57,7 +57,7 @@ Future<void> retrieveDynamicLink() async {
   final PendingDynamicLinkData data =
       await FirebaseDynamicLinks.instance.getInitialLink();
   final Uri deepLink = data?.link;
-  //if (deepLink != null) {
+  if (deepLink != null) {
     deepLink.queryParameters.forEach((k, v) async {
       if(k == "invitedby")
         {
@@ -81,7 +81,7 @@ Future<void> retrieveDynamicLink() async {
     );
     MyApp(inviterId)._getScreenId();
     return deepLink.toString();
-  //}
+  }
 }
 
 class MyApp extends StatelessWidget {
