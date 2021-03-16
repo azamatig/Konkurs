@@ -19,8 +19,22 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 class DashBoardPage extends StatefulWidget {
   final String userId;
   final String userPhoto;
+  DynamicLinkParameters parameters;
 
-  DashBoardPage(this.userId, this.userPhoto);
+  DashBoardPage(this.userId, this.userPhoto){
+    parameters = DynamicLinkParameters(
+        uriPrefix: 'https://giveapp.page.link',
+        link: Uri.parse('https://giveapp.page.link/lib/screens/SignUpScreen/?invitedby=$userId'),
+        androidParameters: AndroidParameters(
+          packageName: 'konkurs.aza.com.konkurs_app',
+          minimumVersion: 25,
+        ),
+        iosParameters: IosParameters(
+          bundleId: 'com.example',
+          minimumVersion: '1.0.1',
+          appStoreId: '1405860595',
+        ));
+  }
 
   @override
   _DashBoardPageState createState() => _DashBoardPageState();
@@ -39,6 +53,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Map _userData;
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
+
 
   void changeTheme() async {
     if (colorSwitched) {
@@ -82,18 +97,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
     }
   }
 
-  final DynamicLinkParameters parameters = DynamicLinkParameters(
-      uriPrefix: 'https://giveapp.page.link',
-      link: Uri.parse('https://giveapp.page.link/lib/screens/SignUpScreen'),
-      androidParameters: AndroidParameters(
-        packageName: 'konkurs.aza.com.konkurs_app',
-        minimumVersion: 25,
-      ),
-      iosParameters: IosParameters(
-        bundleId: 'com.example',
-        minimumVersion: '1.0.1',
-        appStoreId: '1405860595',
-      ));
+
 
   Future setSignIn(String data) async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -371,12 +375,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     TableRow(children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          final Uri dynamicUrl =
-                                              await parameters.buildUrl();
+                                          final Uri dynamicUrl = await widget.parameters.buildUrl();
                                           print(dynamicUrl);
                                           var response = await FlutterShareMe()
                                               .shareToSystem(
-                                                  msg: dynamicUrl.toString());
+                                                  msg:
+                                                  dynamicUrl.toString());
                                           if (response == 'success') {
                                             print('navigate success');
                                           }

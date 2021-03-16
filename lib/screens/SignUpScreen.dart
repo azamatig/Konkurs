@@ -5,6 +5,8 @@ import 'package:konkurs_app/utilities/constants.dart';
 
 class SignupScreen extends StatefulWidget {
   static final String id = 'SignupScreen';
+  String inviterId;
+  SignupScreen([this.inviterId]);
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -23,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
         _isLoading = true;
       });
       // Logging in the user w/ Firebase
-      AuthService.signUpUser(context, _phone, _name, _email, _password);
+      AuthService.signUpUser(context, _phone, _name, _email, _password, widget.inviterId);
     }
   }
 

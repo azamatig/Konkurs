@@ -20,6 +20,8 @@ import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:konkurs_app/screens/notifications.dart';
 import 'package:konkurs_app/utilities/PushNotifications.dart';
+import 'package:konkurs_app/utilities/date_widget.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static final String id = 'feed_screen';
@@ -47,6 +49,7 @@ class _HomeScreen1State extends State<HomeScreen1>
   AnimationController _animationController;
   CalendarController _calendarController;
   bool isSelected;
+  List eventDays = [];
 
   initPush() async {
     await PushNotifications().initialise();
@@ -55,6 +58,7 @@ class _HomeScreen1State extends State<HomeScreen1>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     PushNotifications().userId = widget.currentUserId;
     initPush();
     eventsType = getEventTypes();
@@ -63,6 +67,9 @@ class _HomeScreen1State extends State<HomeScreen1>
             userPhoto = user.profileImageUrl;
             userName = user.name;
             userId = user.id;
+            setState(() {
+              eventDays = user.eventDays;
+            });
           })
         });
     _calendarController = CalendarController();
@@ -73,6 +80,21 @@ class _HomeScreen1State extends State<HomeScreen1>
     );
 
     _animationController.forward();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _retrieveDynamicLink();
+    }
+  }
+
+  Future<void> _retrieveDynamicLink() async {
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri deepLink = data?.link;
+    if (deepLink != null) {
+      Navigator.pushNamed(context, deepLink.path);
+    }
   }
 
   @override
@@ -461,23 +483,7 @@ class _HomeScreen1State extends State<HomeScreen1>
           return FadeTransition(
               opacity:
                   Tween(begin: 0.0, end: 1.0).animate(_animationController),
-              child: Container(
-                margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                decoration: BoxDecoration(
-                    color: const Color(0xffFCCD00),
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                    border:
-                        Border.all(color: const Color(0xffFCCD00), width: 1)),
-                child: Column(
-                  children: [
-                    _showDate1(date),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    _showWeek1(date),
-                  ],
-                ),
-              ));
+              child: DateWidget(arr, date, eventDays));
         },
         dowWeekdayBuilder: (context, weekday) {
           return Container();
@@ -487,8 +493,15 @@ class _HomeScreen1State extends State<HomeScreen1>
             margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
             child: Column(
               children: [
-                _showDate(date),
-                _showWeek(date),
+                Icon(Icons.circle, color: eventDays.contains(date.toString().substring(0, 10)) ?
+          Colors.red : Color(0xff102733), size: 8,),
+                SizedBox(height: 2.5,),
+                Column(
+                  children: [
+                    _showDate(date),
+                    _showWeek(date),
+                  ],
+                ),
               ],
             ),
           );
@@ -497,6 +510,11 @@ class _HomeScreen1State extends State<HomeScreen1>
       onDaySelected: (date, events, holidays) {
         _onDaySelected(date, events, holidays);
         _animationController.forward(from: 0.0);
+        if(eventDays.contains(date.toString().substring(0, 10)))
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MyGiveaways(userId, userPhoto)));
       },
       onVisibleDaysChanged: _onVisibleDaysChanged,
       onCalendarCreated: _onCalendarCreated,
@@ -505,7 +523,7 @@ class _HomeScreen1State extends State<HomeScreen1>
 
   Widget _showDate(DateTime date) {
     return Container(
-        padding: EdgeInsets.all(2),
+        //padding: EdgeInsets.all(2),
         child: Text(
           arr[date.weekday - 1],
           style: TextStyle(color: Colors.white),
@@ -716,6 +734,7 @@ class PopularEventTile extends StatelessWidget {
                       endDate: doc.data()['endDate'],
                       likesCount: doc.data()['likesCount'],
                       giveawayCost: doc.data()['giveawayCost'],
+                      eventDays: doc.data()['eventDays'],
                     )));
       },
       child: Container(
