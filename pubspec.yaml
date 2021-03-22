@@ -56,9 +56,7 @@ dependencies:
   firebase_dynamic_links: ^0.7.0+1
   cached_network_image: ^2.5.0
   google_fonts: ^1.1.2
-  bch_wallet: ^0.0.3
   web3dart: ^2.0.0-dev.7
-  velocity_x: ^2.5.0
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,4 @@
-import 'package:bch_wallet/bch_wallet.dart';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,11 +15,64 @@ class MoneyTransferPage extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
-Client httpClient;
-Web3Client web3Client;
+const String privateKey =
+    '6af6926e2b72410c9587d14ba7d8db82dbf5ac7bf138d204fdd9de8e5d8d0804';
+const String rpcUrl =
+    'https://rinkeby.infura.io/v3/bbecc41e903242fea4b45ca0ab089c8e';
+var httpClient = Client();
 String _address;
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
+  Future<void> eth1() async {
+    // start a client we can use to send transactions
+    final client = Web3Client(rpcUrl, httpClient);
+
+    final credentials = await client.credentialsFromPrivateKey(privateKey);
+    final address = await credentials.extractAddress();
+
+    print(address.hexEip55);
+    print(await client.getBalance(address));
+
+    var nonce = await client.getTransactionCount(address);
+    print('nonce: $nonce');
+
+    var blockNumber = await client.getBlockNumber();
+    print('blockNumber: $blockNumber');
+
+    var networkId = await client.getNetworkId();
+    print('networkId: $networkId');
+
+    var transaction = new Transaction(
+        to: EthereumAddress.fromHex(
+            '0x1E40b7962B6a7492235F49860e665251b01b304f'),
+        // gasPrice: gasPrice,
+        // maxGas: 21000,
+        // nonce: nonce,
+        value: EtherAmount.fromUnitAndValue(
+            EtherUnit.wei, BigInt.from(50000000000000000)));
+    var txHash =
+        await client.sendTransaction(credentials, transaction, chainId: 4);
+    print('transaction hash: $txHash');
+
+    await Future.delayed(const Duration(seconds: 5));
+
+    var receipt = await client.getTransactionReceipt(txHash);
+    print('transaction receipt: $receipt');
+
+    blockNumber = await client.getBlockNumber();
+    print('blockNumber: $blockNumber');
+
+    // get native balance again
+    var balance = await client.getBalance(address);
+    print(
+        'balance after transaction: ${balance.getInWei} wei (${balance.getValueInUnit(EtherUnit.ether)} ether)');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Align _buttonWidget() {
     return Align(
         alignment: Alignment.bottomCenter,
@@ -31,34 +84,9 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
   }
 
   Widget _transferButton() {
-    return Container(
-        margin: EdgeInsets.only(bottom: 20),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        decoration: BoxDecoration(
-            color: LightColors.yellow2,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        child: Wrap(
-          children: <Widget>[
-            Transform.rotate(
-              angle: 70,
-              child: Icon(
-                Icons.swap_calls,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(width: 10),
-            TitleText(
-              text: "Оплата",
-              color: Colors.white,
-            ),
-          ],
-        ));
-  }
-
-  Widget _walletButton() {
     return GestureDetector(
       onTap: () {
-        createWallet();
+        eth1();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -77,19 +105,12 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
               ),
               SizedBox(width: 10),
               TitleText(
-                text: "Create Wallet",
+                text: "Оплата",
                 color: Colors.white,
               ),
             ],
           )),
     );
-  }
-
-  void createWallet() async {
-    await BchWallet.createWallet(
-        defaultAccountName: "wallet's first account",
-        name: "new wallet",
-        password: "q7PWSLDQduXEvBE");
   }
 
   @override
