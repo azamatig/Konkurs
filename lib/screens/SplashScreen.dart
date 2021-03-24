@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:konkurs_app/utilities/utils.dart';
 
 class SplashScreen extends StatefulWidget {
   String inviterId;
@@ -155,7 +154,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                             )),
-                        cursorColor: PaypalColors.Teal,
+                        cursorColor: LightColors.kLavender,
                         validator: (input) => input.length < 6
                             ? 'Must be at least 6 characters'
                             : null,

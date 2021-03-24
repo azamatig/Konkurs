@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -49,7 +48,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         // maxGas: 21000,
         // nonce: nonce,
         value: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei, BigInt.from(50000000000000000)));
+            EtherUnit.wei, BigInt.from(10000000000000000)));
     var txHash =
         await client.sendTransaction(credentials, transaction, chainId: 4);
     print('transaction hash: $txHash');
@@ -143,7 +142,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                       height: 3,
                     ),
                     Text(
-                      'Оплата коинов',
+                      'Введите ваш private key от etherium кошелька',
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -163,19 +162,23 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
                         child: TextFormField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: LightColors.lightBlue1),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: LightColors.lightBlue1),
-                                ),
-                                border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: LightColors.lightBlue1))))),
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: LightColors.lightBlue1),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: LightColors.lightBlue1),
+                              ),
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: LightColors.lightBlue1))),
+                          validator: (input) =>
+                              input.trim().isEmpty ? 'Введите число' : null,
+                          onSaved: (input) => _address = input,
+                        )),
                     Text(
                       'Оплата временно не работает!',
                       style: TextStyle(
