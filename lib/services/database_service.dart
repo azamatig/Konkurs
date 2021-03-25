@@ -80,7 +80,7 @@ class DatabaseService {
     return url;
   }
 
-  Future<void> getUserInfo() async {
+  Future getUserInfo() async {
     User currentUser;
     FirebaseFirestore.instance
         .collection('users')

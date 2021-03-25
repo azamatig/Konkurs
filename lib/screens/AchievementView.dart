@@ -20,6 +20,22 @@ void showAchievementView1(BuildContext context) {
       ..show(context);
 }
 
+void paymentSuccess(BuildContext context) {
+  if (pushIsOn)
+    Flushbar(
+        title: "Спасибо!",
+        message: "Оплата прошла успешно!",
+        flushbarStyle: FlushbarStyle.FLOATING,
+        flushbarPosition: FlushbarPosition.TOP,
+        icon: Icon(
+          FontAwesomeIcons.checkCircle,
+          color: Colors.green[300],
+        ),
+        leftBarIndicatorColor: Colors.green[300],
+        duration: Duration(seconds: 3))
+      ..show(context);
+}
+
 void showAchievementView2(BuildContext context, var title, var message) {
   if (pushIsOn)
     Flushbar(

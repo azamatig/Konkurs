@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart' as f;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
+import 'package:konkurs_app/screens/AchievementView.dart';
+import 'package:konkurs_app/screens/home.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 import 'package:web3dart/web3dart.dart';
@@ -14,102 +18,143 @@ class MoneyTransferPage extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
-const String privateKey =
-    '6af6926e2b72410c9587d14ba7d8db82dbf5ac7bf138d204fdd9de8e5d8d0804';
 const String rpcUrl =
     'https://rinkeby.infura.io/v3/bbecc41e903242fea4b45ca0ab089c8e';
 var httpClient = Client();
 String _address;
+String _txHash;
+bool _isLoading = false;
+final db = f.FirebaseFirestore.instance;
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
   Future<void> eth1() async {
-    // start a client we can use to send transactions
-    final client = Web3Client(rpcUrl, httpClient);
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      setState(() {
+        _isLoading = true;
+      });
+      final client = Web3Client(rpcUrl, httpClient);
+      final credentials = await client.credentialsFromPrivateKey(_address);
 
-    final credentials = await client.credentialsFromPrivateKey(privateKey);
-    final address = await credentials.extractAddress();
+      var transaction = Transaction(
+          to: EthereumAddress.fromHex(
+              '0x1C84c95b5001372c5106F04638BF7503a80Fd64C'),
+          value: EtherAmount.fromUnitAndValue(
+              EtherUnit.wei, BigInt.from(100000000000000000)));
+      var txHash =
+          await client.sendTransaction(credentials, transaction, chainId: 4);
+      _txHash = '$txHash';
+    }
+  }
 
-    print(address.hexEip55);
-    print(await client.getBalance(address));
-
-    var nonce = await client.getTransactionCount(address);
-    print('nonce: $nonce');
-
-    var blockNumber = await client.getBlockNumber();
-    print('blockNumber: $blockNumber');
-
-    var networkId = await client.getNetworkId();
-    print('networkId: $networkId');
-
-    var transaction = new Transaction(
-        to: EthereumAddress.fromHex(
-            '0x1E40b7962B6a7492235F49860e665251b01b304f'),
-        // gasPrice: gasPrice,
-        // maxGas: 21000,
-        // nonce: nonce,
-        value: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei, BigInt.from(10000000000000000)));
-    var txHash =
-        await client.sendTransaction(credentials, transaction, chainId: 4);
-    print('transaction hash: $txHash');
-
-    await Future.delayed(const Duration(seconds: 5));
-
-    var receipt = await client.getTransactionReceipt(txHash);
-    print('transaction receipt: $receipt');
-
-    blockNumber = await client.getBlockNumber();
-    print('blockNumber: $blockNumber');
-
-    // get native balance again
-    var balance = await client.getBalance(address);
-    print(
-        'balance after transaction: ${balance.getInWei} wei (${balance.getValueInUnit(EtherUnit.ether)} ether)');
+  setTransid() async {
+    db
+        .collection('users')
+        .doc(userId)
+        .collection('transactions')
+        .doc(_txHash)
+        .set({'txHash': _txHash});
   }
 
   @override
   void initState() {
+    _txHash = null;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Align _buttonWidget() {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-            height: 100,
+            height: 150,
             child: Column(
-              children: <Widget>[_transferButton()],
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 125,
+                      child: Text(
+                        _txHash == null
+                            ? 'Здесь отобразится ID транзакции'
+                            : 'id транзакции: $_txHash',
+                        style: TextStyle(
+                            fontSize: 5,
+                            fontWeight: FontWeight.w700,
+                            color: LightColors.kLavender),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (_txHash != null) {
+                          Clipboard.setData(ClipboardData(text: _txHash)).then(
+                              (value) => showAchievementView2(
+                                  context, 'Скопировано', 'ID был скопирован'));
+                        }
+                      },
+                      child: Icon(
+                        FontAwesomeIcons.copy,
+                        color: LightColors.kLavender,
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _transferButton()
+              ],
             )));
   }
 
   Widget _transferButton() {
-    return GestureDetector(
-      onTap: () {
-        eth1();
-      },
-      child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          decoration: BoxDecoration(
-              color: LightColors.yellow2,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          child: Wrap(
-            children: <Widget>[
-              Transform.rotate(
-                angle: 70,
-                child: Icon(
-                  Icons.swap_calls,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 10),
-              TitleText(
-                text: "Оплата",
-                color: Colors.white,
-              ),
-            ],
-          )),
-    );
+    return _isLoading
+        ? CircularProgressIndicator(
+            backgroundColor: LightColors.kLightYellow,
+            valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
+          )
+        : GestureDetector(
+            onTap: () {
+              eth1().whenComplete(() => [
+                    paymentSuccess(context),
+                    setState(() {
+                      _isLoading = false;
+                    }),
+                    setTransid()
+                  ]);
+            },
+            child: Container(
+                margin: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                    color: LightColors.yellow2,
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                child: Wrap(
+                  children: <Widget>[
+                    Transform.rotate(
+                      angle: 70,
+                      child: Icon(
+                        Icons.swap_calls,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    TitleText(
+                      text: "Оплата",
+                      color: Colors.white,
+                    ),
+                  ],
+                )),
+          );
   }
 
   @override
@@ -144,47 +189,53 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                     Text(
                       'Введите ваш private key от etherium кошелька',
                       style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white),
+                          color: LightColors.kLavender),
                     ),
                     SizedBox(
                       height: 20,
                     ),
-                    Container(
-                        width: 130,
-                        height: 50,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: LightColors.lightBlue1,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        child: TextFormField(
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: LightColors.lightBlue1),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: LightColors.lightBlue1),
-                              ),
-                              border: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: LightColors.lightBlue1))),
-                          validator: (input) =>
-                              input.trim().isEmpty ? 'Введите число' : null,
-                          onSaved: (input) => _address = input,
-                        )),
+                    Form(
+                      key: _formKey,
+                      child: Container(
+                          width: 200,
+                          height: 70,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 12),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: LightColors.lightBlue1,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15))),
+                          child: TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: LightColors.lightBlue1),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: LightColors.lightBlue1),
+                                ),
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: LightColors.lightBlue1))),
+                            validator: (input) =>
+                                input.trim().isEmpty ? 'Введите число' : null,
+                            onSaved: (input) => _address = input,
+                          )),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Text(
-                      'Оплата временно не работает!',
+                      'Мы не храним данные о вашем кошельке',
                       style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 8,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white),
+                          color: LightColors.kLavender),
                     ),
                     Expanded(
                       flex: 2,

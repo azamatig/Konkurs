@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
@@ -12,13 +13,12 @@ import 'package:konkurs_app/screens/tasks_list.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/prize_widget.dart';
 import 'package:konkurs_app/utilities/task_column.dart';
-import 'package:flutter_beautiful_popup/main.dart';
 import 'package:nanoid/nanoid.dart';
-import 'package:konkurs_app/utilities/date_widget.dart';
 
 import 'AchievementView.dart';
 import 'comments_screen.dart';
 
+// ignore: must_be_immutable
 class DetailsScreen extends StatefulWidget {
   final String userId;
   final String instaLink1;
@@ -78,7 +78,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .set({'nanoUid': nanoUid});
   }
 
-  addEventDay(DateTime endDate){
+  addEventDay(DateTime endDate) {
     var obj = [endDate.toString().substring(0, 10)];
     db
         .collection('users')
