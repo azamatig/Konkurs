@@ -1,33 +1,36 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
+import 'package:konkurs_app/screens/notifications.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/services/data.dart';
 import 'package:konkurs_app/services/database_service.dart';
+import 'package:konkurs_app/utilities/PushNotifications.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/date_widget.dart';
+import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+
 import 'all_giveaways.dart';
-import 'my_giveaways.dart';
 import 'closed_giveaways.dart';
-import 'package:konkurs_app/utilities/dropdown_menu.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:konkurs_app/screens/notifications.dart';
-import 'package:konkurs_app/utilities/PushNotifications.dart';
-import 'package:konkurs_app/utilities/date_widget.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'my_giveaways.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static final String id = 'feed_screen';
   final currentUserId;
+  final invitedId;
 
-  const HomeScreen1({Key key, this.currentUserId}) : super(key: key);
+  const HomeScreen1({Key key, this.currentUserId, this.invitedId})
+      : super(key: key);
 
   @override
   _HomeScreen1State createState() => _HomeScreen1State();
@@ -50,6 +53,16 @@ class _HomeScreen1State extends State<HomeScreen1>
   CalendarController _calendarController;
   bool isSelected;
   List eventDays = [];
+  static final _firestore = FirebaseFirestore.instance;
+  String userData;
+  String parentData;
+  String parent2Data;
+  List<dynamic> firstParentData;
+  List<dynamic> secondParentData;
+  bool _isSeen = false;
+  List<dynamic> childrenLvl1;
+  List<dynamic> childrenLvl2;
+  List<dynamic> childrenLvl3;
 
   initPush() async {
     await PushNotifications().initialise();
@@ -59,6 +72,46 @@ class _HomeScreen1State extends State<HomeScreen1>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    String inviter = widget.invitedId;
+    if (inviter != null) {
+      getMyParent().whenComplete(() => {
+            getParentsParent1().whenComplete(() => [
+                  getfirstParent().whenComplete(
+                      () => getParentsParent2().whenComplete(() => {
+                            getSecondParent().whenComplete(() => {
+                                  getUserInfo().whenComplete(() => {
+                                        if (inviter != null)
+                                          {
+                                            if (childrenLvl1.contains(
+                                                    widget.currentUserId) ==
+                                                false)
+                                              {
+                                                AuthService.setLevel1(
+                                                    context,
+                                                    inviter,
+                                                    widget.currentUserId),
+                                              },
+                                            if (firstParentData
+                                                    .contains(userData) ==
+                                                true)
+                                              {
+                                                setParentToLevel2(parentData,
+                                                    widget.currentUserId)
+                                              },
+                                            if (secondParentData
+                                                    .contains(userData) ==
+                                                true)
+                                              {
+                                                setParentLevel3(parent2Data,
+                                                    widget.currentUserId)
+                                              }
+                                          }
+                                      }),
+                                }),
+                          }))
+                ])
+          });
+    }
     PushNotifications().userId = widget.currentUserId;
     initPush();
     eventsType = getEventTypes();
@@ -78,7 +131,6 @@ class _HomeScreen1State extends State<HomeScreen1>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-
     _animationController.forward();
   }
 
@@ -89,8 +141,89 @@ class _HomeScreen1State extends State<HomeScreen1>
     }
   }
 
+  Future getUserInfo() async {
+    DocumentSnapshot document = await _firestore
+        .collection('/users')
+        .doc(widget.invitedId)
+        .collection('children')
+        .doc('level1')
+        .get();
+    childrenLvl1 = document['children'];
+  }
+
+  Future getChild2Info() async {
+    DocumentSnapshot document = await _firestore
+        .collection('/users')
+        .doc(parent2Data)
+        .collection('children')
+        .doc('level2')
+        .get();
+    childrenLvl2 = document['children'];
+  }
+
+  Future getChild3Info() async {
+    DocumentSnapshot document = await _firestore
+        .collection('/users')
+        .doc(parent2Data)
+        .collection('children')
+        .doc('level3')
+        .get();
+    childrenLvl3 = document['children'];
+  }
+
+  Future getMyParent() async {
+    DocumentSnapshot document =
+        await _firestore.collection('/users').doc(widget.currentUserId).get();
+    userData = document.data()['parent'];
+  }
+
+  Future getParentsParent1() async {
+    DocumentSnapshot document =
+        await _firestore.collection('/users').doc(userData).get();
+    parentData = document.data()['parent'];
+  }
+
+  Future getParentsParent2() async {
+    DocumentSnapshot document =
+        await _firestore.collection('/users').doc(parentData).get();
+    parent2Data = document.data()['parent'];
+  }
+
+  Future getfirstParent() async {
+    DocumentSnapshot document = await _firestore
+        .collection('/users')
+        .doc(parentData)
+        .collection('children')
+        .doc('level1')
+        .get();
+    firstParentData = document['children'];
+  }
+
+  Future getSecondParent() async {
+    DocumentSnapshot document = await _firestore
+        .collection('/users')
+        .doc(parent2Data)
+        .collection('children')
+        .doc('level2')
+        .get();
+    secondParentData = document['children'];
+  }
+
+  Future setParentToLevel2(String inviter, String id) async {
+    if (firstParentData.contains(userData)) {
+      AuthService.setLevel2(context, inviter, id);
+    }
+  }
+
+  Future setParentLevel3(String inviter, String id) async {
+    if (secondParentData.contains(userData)) {
+      AuthService.setLevel3(context, inviter, id);
+    }
+  }
+
   Future<void> _retrieveDynamicLink() async {
-    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final PendingDynamicLinkData data =
+        await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri deepLink = data?.link;
     if (deepLink != null) {
       Navigator.pushNamed(context, deepLink.path);
@@ -493,9 +626,16 @@ class _HomeScreen1State extends State<HomeScreen1>
             margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
             child: Column(
               children: [
-                Icon(Icons.circle, color: eventDays.contains(date.toString().substring(0, 10)) ?
-          Colors.red : Color(0xff102733), size: 8,),
-                SizedBox(height: 2.5,),
+                Icon(
+                  Icons.circle,
+                  color: eventDays.contains(date.toString().substring(0, 10))
+                      ? Colors.red
+                      : Color(0xff102733),
+                  size: 3,
+                ),
+                SizedBox(
+                  height: 2.5,
+                ),
                 Column(
                   children: [
                     _showDate(date),
@@ -510,11 +650,11 @@ class _HomeScreen1State extends State<HomeScreen1>
       onDaySelected: (date, events, holidays) {
         _onDaySelected(date, events, holidays);
         _animationController.forward(from: 0.0);
-        if(eventDays.contains(date.toString().substring(0, 10)))
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyGiveaways(userId, userPhoto)));
+        if (eventDays.contains(date.toString().substring(0, 10)))
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MyGiveaways(userId, userPhoto)));
       },
       onVisibleDaysChanged: _onVisibleDaysChanged,
       onCalendarCreated: _onCalendarCreated,
@@ -525,9 +665,9 @@ class _HomeScreen1State extends State<HomeScreen1>
     return Container(
         //padding: EdgeInsets.all(2),
         child: Text(
-          arr[date.weekday - 1],
-          style: TextStyle(color: Colors.white),
-        ));
+      arr[date.weekday - 1],
+      style: TextStyle(color: Colors.white),
+    ));
   }
 
   Widget _showWeek(DateTime date) {

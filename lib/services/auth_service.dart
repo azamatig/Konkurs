@@ -30,8 +30,15 @@ class AuthService {
           'location': 'Местонахождение',
           'points': 0,
           'eventDays': [],
-          'inviter' : inviterId,
+          'parent': inviterId ?? '',
+          'partner': false,
         });
+        if (inviterId != null) {
+          _firestore
+              .collection('/users')
+              .doc(signedInUser.uid)
+              .update({'parent': inviterId});
+        }
         _firestore
             .collection('/users')
             .doc(signedInUser.uid)
@@ -44,12 +51,65 @@ class AuthService {
           'ts': FieldValue.serverTimestamp(),
           'type': 1,
         });
+        _firestore
+            .collection('/users')
+            .doc(signedInUser.uid)
+            .collection('children')
+            .doc('level1')
+            .set({
+          'children': {'0': ''},
+        });
+        _firestore
+            .collection('/users')
+            .doc(signedInUser.uid)
+            .collection('children')
+            .doc('level2')
+            .set({
+          'children': {'0': ''},
+        });
+        _firestore
+            .collection('/users')
+            .doc(signedInUser.uid)
+            .collection('children')
+            .doc('level3')
+            .set({
+          'children': {'0': ''},
+        });
         Provider.of<UserData>(context).currentUserId = signedInUser.uid;
-        Navigator.pop(context);
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  static void setLevel1(BuildContext context, String inviter, String id) {
+    var userId = [id];
+    _firestore
+        .collection('/users')
+        .doc(inviter)
+        .collection('children')
+        .doc('level1')
+        .update({'children': FieldValue.arrayUnion(userId)});
+  }
+
+  static void setLevel2(BuildContext context, String inviter, String id) {
+    var userId = [id];
+    _firestore
+        .collection('/users')
+        .doc(inviter)
+        .collection('children')
+        .doc('level2')
+        .update({'children': FieldValue.arrayUnion(userId)});
+  }
+
+  static void setLevel3(BuildContext context, String inviter, String id) {
+    var userId = [id];
+    _firestore
+        .collection('/users')
+        .doc(inviter)
+        .collection('children')
+        .doc('level3')
+        .update({'children': FieldValue.arrayUnion(userId)});
   }
 
   static void logout() {

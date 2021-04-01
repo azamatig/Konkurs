@@ -166,7 +166,11 @@ class _SplashScreenState extends State<SplashScreen> {
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, SignupScreen.id);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      SignupScreen(widget.inviterId)));
                         },
                         child: Container(
                           alignment: Alignment.center,

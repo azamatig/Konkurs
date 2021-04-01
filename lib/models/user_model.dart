@@ -10,6 +10,8 @@ class User {
   String location;
   int points;
   List eventDays;
+  bool partner;
+  String parent;
 
   User(
       {this.id,
@@ -20,19 +22,23 @@ class User {
       this.phone,
       this.location,
       this.points,
-      this.eventDays});
+      this.eventDays,
+      this.partner,
+      this.parent});
 
-  factory User.fromDoc(DocumentSnapshot doc) {
+  factory User.fromDoc(DocumentSnapshot d) {
     return User(
-        id: doc.id,
-        name: doc['name'],
-        profileImageUrl: doc['profileImageUrl'] ?? '',
-        email: doc['email'],
-        insta: doc['insta'] ?? '',
-        phone: doc['phone'] ?? '',
-        location: doc['location'] ?? 'Местоположение',
-        points: doc['points'] ?? 0,
-        eventDays: doc['eventDays'],
+      id: d.id,
+      name: d['name'],
+      profileImageUrl: d['profileImageUrl'] ?? '',
+      email: d['email'],
+      insta: d['insta'] ?? '',
+      phone: d['phone'] ?? '',
+      location: d['location'] ?? 'Местоположение',
+      points: d['points'] ?? 0,
+      eventDays: d['eventDays'],
+      partner: d['partner'],
+      parent: d['parent'],
     );
   }
 
@@ -49,18 +55,22 @@ class User {
       location: d['location'],
       points: d['points'],
       eventDays: d['eventDays'],
+      partner: d['partner'],
+      parent: d['parent'],
     );
   }
 
-  User.fromMap(Map<String, dynamic> mapData) {
-    this.id = mapData['id'];
-    this.email = mapData['email'];
-    this.profileImageUrl = mapData['profileImageUrl'];
-    this.name = mapData['name'];
-    this.location = mapData['location'];
-    this.insta = mapData['insta'];
-    this.phone = mapData['phone'];
-    this.points = mapData['points'];
-    this.eventDays = mapData['eventDays'];
+  User.fromMap(Map<String, dynamic> m) {
+    this.id = m['id'];
+    this.email = m['email'];
+    this.profileImageUrl = m['profileImageUrl'];
+    this.name = m['name'];
+    this.location = m['location'];
+    this.insta = m['insta'];
+    this.phone = m['phone'];
+    this.points = m['points'];
+    this.eventDays = m['eventDays'];
+    this.partner = m['partner'];
+    this.parent = m['parent'];
   }
 }

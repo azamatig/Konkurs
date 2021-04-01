@@ -57,6 +57,7 @@ dependencies:
   cached_network_image: ^2.5.0
   google_fonts: ^1.1.2
   web3dart: ^2.0.0-dev.7
+  bug_report: ^0.1.0
 
 dev_dependencies:
   flutter_test:

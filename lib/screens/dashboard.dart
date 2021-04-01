@@ -1,5 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as f;
+import 'package:dio/dio.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -7,24 +11,24 @@ import 'package:konkurs_app/screens/task_profile.dart';
 import 'package:konkurs_app/screens/wallet_transfer.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 import 'package:simple_auth_flutter/simple_auth_flutter.dart';
+
 import 'my_wins.dart';
 import 'settings.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
+// ignore: must_be_immutable
 class DashBoardPage extends StatefulWidget {
   final String userId;
   final String userPhoto;
   DynamicLinkParameters parameters;
 
-  DashBoardPage(this.userId, this.userPhoto){
+  DashBoardPage(this.userId, this.userPhoto) {
     parameters = DynamicLinkParameters(
         uriPrefix: 'https://giveapp.page.link',
-        link: Uri.parse('https://giveapp.page.link/lib/screens/SignUpScreen/?invitedby=$userId'),
+        link: Uri.parse(
+            'https://giveapp.page.link/lib/screens/SignUpScreen/?invitedby=$userId'),
         androidParameters: AndroidParameters(
           packageName: 'konkurs.aza.com.konkurs_app',
           minimumVersion: 25,
@@ -53,7 +57,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Map _userData;
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
-
+  static final _firestore = f.FirebaseFirestore.instance;
+  List<dynamic> children;
 
   void changeTheme() async {
     if (colorSwitched) {
@@ -96,8 +101,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
       });
     }
   }
-
-
 
   Future setSignIn(String data) async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -239,7 +242,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => MoneyTransferPage()));
+                                        builder: (_) => MoneyTransferPage(
+                                              userId: widget.userId,
+                                            )));
                               },
                               child: Padding(
                                 padding:
@@ -375,12 +380,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                     TableRow(children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          final Uri dynamicUrl = await widget.parameters.buildUrl();
+                                          final Uri dynamicUrl = await widget
+                                              .parameters
+                                              .buildUrl();
                                           print(dynamicUrl);
                                           var response = await FlutterShareMe()
                                               .shareToSystem(
-                                                  msg:
-                                                  dynamicUrl.toString());
+                                                  msg: dynamicUrl.toString());
                                           if (response == 'success') {
                                             print('navigate success');
                                           }

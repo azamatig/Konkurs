@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_beautiful_popup/main.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/all_users_giveaways.dart';
+import 'package:konkurs_app/screens/bug.dart';
 import 'package:konkurs_app/screens/tasks_list.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/prize_widget.dart';
@@ -32,7 +32,7 @@ class DetailsScreen extends StatefulWidget {
   final Timestamp endDate;
   final String giveawayCost;
   int likesCount;
-  List<String> eventDays;
+  List<String> eventDays = List<String>();
 
   DetailsScreen(
       {this.userId,
@@ -62,9 +62,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
   String task1Type;
   String task2Type;
   String task3Type;
+  User userData;
   List<dynamic> shares;
   List<dynamic> shares2;
   List<dynamic> shares3;
+  bool _lowCoins = false;
+  User userParent;
+  User parentsParent;
+  User parentElderParent;
 
   DocumentSnapshot nanoUid;
 
@@ -82,9 +87,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
     var obj = [endDate.toString().substring(0, 10)];
     db
         .collection('users')
-        .doc(widget.userId)
+        .doc(userData.id)
         .update({'eventDays': FieldValue.arrayUnion(obj)});
-    widget.eventDays.add(endDate.toString().substring(0, 10));
+    /*if (widget.eventDays != null) {
+      widget.eventDays.add(endDate.toString().substring(0, 10));
+    }*/
   }
 
   ifPostIsLiked(String docId) async {
@@ -108,13 +115,41 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .update({'people': FieldValue.arrayUnion(list)});
   }
 
+  Future getUserData() async {
+    DocumentSnapshot doc =
+        await db.collection('users').doc(widget.userId).get();
+    User user = User.fromDoc(doc);
+    userData = user;
+  }
+
+  Future checkPoints(String cost) async {
+    int costg = int.parse(cost);
+    if (userData.points >= costg) {
+      await db
+          .collection('users')
+          .doc(widget.userId)
+          .update({'points': FieldValue.increment(-costg)});
+    } else {
+      showError(context, 'Ошибка', 'Недостаточно гивкойнов(gc) для участия');
+      setState(() {
+        _lowCoins = true;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     final templates = [
       TemplateBlueRocket,
     ];
+    getUserData();
     ifPostIsLiked(widget.userId);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -164,20 +199,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    GestureDetector(
-                      onTap: () async {
-                        var response = await FlutterShareMe().shareToSystem(
-                            msg: 'ссылка на приложение будет здесь');
-                        if (response == 'success') {}
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
                       child: Container(
-                          width: 40,
-                          height: 50,
-                          child: Icon(
-                            FontAwesomeIcons.shareAlt,
+                        width: 40,
+                        height: 20,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => CommentsScreen(
+                                          userId: widget.userId,
+                                          documentReference: widget.docRef,
+                                          user: widget.currentUser,
+                                        )));
+                          },
+                          icon: Icon(
+                            FontAwesomeIcons.commentAlt,
                             size: 20,
                             color: LightColors.kLightYellow2,
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -269,29 +313,32 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       ],
                     ),
                     Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0, right: 20),
-                      child: Container(
-                        width: 40,
-                        height: 20,
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => CommentsScreen(
-                                          userId: widget.userId,
-                                          documentReference: widget.docRef,
-                                          user: widget.currentUser,
-                                        )));
-                          },
-                          icon: Icon(
-                            FontAwesomeIcons.commentAlt,
-                            size: 20,
-                            color: LightColors.kLightYellow2,
-                          ),
+                    Container(
+                      width: 55,
+                      child: Text(
+                        'Сообщить о проблеме',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: LightColors.kLightYellow2,
                         ),
                       ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => ReportIssuePage()));
+                      },
+                      child: Container(
+                          width: 40,
+                          height: 50,
+                          child: Icon(
+                            FontAwesomeIcons.exclamationCircle,
+                            size: 20,
+                            color: LightColors.kRed,
+                          )),
                     ),
                   ],
                 ),
@@ -390,7 +437,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
                   post.winner.isNotEmpty
                       ? Text("Победитель - " + post.winner)
-                      : Text("ПОбедитель еще не определен"),
+                      : Text(" "),
                   SizedBox(
                     height: 3,
                   ),
@@ -499,26 +546,76 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       {}
                                     else
                                       {
-                                        setParticipate(),
-                                        showAchievementView1(context),
-                                        setGiveUid(),
-                                        addEventDay(widget.endDate.toDate()),
+                                        checkPoints(post.giveawayCost)
+                                            .whenComplete(() => {
+                                                  if (_lowCoins == false)
+                                                    {
+                                                      setParticipate(),
+                                                      showAchievementView1(
+                                                          context),
+                                                      setGiveUid(),
+                                                      find1stParent().whenComplete(
+                                                          () => find2ndParent()
+                                                              .whenComplete(() =>
+                                                                  find3rdParent()
+                                                                      .whenComplete(
+                                                                          () =>
+                                                                              {
+                                                                                print(userParent.parent),
+                                                                                if (userParent.partner == true)
+                                                                                  {
+                                                                                    awardPointsToMyParent(userParent.id),
+                                                                                  },
+                                                                                if (parentsParent.partner == true)
+                                                                                  {
+                                                                                    awardPointsToParentParent(userParent.parent),
+                                                                                  },
+                                                                                if (parentElderParent.partner == true)
+                                                                                  {
+                                                                                    awardPointsToElderParent(parentsParent.parent),
+                                                                                  }
+                                                                              }))),
+                                                      addEventDay(post.endDate
+                                                          .toDate()),
+                                                    }
+                                                  else
+                                                    {}
+                                                }),
                                       }
                                   },
                                   color: post.people.contains(widget.userId)
                                       ? LightColors.kBlue
                                       : LightColors.kGreen,
                                   padding: EdgeInsets.all(10.0),
-                                  child: Text(
-                                    post.people.contains(widget.userId)
-                                        ? 'id участия ' + id['nanoUid']
-                                        : 'Участвовать',
-                                    style: TextStyle(
-                                      color: post.people.contains(widget.userId)
-                                          ? LightColors.kLightYellow
-                                          : LightColors.kLightYellow,
-                                      fontSize: 18.0,
-                                    ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      post.giveawayCost == null ||
+                                              post.people
+                                                  .contains(widget.userId)
+                                          ? SizedBox()
+                                          : Icon(
+                                              FontAwesomeIcons.coins,
+                                              size: 10,
+                                              color: LightColors.kLightYellow2,
+                                            ),
+                                      Text(
+                                        post.people.contains(widget.userId)
+                                            ? 'id участия ' + id['nanoUid']
+                                            : post.giveawayCost == null
+                                                ? 'Участвовать'
+                                                : ' ${post.giveawayCost}gc для участия',
+                                        style: TextStyle(
+                                          color: post.people
+                                                  .contains(widget.userId)
+                                              ? LightColors.kLightYellow
+                                              : LightColors.kLightYellow,
+                                          fontSize: 15.0,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -589,8 +686,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   child: TaskColumn(
                       icon: FontAwesomeIcons.tasks,
                       iconBackgroundColor: LightColors.kGreen,
-                      title: 'Список задач, ',
-                      subtitle: 'Нажмите сюда чтобы узнать про задания!'),
+                      title: 'Список задач,',
+                      subtitle: 'Нажмите чтобы узнать про задания!'),
                 ),
               ),
             ),
@@ -655,5 +752,44 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
       ),
     );
+  }
+
+  Future find1stParent() async {
+    DocumentSnapshot user =
+        await db.collection('users').doc(userData.parent).get();
+    userParent = User.fromDoc(user);
+  }
+
+  Future find2ndParent() async {
+    DocumentSnapshot parent =
+        await db.collection('users').doc(userParent.parent).get();
+    parentsParent = User.fromDoc(parent);
+  }
+
+  Future find3rdParent() async {
+    DocumentSnapshot parents2 =
+        await db.collection('users').doc(parentsParent.parent).get();
+    parentElderParent = User.fromDoc(parents2);
+  }
+
+  awardPointsToMyParent(String id) async {
+    await db
+        .collection('users')
+        .doc(id)
+        .update({'points': FieldValue.increment(15)});
+  }
+
+  awardPointsToParentParent(String id) async {
+    await db
+        .collection('users')
+        .doc(id)
+        .update({'points': FieldValue.increment(10)});
+  }
+
+  awardPointsToElderParent(String id) async {
+    await db
+        .collection('users')
+        .doc(id)
+        .update({'points': FieldValue.increment(5)});
   }
 }

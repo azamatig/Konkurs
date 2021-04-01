@@ -20,12 +20,12 @@ class _SignupScreenState extends State<SignupScreen> {
   _submit() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-
       setState(() {
         _isLoading = true;
       });
       // Logging in the user w/ Firebase
-      AuthService.signUpUser(context, _phone, _name, _email, _password, widget.inviterId);
+      AuthService.signUpUser(
+          context, _phone, _name, _email, _password, widget.inviterId);
     }
   }
 
@@ -175,6 +175,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         GestureDetector(
                           onTap: () {
                             _submit();
+                            Future.delayed(Duration(seconds: 2));
+                            Navigator.pop(context);
                           },
                           child: Container(
                             child: _isLoading

@@ -11,7 +11,9 @@ import 'package:konkurs_app/utilities/title_wallet_text.dart';
 import 'package:web3dart/web3dart.dart';
 
 class MoneyTransferPage extends StatefulWidget {
-  MoneyTransferPage({Key key}) : super(key: key);
+  final userId;
+
+  MoneyTransferPage({Key key, this.userId}) : super(key: key);
 
   @override
   _MoneyTransferPageState createState() => _MoneyTransferPageState();
@@ -19,12 +21,14 @@ class MoneyTransferPage extends StatefulWidget {
 
 final _formKey = GlobalKey<FormState>();
 const String rpcUrl =
-    'https://rinkeby.infura.io/v3/bbecc41e903242fea4b45ca0ab089c8e';
+    'https://mainnet.infura.io/v3/bbecc41e903242fea4b45ca0ab089c8e';
 var httpClient = Client();
 String _address;
 String _txHash;
 bool _isLoading = false;
 final db = f.FirebaseFirestore.instance;
+double price;
+String error;
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
   Future<void> eth1() async {
@@ -36,14 +40,34 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
       final client = Web3Client(rpcUrl, httpClient);
       final credentials = await client.credentialsFromPrivateKey(_address);
 
-      var transaction = Transaction(
-          to: EthereumAddress.fromHex(
-              '0x1C84c95b5001372c5106F04638BF7503a80Fd64C'),
-          value: EtherAmount.fromUnitAndValue(
-              EtherUnit.wei, BigInt.from(100000000000000000)));
-      var txHash =
-          await client.sendTransaction(credentials, transaction, chainId: 4);
-      _txHash = '$txHash';
+      try {
+        var transaction = Transaction(
+            to: EthereumAddress.fromHex(
+                '0x1C84c95b5001372c5106F04638BF7503a80Fd64C'),
+            value: EtherAmount.fromUnitAndValue(
+                EtherUnit.wei, BigInt.from(price)));
+        var txHash =
+            await client.sendTransaction(credentials, transaction, chainId: 4);
+        _txHash = '$txHash';
+      } catch (err) {
+        showError(context, 'Ошибка', 'Транзакция не прошла');
+        error = err.toString();
+      }
+      if (_txHash != null) {
+        paymentSuccess(context);
+      }
+      if (_txHash != null && price == 520000000000000) {
+        awardPoints();
+      }
+      if (_txHash != null && price == 2600000000000000) {
+        awardPoints500();
+      }
+      if (_txHash != null && price == 5200000000000000) {
+        awardPoints1000();
+      }
+      if (_txHash != null && price == 100000000000000000) {
+        setPartner();
+      }
     }
   }
 
@@ -54,6 +78,26 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         .collection('transactions')
         .doc(_txHash)
         .set({'txHash': _txHash});
+  }
+
+  void awardPoints() async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': f.FieldValue.increment(100)});
+  }
+
+  void awardPoints500() async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': f.FieldValue.increment(500)});
+  }
+
+  void awardPoints1000() async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': f.FieldValue.increment(1000)});
+  }
+
+  void setPartner() {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'partner': true});
   }
 
   @override
@@ -125,7 +169,6 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         : GestureDetector(
             onTap: () {
               eth1().whenComplete(() => [
-                    paymentSuccess(context),
                     setState(() {
                       _isLoading = false;
                     }),
@@ -157,9 +200,144 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
           );
   }
 
+  Widget _buyButtons() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          price = 520000000000000;
+        });
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: price == 520000000000000
+                  ? LightColors.yellow
+                  : LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  Icons.swap_calls,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              TitleText(
+                text: "1\$ - 100 gc",
+                color: Colors.white,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _buyButtons2() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          price = 2600000000000000;
+        });
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: price == 2600000000000000
+                  ? LightColors.yellow
+                  : LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  Icons.swap_calls,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              TitleText(
+                text: "5\$ - 500 gc",
+                color: Colors.white,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _buyButtons3() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          price = 5200000000000000;
+        });
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: price == 5200000000000000
+                  ? LightColors.yellow
+                  : LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.coins,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              TitleText(
+                text: "10\$ - 1000 gc",
+                color: Colors.white,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _partnerButton() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          price = 100000000000000000;
+        });
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: price == 0.10 ? LightColors.yellow : LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 50,
+                child: Icon(
+                  FontAwesomeIcons.handshake,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              TitleText(
+                text: "Партнерская программа",
+                color: Colors.white,
+              ),
+            ],
+          )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: LightColors.navyBlue1,
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -194,7 +372,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                           color: LightColors.kLavender),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Form(
                       key: _formKey,
@@ -237,6 +415,32 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                           fontWeight: FontWeight.w700,
                           color: LightColors.kLavender),
                     ),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(),
+                    ),
+                    Text(
+                      price == 5200000000000000
+                          ? 'Купить 1000gc'
+                          : price == 2600000000000000
+                              ? 'Купить 500gc'
+                              : price == 5200000000000000
+                                  ? 'Купить 100gc'
+                                  : price == 100000000000000000
+                                      ? 'Стать партнером'
+                                      : 'Ничего не выбрано',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: LightColors.kLavender),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    _buyButtons(),
+                    _buyButtons2(),
+                    _buyButtons3(),
+                    _partnerButton(),
                     Expanded(
                       flex: 2,
                       child: SizedBox(),

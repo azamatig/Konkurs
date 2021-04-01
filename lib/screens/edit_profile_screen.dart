@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/services/database_service.dart';
-import 'package:konkurs_app/services/storage_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
