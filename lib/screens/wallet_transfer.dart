@@ -427,7 +427,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                               : price == 5200000000000000
                                   ? 'Купить 100gc'
                                   : price == 100000000000000000
-                                      ? 'Стать партнером'
+                                      ? 'Стать партнером - 200\$'
                                       : 'Ничего не выбрано',
                       style: TextStyle(
                           fontSize: 14,
