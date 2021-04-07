@@ -36,6 +36,13 @@ String readTimeStamp(DateTime date) {
   return format.format(date);
 }
 
+String numberFormat(String str) {
+  var myInt = double.parse(str);
+  assert(myInt is double);
+  var format = NumberFormat("#.########");
+  return format.format(myInt);
+}
+
 class LightColors {
   static const Color kLightYellow = Color(0xFFFFF9EC);
   static const Color kLightYellow2 = Color(0xFFFFE4C7);

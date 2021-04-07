@@ -60,6 +60,7 @@ Future<void> retrieveDynamicLink() async {
   final Uri deepLink = data?.link;
   if (deepLink != null) {
     deepLink.queryParameters.forEach((k, v) async {
+      print(v);
       if (k == "invitedby") {
         var firestore = FirebaseFirestore.instance;
         inviterId = v;

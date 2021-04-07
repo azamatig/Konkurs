@@ -1,14 +1,21 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as f;
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
+import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/AchievementView.dart';
+import 'package:konkurs_app/screens/confirm_payment.dart';
 import 'package:konkurs_app/screens/home.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MoneyTransferPage extends StatefulWidget {
   final userId;
@@ -19,144 +26,136 @@ class MoneyTransferPage extends StatefulWidget {
   _MoneyTransferPageState createState() => _MoneyTransferPageState();
 }
 
-final _formKey = GlobalKey<FormState>();
-const String rpcUrl =
-    'https://mainnet.infura.io/v3/bbecc41e903242fea4b45ca0ab089c8e';
 var httpClient = Client();
-String _address;
-String _txHash;
+const String baseUrl = 'https://www.coinpayments.net/api.php';
 bool _isLoading = false;
 final db = f.FirebaseFirestore.instance;
-double price;
-String error;
+String price;
+String price25;
+String price50;
+String partnerPrice;
+var hmac;
+var results;
+CpTransaction result;
+String qrUrl;
+String txId;
+String address;
+String checkOut;
+String statusUrl;
+String amount;
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
-  Future<void> eth1() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      setState(() {
-        _isLoading = true;
-      });
-      final client = Web3Client(rpcUrl, httpClient);
-      final credentials = await client.credentialsFromPrivateKey(_address);
-
-      try {
-        var transaction = Transaction(
-            to: EthereumAddress.fromHex(
-                '0x1C84c95b5001372c5106F04638BF7503a80Fd64C'),
-            value: EtherAmount.fromUnitAndValue(
-                EtherUnit.wei, BigInt.from(price)));
-        var txHash =
-            await client.sendTransaction(credentials, transaction, chainId: 4);
-        _txHash = '$txHash';
-      } catch (err) {
-        showError(context, 'Ошибка', 'Транзакция не прошла');
-        error = err.toString();
-      }
-      if (_txHash != null) {
-        paymentSuccess(context);
-      }
-      if (_txHash != null && price == 520000000000000) {
-        awardPoints();
-      }
-      if (_txHash != null && price == 2600000000000000) {
-        awardPoints500();
-      }
-      if (_txHash != null && price == 5200000000000000) {
-        awardPoints1000();
-      }
-      if (_txHash != null && price == 100000000000000000) {
-        setPartner();
-      }
-    }
+  Future<Response> getTransaction(String price) async {
+    Map<String, String> headers = new Map();
+    headers["Content-Type"] =
+        "application/x-www-form-urlencoded; charset=UTF-8";
+    headers["HMAC"] = "$hmac";
+    var data = {
+      "version": "1",
+      "key": "bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380",
+      "cmd": "create_transaction",
+      "amount": price,
+      "currency1": "ETH",
+      "currency2": "ETH",
+      "buyer_email": "azerbaev87@gmail.com"
+    };
+    var parts = [];
+    data.forEach((key, value) {
+      parts.add('${Uri.encodeQueryComponent(key)}='
+          '${Uri.encodeQueryComponent(value)}');
+    });
+    var formData = parts.join('&');
+    print(formData);
+    return await httpClient.post('$baseUrl', headers: headers, body: formData);
   }
 
-  setTransid() async {
+  Future<void> createTransaction20USD() async {
+    var secret = utf8.encode(
+        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
+    var bytes = utf8.encode(
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.0098&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
+    setState(() {
+      price = '0.0098';
+    });
+    Hmac hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
+    Digest digest = hmacSha256.convert(bytes);
+
+    hmac = digest.toString();
+  }
+
+  Future<void> createTransaction25USD() async {
+    var secret = utf8.encode(
+        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
+    var bytes = utf8.encode(
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.012&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
+    setState(() {
+      price25 = '0.012';
+    });
+
+    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
+    var digest = hmacSha256.convert(bytes);
+
+    hmac = digest;
+  }
+
+  Future<void> createTransaction50USD() async {
+    var secret = utf8.encode(
+        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
+    var bytes = utf8.encode(
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.024&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
+    setState(() {
+      price50 = '0.024';
+    });
+
+    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
+    var digest = hmacSha256.convert(bytes);
+
+    hmac = digest;
+  }
+
+  Future<void> createTransactionPartner() async {
+    var secret = utf8.encode(
+        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
+    var bytes = utf8.encode(
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.098&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
+    setState(() {
+      partnerPrice = '0.098';
+    });
+    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
+    var digest = hmacSha256.convert(bytes);
+
+    hmac = digest;
+  }
+
+  setTransid(String txid, String address, String amount, String checkout,
+      String status) async {
     db
         .collection('users')
         .doc(userId)
         .collection('transactions')
-        .doc(_txHash)
-        .set({'txHash': _txHash});
-  }
-
-  void awardPoints() async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': f.FieldValue.increment(100)});
-  }
-
-  void awardPoints500() async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': f.FieldValue.increment(500)});
-  }
-
-  void awardPoints1000() async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': f.FieldValue.increment(1000)});
-  }
-
-  void setPartner() {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'partner': true});
+        .doc(txid)
+        .set({
+      'txHash': txid,
+      'address': address,
+      'amount': amount,
+      'checkOutUrl': checkout,
+      'status': status,
+      'time': f.FieldValue.serverTimestamp(),
+    });
   }
 
   @override
   void initState() {
-    _txHash = null;
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Align _buttonWidget() {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-            height: 150,
+            height: 110,
             child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 125,
-                      child: Text(
-                        _txHash == null
-                            ? 'Здесь отобразится ID транзакции'
-                            : 'id транзакции: $_txHash',
-                        style: TextStyle(
-                            fontSize: 5,
-                            fontWeight: FontWeight.w700,
-                            color: LightColors.kLavender),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (_txHash != null) {
-                          Clipboard.setData(ClipboardData(text: _txHash)).then(
-                              (value) => showAchievementView2(
-                                  context, 'Скопировано', 'ID был скопирован'));
-                        }
-                      },
-                      child: Icon(
-                        FontAwesomeIcons.copy,
-                        color: LightColors.kLavender,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                _transferButton()
-              ],
+              children: <Widget>[_transferButton()],
             )));
   }
 
@@ -168,12 +167,13 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
           )
         : GestureDetector(
             onTap: () {
-              eth1().whenComplete(() => [
-                    setState(() {
-                      _isLoading = false;
-                    }),
-                    setTransid()
-                  ]);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => ConfirmPayemnt(
+                            userId: widget.userId,
+                            txId: txId,
+                          )));
             },
             child: Container(
                 margin: EdgeInsets.only(bottom: 20),
@@ -187,13 +187,13 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                       angle: 70,
                       child: Icon(
                         Icons.swap_calls,
-                        color: Colors.white,
+                        color: LightColors.kDarkBlue,
                       ),
                     ),
                     SizedBox(width: 10),
                     TitleText(
-                      text: "Оплата",
-                      color: Colors.white,
+                      text: "История оплат",
+                      color: LightColors.kDarkBlue,
                     ),
                   ],
                 )),
@@ -201,87 +201,38 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
   }
 
   Widget _buyButtons() {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        setState(() {
-          price = 520000000000000;
-        });
+        createTransaction20USD().whenComplete(() => {
+              getTransaction(price).then((value) => {
+                    results = value.body,
+                    result = CpTransaction.fromJson(results),
+                    setState(() {
+                      qrUrl = result.result.qrcodeUrl;
+                      txId = result.result.txnId;
+                      address = result.result.address;
+                      checkOut = result.result.checkoutUrl;
+                      statusUrl = result.result.statusUrl;
+                      amount = result.result.amount;
+                    }),
+                  })
+            });
+        setTransid(txId, address, amount, checkOut, statusUrl);
+        popup.show(
+          title: 'Спасибо!',
+          content:
+              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
+              'Средства будут начислены после подтверждения',
+          barrierDismissible: true,
+        );
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           decoration: BoxDecoration(
-              color: price == 520000000000000
-                  ? LightColors.yellow
-                  : LightColors.yellow2,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          child: Wrap(
-            children: <Widget>[
-              Transform.rotate(
-                angle: 70,
-                child: Icon(
-                  Icons.swap_calls,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 10),
-              TitleText(
-                text: "1\$ - 100 gc",
-                color: Colors.white,
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget _buyButtons2() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          price = 2600000000000000;
-        });
-      },
-      child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          decoration: BoxDecoration(
-              color: price == 2600000000000000
-                  ? LightColors.yellow
-                  : LightColors.yellow2,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          child: Wrap(
-            children: <Widget>[
-              Transform.rotate(
-                angle: 70,
-                child: Icon(
-                  Icons.swap_calls,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 10),
-              TitleText(
-                text: "5\$ - 500 gc",
-                color: Colors.white,
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget _buyButtons3() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          price = 5200000000000000;
-        });
-      },
-      child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          decoration: BoxDecoration(
-              color: price == 5200000000000000
-                  ? LightColors.yellow
-                  : LightColors.yellow2,
+              color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
           child: Wrap(
             children: <Widget>[
@@ -289,13 +240,119 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                 angle: 70,
                 child: Icon(
                   FontAwesomeIcons.coins,
-                  color: Colors.white,
+                  color: LightColors.kDarkBlue,
                 ),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 5),
               TitleText(
-                text: "10\$ - 1000 gc",
-                color: Colors.white,
+                text: "20\$ - 2000 gc",
+                color: LightColors.kDarkBlue,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _buyButtons2() {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
+    return GestureDetector(
+      onTap: () {
+        createTransaction25USD().whenComplete(() => {
+              getTransaction(price25).then((value) => {
+                    results = value.body,
+                    result = CpTransaction.fromJson(results),
+                    setState(() {
+                      qrUrl = result.result.qrcodeUrl;
+                      txId = result.result.txnId;
+                      address = result.result.address;
+                      checkOut = result.result.checkoutUrl;
+                      statusUrl = result.result.statusUrl;
+                      amount = result.result.amount;
+                    }),
+                  })
+            });
+        setTransid(txId, address, amount, checkOut, statusUrl);
+        popup.show(
+          title: 'Спасибо!',
+          content:
+              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и в Истории оплат подтвердите что вы оплатили счет, \n'
+              'Средства будут начислены после подтверждения',
+          barrierDismissible: true,
+        );
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.coins,
+                  color: LightColors.kDarkBlue,
+                ),
+              ),
+              SizedBox(width: 5),
+              TitleText(
+                text: "25\$ - 2500 gc",
+                color: LightColors.kDarkBlue,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _buyButtons3() {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
+    return GestureDetector(
+      onTap: () {
+        createTransaction50USD().whenComplete(() => {
+              getTransaction(price50).then((value) => {
+                    results = value.body,
+                    result = CpTransaction.fromJson(results),
+                    setState(() {
+                      qrUrl = result.result.qrcodeUrl;
+                      txId = result.result.txnId;
+                      address = result.result.address;
+                      checkOut = result.result.checkoutUrl;
+                      statusUrl = result.result.statusUrl;
+                      amount = result.result.amount;
+                    }),
+                  })
+            });
+        setTransid(txId, address, amount, checkOut, statusUrl);
+        popup.show(
+          title: 'Спасибо!',
+          content:
+              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
+              'Средства будут начислены после подтверждения',
+          barrierDismissible: true,
+        );
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.coins,
+                  color: LightColors.kDarkBlue,
+                ),
+              ),
+              SizedBox(width: 5),
+              TitleText(
+                text: "50\$ - 5000 gc",
+                color: LightColors.kDarkBlue,
               ),
             ],
           )),
@@ -303,17 +360,38 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
   }
 
   Widget _partnerButton() {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        setState(() {
-          price = 100000000000000000;
-        });
+        createTransactionPartner().whenComplete(() => {
+              getTransaction(partnerPrice).then((value) => {
+                    results = value.body,
+                    result = CpTransaction.fromJson(results),
+                    setState(() {
+                      qrUrl = result.result.qrcodeUrl;
+                      txId = result.result.txnId;
+                      address = result.result.address;
+                      checkOut = result.result.checkoutUrl;
+                      statusUrl = result.result.statusUrl;
+                      amount = result.result.amount;
+                    }),
+                  })
+            });
+        setTransid(txId, address, amount, checkOut, statusUrl);
+        popup.show(
+          title: 'Спасибо!',
+          content:
+              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
+              'Средства будут начислены после подтверждения',
+          barrierDismissible: true,
+        );
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           decoration: BoxDecoration(
-              color: price == 0.10 ? LightColors.yellow : LightColors.yellow2,
+              color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
           child: Wrap(
             children: <Widget>[
@@ -321,13 +399,13 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                 angle: 50,
                 child: Icon(
                   FontAwesomeIcons.handshake,
-                  color: Colors.white,
+                  color: LightColors.kDarkBlue,
                 ),
               ),
               SizedBox(width: 10),
               TitleText(
                 text: "Партнерская программа",
-                color: Colors.white,
+                color: LightColors.kDarkBlue,
               ),
             ],
           )),
@@ -362,78 +440,100 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                       ),
                     ),
                     SizedBox(
+                      height: 5,
+                    ),
+                    Center(
+                      child: Text(
+                        'Все покупки производятся в криптовалюте Ethereum',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: LightColors.kRed, fontSize: 12),
+                      ),
+                    ),
+                    SizedBox(
                       height: 3,
                     ),
-                    Text(
-                      'Введите ваш private key от etherium кошелька',
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: LightColors.kLavender),
-                    ),
+                    qrUrl != null
+                        ? Container(
+                            width: 125,
+                            height: 125,
+                            decoration: BoxDecoration(
+                              color: LightColors.kLightYellow2,
+                              image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: CachedNetworkImageProvider(
+                                    result.result.qrcodeUrl),
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
                     SizedBox(
                       height: 10,
                     ),
-                    Form(
-                      key: _formKey,
-                      child: Container(
-                          width: 200,
-                          height: 70,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 12),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: LightColors.lightBlue1,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15))),
-                          child: TextFormField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: LightColors.lightBlue1),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: LightColors.lightBlue1),
-                                ),
-                                border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: LightColors.lightBlue1))),
-                            validator: (input) =>
-                                input.trim().isEmpty ? 'Введите число' : null,
-                            onSaved: (input) => _address = input,
-                          )),
-                    ),
+                    Center(
+                        child: Text(
+                      txId,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: LightColors.kDarkYellow, fontSize: 12),
+                    )),
                     SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      'Мы не храним данные о вашем кошельке',
-                      style: TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                          color: LightColors.kLavender),
+                    address != null
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'Адрес кошелька оплаты с ETH \n' + address,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 11),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  if (result.result.address != null) {
+                                    Clipboard.setData(ClipboardData(
+                                            text: result.result.address))
+                                        .then((value) => showAchievementView2(
+                                            context,
+                                            'Скопировано',
+                                            'Адрес был скопирован'));
+                                  }
+                                },
+                                child: Icon(
+                                  FontAwesomeIcons.copy,
+                                  size: 25,
+                                  color: LightColors.kLightYellow2,
+                                ),
+                              )
+                            ],
+                          )
+                        : SizedBox(),
+                    SizedBox(
+                      height: 5,
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(),
-                    ),
-                    Text(
-                      price == 5200000000000000
-                          ? 'Купить 1000gc'
-                          : price == 2600000000000000
-                              ? 'Купить 500gc'
-                              : price == 5200000000000000
-                                  ? 'Купить 100gc'
-                                  : price == 100000000000000000
-                                      ? 'Стать партнером - 200\$'
-                                      : 'Ничего не выбрано',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: LightColors.kLavender),
-                    ),
+                    checkOut != null
+                        ? GestureDetector(
+                            onTap: () {
+                              setUrl(checkOut);
+                            },
+                            child: Center(
+                              child: Text(
+                                'Ссылка оплаты \n' + checkOut,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: LightColors.kDarkYellow,
+                                    fontSize: 12),
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
                     SizedBox(
                       height: 15,
                     ),
@@ -465,16 +565,16 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                 ),
               ),
               Positioned(
-                top: MediaQuery.of(context).size.height * .4,
-                right: -150,
+                top: -100,
+                right: -180,
                 child: CircleAvatar(
                   radius: 130,
                   backgroundColor: LightColors.yellow2,
                 ),
               ),
               Positioned(
-                top: MediaQuery.of(context).size.height * .4,
-                right: -180,
+                top: -100,
+                right: -210,
                 child: CircleAvatar(
                   radius: 130,
                   backgroundColor: LightColors.yellow,
@@ -488,9 +588,9 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                       BackButton(
                         color: Colors.white,
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(width: 5),
                       TitleText(
-                        text: "Оплата",
+                        text: "Назад",
                         color: Colors.white,
                       )
                     ],
@@ -499,5 +599,14 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
             ],
           ),
         ));
+  }
+
+  void setUrl(String urlString) async {
+    var url = urlString;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
