@@ -65,7 +65,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
           '${Uri.encodeQueryComponent(value)}');
     });
     var formData = parts.join('&');
-    print(formData);
+
     return await httpClient.post('$baseUrl', headers: headers, body: formData);
   }
 
@@ -74,9 +74,9 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
         'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.0098&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    setState(() {
-      price = '0.0098';
-    });
+
+    price = '0.0098';
+
     Hmac hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     Digest digest = hmacSha256.convert(bytes);
 
@@ -88,9 +88,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
         'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.012&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    setState(() {
-      price25 = '0.012';
-    });
+    price25 = '0.012';
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
@@ -103,9 +101,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
         'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.024&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    setState(() {
-      price50 = '0.024';
-    });
+    price50 = '0.024';
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
@@ -118,9 +114,8 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
         'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.098&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    setState(() {
-      partnerPrice = '0.098';
-    });
+    partnerPrice = '0.098';
+
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
 
@@ -140,6 +135,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
       'amount': amount,
       'checkOutUrl': checkout,
       'status': status,
+      'is_confirmed': false,
       'time': f.FieldValue.serverTimestamp(),
     });
   }
@@ -206,20 +202,23 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     return GestureDetector(
       onTap: () {
         createTransaction20USD().whenComplete(() => {
-              getTransaction(price).then((value) => {
-                    results = value.body,
-                    result = CpTransaction.fromJson(results),
-                    setState(() {
-                      qrUrl = result.result.qrcodeUrl;
-                      txId = result.result.txnId;
-                      address = result.result.address;
-                      checkOut = result.result.checkoutUrl;
-                      statusUrl = result.result.statusUrl;
-                      amount = result.result.amount;
-                    }),
-                  })
+              getTransaction(price)
+                  .then((value) => {
+                        results = value.body,
+                        result = CpTransaction.fromJson(results),
+                        setState(() {
+                          qrUrl = result.result.qrcodeUrl;
+                          txId = result.result.txnId;
+                          address = result.result.address;
+                          checkOut = result.result.checkoutUrl;
+                          statusUrl = result.result.statusUrl;
+                          amount = result.result.amount;
+                        }),
+                      })
+                  .whenComplete(() =>
+                      setTransid(txId, address, amount, checkOut, statusUrl))
             });
-        setTransid(txId, address, amount, checkOut, statusUrl);
+
         popup.show(
           title: 'Спасибо!',
           content:
@@ -259,20 +258,22 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     return GestureDetector(
       onTap: () {
         createTransaction25USD().whenComplete(() => {
-              getTransaction(price25).then((value) => {
-                    results = value.body,
-                    result = CpTransaction.fromJson(results),
-                    setState(() {
-                      qrUrl = result.result.qrcodeUrl;
-                      txId = result.result.txnId;
-                      address = result.result.address;
-                      checkOut = result.result.checkoutUrl;
-                      statusUrl = result.result.statusUrl;
-                      amount = result.result.amount;
-                    }),
-                  })
+              getTransaction(price25)
+                  .then((value) => {
+                        results = value.body,
+                        result = CpTransaction.fromJson(results),
+                        setState(() {
+                          qrUrl = result.result.qrcodeUrl;
+                          txId = result.result.txnId;
+                          address = result.result.address;
+                          checkOut = result.result.checkoutUrl;
+                          statusUrl = result.result.statusUrl;
+                          amount = result.result.amount;
+                        }),
+                      })
+                  .whenComplete(() =>
+                      setTransid(txId, address, amount, checkOut, statusUrl))
             });
-        setTransid(txId, address, amount, checkOut, statusUrl);
         popup.show(
           title: 'Спасибо!',
           content:
@@ -312,20 +313,22 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     return GestureDetector(
       onTap: () {
         createTransaction50USD().whenComplete(() => {
-              getTransaction(price50).then((value) => {
-                    results = value.body,
-                    result = CpTransaction.fromJson(results),
-                    setState(() {
-                      qrUrl = result.result.qrcodeUrl;
-                      txId = result.result.txnId;
-                      address = result.result.address;
-                      checkOut = result.result.checkoutUrl;
-                      statusUrl = result.result.statusUrl;
-                      amount = result.result.amount;
-                    }),
-                  })
+              getTransaction(price50)
+                  .then((value) => {
+                        results = value.body,
+                        result = CpTransaction.fromJson(results),
+                        setState(() {
+                          qrUrl = result.result.qrcodeUrl;
+                          txId = result.result.txnId;
+                          address = result.result.address;
+                          checkOut = result.result.checkoutUrl;
+                          statusUrl = result.result.statusUrl;
+                          amount = result.result.amount;
+                        }),
+                      })
+                  .whenComplete(() =>
+                      setTransid(txId, address, amount, checkOut, statusUrl))
             });
-        setTransid(txId, address, amount, checkOut, statusUrl);
         popup.show(
           title: 'Спасибо!',
           content:
@@ -365,20 +368,22 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     return GestureDetector(
       onTap: () {
         createTransactionPartner().whenComplete(() => {
-              getTransaction(partnerPrice).then((value) => {
-                    results = value.body,
-                    result = CpTransaction.fromJson(results),
-                    setState(() {
-                      qrUrl = result.result.qrcodeUrl;
-                      txId = result.result.txnId;
-                      address = result.result.address;
-                      checkOut = result.result.checkoutUrl;
-                      statusUrl = result.result.statusUrl;
-                      amount = result.result.amount;
-                    }),
-                  })
+              getTransaction(partnerPrice)
+                  .then((value) => {
+                        results = value.body,
+                        result = CpTransaction.fromJson(results),
+                        setState(() {
+                          qrUrl = result.result.qrcodeUrl;
+                          txId = result.result.txnId;
+                          address = result.result.address;
+                          checkOut = result.result.checkoutUrl;
+                          statusUrl = result.result.statusUrl;
+                          amount = result.result.amount;
+                        }),
+                      })
+                  .whenComplete(() =>
+                      setTransid(txId, address, amount, checkOut, statusUrl))
             });
-        setTransid(txId, address, amount, checkOut, statusUrl);
         popup.show(
           title: 'Спасибо!',
           content:
@@ -469,13 +474,15 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    Center(
-                        child: Text(
-                      txId,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: LightColors.kDarkYellow, fontSize: 12),
-                    )),
+                    txId != null
+                        ? Center(
+                            child: Text(
+                            txId,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: LightColors.kDarkYellow, fontSize: 12),
+                          ))
+                        : SizedBox(),
                     SizedBox(
                       height: 5,
                     ),

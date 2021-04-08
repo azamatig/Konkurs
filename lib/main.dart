@@ -49,18 +49,17 @@ void main() async {
     badge: true,
     sound: true,
   );
-  await retrieveDynamicLink();
-  runApp(MyApp());
+  await retrieveDynamicLink().whenComplete(() => runApp(MyApp(inviterId)));
 }
 
+String inviterId;
+
 Future<void> retrieveDynamicLink() async {
-  String inviterId;
   final PendingDynamicLinkData data =
       await FirebaseDynamicLinks.instance.getInitialLink();
   final Uri deepLink = data?.link;
   if (deepLink != null) {
     deepLink.queryParameters.forEach((k, v) async {
-      print(v);
       if (k == "invitedby") {
         var firestore = FirebaseFirestore.instance;
         inviterId = v;
@@ -82,7 +81,6 @@ Future<void> retrieveDynamicLink() async {
         await ref.set(_postData);
       }
     });
-    MyApp(inviterId)._getScreenId();
     return deepLink.toString();
   }
 }
@@ -91,7 +89,7 @@ class MyApp extends StatelessWidget {
   String inviterId;
   MyApp([this.inviterId]);
 
-  Widget _getScreenId() {
+  Widget _getScreenId(String id) {
     return StreamBuilder<User>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapshot) {
@@ -100,10 +98,12 @@ class MyApp extends StatelessWidget {
           return HomeScreen1(
             currentUserId:
                 Provider.of<UserData>(context, listen: false).currentUserId,
-            invitedId: inviterId,
+            invitedId: id,
           );
         } else {
-          return LoginScreen(inviterId);
+          return LoginScreen(
+            inviterId: id,
+          );
         }
       },
     );
@@ -124,11 +124,17 @@ class MyApp extends StatelessWidget {
                   color: Colors.black,
                 ),
           ),
-          home: _getScreenId(),
+          home: _getScreenId(inviterId),
           routes: {
-            LoginScreen.id: (context) => LoginScreen(),
-            SignupScreen.id: (context) => SignupScreen(),
-            HomeScreen1.id: (context) => HomeScreen1(),
+            LoginScreen.id: (context) => LoginScreen(
+                  inviterId: inviterId,
+                ),
+            SignupScreen.id: (context) => SignupScreen(
+                  inviterId: inviterId,
+                ),
+            HomeScreen1.id: (context) => HomeScreen1(
+                  invitedId: inviterId,
+                ),
             Notifications.id: (context) => Notifications(),
           },
         ),

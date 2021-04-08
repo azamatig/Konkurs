@@ -561,7 +561,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                                       .whenComplete(
                                                                           () =>
                                                                               {
-                                                                                print(userParent.parent),
                                                                                 if (userParent.partner == true)
                                                                                   {
                                                                                     awardPointsToMyParent(userParent.id),

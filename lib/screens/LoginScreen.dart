@@ -3,8 +3,9 @@ import 'package:konkurs_app/screens/SplashScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String id = 'login_screen';
-  String inviterId;
-  LoginScreen([this.inviterId]);
+  final inviterId;
+
+  const LoginScreen({Key key, this.inviterId}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -13,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(widget.inviterId);
+    return SplashScreen(
+      inviterId: widget.inviterId,
+    );
   }
 }

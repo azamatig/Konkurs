@@ -42,6 +42,12 @@ class AuthService {
         _firestore
             .collection('/users')
             .doc(signedInUser.uid)
+            .collection('transactions')
+            .doc()
+            .set({});
+        _firestore
+            .collection('/users')
+            .doc(signedInUser.uid)
             .collection('notifications')
             .doc()
             .set({
@@ -57,7 +63,7 @@ class AuthService {
             .collection('children')
             .doc('level1')
             .set({
-          'children': {'0': ''},
+          'children': [],
         });
         _firestore
             .collection('/users')
@@ -65,7 +71,7 @@ class AuthService {
             .collection('children')
             .doc('level2')
             .set({
-          'children': {'0': ''},
+          'children': [],
         });
         _firestore
             .collection('/users')
@@ -73,7 +79,7 @@ class AuthService {
             .collection('children')
             .doc('level3')
             .set({
-          'children': {'0': ''},
+          'children': [],
         });
         Provider.of<UserData>(context).currentUserId = signedInUser.uid;
       }

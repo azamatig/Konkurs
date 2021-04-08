@@ -59,6 +59,7 @@ dependencies:
   web3dart: ^2.0.0-dev.7
   bug_report: ^0.1.0
   crypto: ^2.1.5
+  timelines: ^0.1.0
 
 dev_dependencies:
   flutter_test:

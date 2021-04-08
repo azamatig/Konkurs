@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
@@ -72,29 +73,30 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
-                        CircularProgressIndicator();
+                        Center(child: CircularProgressIndicator());
+                      } else {
+                        return ListView.builder(
+                          padding: EdgeInsets.only(top: 30, bottom: 20),
+                          controller: controller,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          itemCount: snapshot.data.docs.length ?? 0,
+                          itemBuilder: (_, int index) {
+                            if (index < snapshot.data.docs.length) {
+                              return dataList(snapshot.data.docs[index]);
+                            }
+                            return Center(
+                              child: Opacity(
+                                opacity: _isLoading ? 1.0 : 0.0,
+                                child: SizedBox(
+                                    width: 32.0,
+                                    height: 32.0,
+                                    child: new CircularProgressIndicator()),
+                              ),
+                            );
+                          },
+                        );
                       }
-                      var _data = snapshot.data;
-                      return ListView.builder(
-                        padding: EdgeInsets.only(top: 30, bottom: 20),
-                        controller: controller,
-                        physics: AlwaysScrollableScrollPhysics(),
-                        itemCount: _data.docs.length,
-                        itemBuilder: (_, int index) {
-                          if (index < _data.docs.length) {
-                            return dataList(_data.docs[index]);
-                          }
-                          return Center(
-                            child: new Opacity(
-                              opacity: _isLoading ? 1.0 : 0.0,
-                              child: new SizedBox(
-                                  width: 32.0,
-                                  height: 32.0,
-                                  child: new CircularProgressIndicator()),
-                            ),
-                          );
-                        },
-                      );
+                      return CircularProgressIndicator();
                     }),
               ),
             ],
@@ -119,7 +121,7 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    th.data()['txHash'],
+                    th.data()['txHash'] ?? '',
                     maxLines: 3,
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
@@ -127,7 +129,8 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
                     height: 8,
                   ),
                   Text(
-                    "Сумма - " + numberFormat(th.data()['amount']) + ' ETH',
+                    "Сумма - " + numberFormat(th.data()['amount']) + ' ETH' ??
+                        '',
                     maxLines: 3,
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
@@ -141,7 +144,7 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
                         width: 8,
                       ),
                       Text(
-                        formatOnlyDate(th.data()['time'].toDate()),
+                        formatOnlyDate(th.data()['time'].toDate() ?? ''),
                         style: TextStyle(color: Colors.white, fontSize: 14),
                       )
                     ],
@@ -167,39 +170,47 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
           )
         : GestureDetector(
             onTap: () {
-              if (snap.data()['amount'] == '0.0098') {
-                awardPoints2000();
+              if (snap.data()['amount'] == '0.00980000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints2000(snap.data()['txHash']);
               }
-              if (snap.data()['amount'] == '0.012') {
-                awardPoints2500();
+              if (snap.data()['amount'] == '0.01200000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints2500(snap.data()['txHash']);
               }
-              if (snap.data()['amount'] == '0.024') {
-                awardPoints5000();
+              if (snap.data()['amount'] == '0.02400000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints5000(snap.data()['txHash']);
               }
-              if (snap.data()['amount'] == '0.098') {
-                setPartner();
+              if (snap.data()['amount'] == '0.09800000' &&
+                  snap.data()['is_confirmed'] == false) {
+                setPartner(snap.data()['txHash']);
               }
             },
             child: Container(
                 width: 130,
-                margin: EdgeInsets.only(bottom: 20),
+                margin: EdgeInsets.only(bottom: 20, right: 15),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 decoration: BoxDecoration(
-                    color: LightColors.yellow2,
+                    color: snap.data()['is_confirmed'] == true
+                        ? LightColors.kGreen
+                        : LightColors.yellow2,
                     borderRadius: BorderRadius.all(Radius.circular(15))),
                 child: Wrap(
                   children: <Widget>[
                     Transform.rotate(
                       angle: 70,
                       child: Icon(
-                        Icons.swap_calls,
+                        FontAwesomeIcons.moneyBill,
                         color: LightColors.kDarkBlue,
-                        size: 15,
+                        size: 12,
                       ),
                     ),
-                    SizedBox(width: 5),
+                    SizedBox(width: 10),
                     TitleText(
-                      text: "Подтвердить",
+                      text: snap.data()['is_confirmed'] == true
+                          ? "Оплачено"
+                          : "Подтвердить",
                       color: LightColors.kDarkBlue,
                       fontSize: 10,
                     ),
@@ -208,23 +219,52 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
           );
   }
 
-  void awardPoints2000() async {
+  void awardPoints2000(String transId) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2000)});
+    print('1232131');
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('transactions')
+        .doc(transId);
+    confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints2500() async {
+  void awardPoints2500(String transId) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2500)});
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('transactions')
+        .doc(transId);
+    confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints5000() async {
+  void awardPoints5000(String transId) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(5000)});
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('transactions')
+        .doc(transId);
+    confirm.update({'is_confirmed': true});
   }
 
-  void setPartner() {
+  void setPartner(String transId) {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'partner': true});
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('transactions')
+        .doc(transId);
+    confirm.update({'is_confirmed': true});
   }
 }

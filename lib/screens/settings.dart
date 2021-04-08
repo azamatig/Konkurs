@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'edit_profile_screen.dart';
 import 'package:konkurs_app/models/user_model.dart';
+
 import 'AchievementView.dart';
+import 'edit_profile_screen.dart';
 
 class Settings extends StatefulWidget {
   final User user;
@@ -63,7 +64,6 @@ class _SettingsState extends State<Settings> {
                   onChanged: (value) {
                     setState(() {
                       isSwitched = value;
-                      print(isSwitched);
                     });
                     pushIsOn = isSwitched;
                   },
