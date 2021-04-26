@@ -70,7 +70,6 @@ Future<void> retrieveDynamicLink() async {
         var timestamp = FieldValue.serverTimestamp();
         final DocumentReference ref =
             firestore.collection('users/$inviterId/notifications').doc();
-        var docID = ref.id;
         var _postData = {
           'message': "+15! Вы пригласили нового пользователя!",
           'type': 1,
