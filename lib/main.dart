@@ -81,14 +81,14 @@ Future<void> retrieveDynamicLink() async {
         await ref.set(_postData);
       }
     });
-    MyApp(inviterId)._getScreenId();
+    MyApp(inviterId: inviterId)._getScreenId();
     return deepLink.toString();
   }
 }
 
 class MyApp extends StatelessWidget {
-  String inviterId;
-  MyApp([this.inviterId]);
+  MyApp({Key key, this.inviterId}) : super(key: key);
+  final String inviterId;
 
   Widget _getScreenId() {
     return StreamBuilder<User>(
