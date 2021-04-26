@@ -1,5 +1,7 @@
 # konkurs_app
 
+Please, don't use this whitout permission
+
 A little startup project for company, rewards app for completing various tasks
 
 
