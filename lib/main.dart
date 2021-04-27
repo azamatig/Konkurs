@@ -36,33 +36,32 @@ void main() async {
   await Firebase.initializeApp();
   initializeDateFormatting();
 
-  Future<Uri> retrieveDynamicLink() async {
-    if (browser.isChrome ||
-        browser.isFirefox ||
-        browser.isSafari ||
-        browser.isInternetExplorer) {
-      return Uri.parse(window.location.href);
-    }
-    final PendingDynamicLinkData data =
-        await FirebaseDynamicLinks.instance.getInitialLink();
-    return data?.link;
-  }
-
   final Uri url = await retrieveDynamicLink();
 
   if (url != null) {
-    final inviter = url.queryParameters.entries.firstWhere(
-        (query) => (query.key == 'invitedby') && (query.value != null),
-        orElse: () => null);
+    final inviterId = url.queryParameters['invitedby'];
 
-    if (inviter != null) {
-      InviterStorage(inviter.value)
+    if (inviterId != null) {
+      InviterStorage(inviterId)
         ..addPoints()
-        ..saveNotificationHistory();
+        ..saveNotificationHistory()
+            .whenComplete(() => runApp(MyApp(inviterId: inviterId)));
+    } else {
+      runApp(MyApp());
     }
-
-    runApp(MyApp());
   }
+}
+
+Future<Uri> retrieveDynamicLink() async {
+  if (browser.isChrome ||
+      browser.isFirefox ||
+      browser.isSafari ||
+      browser.isInternetExplorer) {
+    return Uri.parse(window.location.href);
+  }
+  final PendingDynamicLinkData data =
+      await FirebaseDynamicLinks.instance.getInitialLink();
+  return data?.link;
 }
 
 class MyApp extends StatelessWidget {
