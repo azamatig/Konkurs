@@ -25,9 +25,6 @@ class PushNotifications {
       _fcm.requestPermission();
     }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-
       var notificationData = message.data;
       if ((notificationData['type'] == '1' &&
               notificationData['to'] == userId.toString()) ||
