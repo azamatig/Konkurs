@@ -1,6 +1,6 @@
 {
-    "name": "contests",
-    "short_name": "contests",
+    "name": "konkurs_app",
+    "short_name": "konkurs_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

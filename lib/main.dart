@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
   MyApp({Key key, this.inviterId}) : super(key: key);
   final String inviterId;
 
-  Widget _getScreenId() {
+  Widget _getScreenId(String id) {
     return StreamBuilder<User>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, snapshot) {
@@ -77,10 +77,12 @@ class MyApp extends StatelessWidget {
           return HomeScreen1(
             currentUserId:
                 Provider.of<UserData>(context, listen: false).currentUserId,
-            invitedId: inviterId,
+            invitedId: id,
           );
         } else {
-          return LoginScreen(inviterId);
+          return LoginScreen(
+            inviterId: id,
+          );
         }
       },
     );
@@ -101,11 +103,17 @@ class MyApp extends StatelessWidget {
                   color: Colors.black,
                 ),
           ),
-          home: _getScreenId(),
+          home: _getScreenId(inviterId),
           routes: {
-            LoginScreen.id: (context) => LoginScreen(),
-            SignupScreen.id: (context) => SignupScreen(),
-            HomeScreen1.id: (context) => HomeScreen1(),
+            LoginScreen.id: (context) => LoginScreen(
+                  inviterId: inviterId,
+                ),
+            SignupScreen.id: (context) => SignupScreen(
+                  inviterId: inviterId,
+                ),
+            HomeScreen1.id: (context) => HomeScreen1(
+                  invitedId: inviterId,
+                ),
             Notifications.id: (context) => Notifications(),
           },
         ),

@@ -7,6 +7,7 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/screens/pp_screen.dart';
 import 'package:konkurs_app/screens/task_profile.dart';
 import 'package:konkurs_app/screens/wallet_transfer.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -337,31 +338,43 @@ class _DashBoardPageState extends State<DashBoardPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Container(
-                                  height: 100,
-                                  child: Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Icon(
-                                          FontAwesomeIcons.coins,
-                                          size: 30,
-                                          color: _iconColor,
-                                        ),
-                                        Text(
-                                          user.points.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: _textColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 30),
-                                        ),
-                                        Text(
-                                          'Доступных койнов',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: _iconColor, fontSize: 16),
-                                        ),
-                                      ],
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                PartnerProgramScreen(
+                                                  userId: widget.userId,
+                                                )));
+                                  },
+                                  child: Container(
+                                    height: 100,
+                                    child: Center(
+                                      child: Column(
+                                        children: <Widget>[
+                                          Icon(
+                                            FontAwesomeIcons.coins,
+                                            size: 30,
+                                            color: _iconColor,
+                                          ),
+                                          Text(
+                                            user.points.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: _textColor,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 30),
+                                          ),
+                                          Text(
+                                            'Доступных койнов',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: _iconColor,
+                                                fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

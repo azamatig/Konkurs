@@ -5,8 +5,9 @@ import 'package:konkurs_app/utilities/constants.dart';
 
 class SignupScreen extends StatefulWidget {
   static final String id = 'SignupScreen';
-  String inviterId;
-  SignupScreen([this.inviterId]);
+  final String inviterId;
+
+  const SignupScreen({Key key, this.inviterId}) : super(key: key);
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -26,6 +27,7 @@ class _SignupScreenState extends State<SignupScreen> {
       // Logging in the user w/ Firebase
       AuthService.signUpUser(
           context, _phone, _name, _email, _password, widget.inviterId);
+      Navigator.pop(context);
     }
   }
 
@@ -175,8 +177,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         GestureDetector(
                           onTap: () {
                             _submit();
-                            Future.delayed(Duration(seconds: 2));
-                            Navigator.pop(context);
                           },
                           child: Container(
                             child: _isLoading

@@ -4,8 +4,9 @@ import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
 class SplashScreen extends StatefulWidget {
-  String inviterId;
-  SplashScreen([this.inviterId]);
+  final String inviterId;
+
+  const SplashScreen({Key key, this.inviterId}) : super(key: key);
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -169,8 +170,9 @@ class _SplashScreenState extends State<SplashScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) =>
-                                      SignupScreen(widget.inviterId)));
+                                  builder: (_) => SignupScreen(
+                                        inviterId: widget.inviterId,
+                                      )));
                         },
                         child: Container(
                           alignment: Alignment.center,

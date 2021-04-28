@@ -411,7 +411,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                       var response = await FlutterShareMe()
                                           .shareToSystem(
                                               msg:
-                                                  'ссылка на приложение будет здесь');
+                                                  'https://play.google.com/store/apps/details?id=konkurs.aza.com.konkurs_app');
                                       if (response == 'success') {}
                                     }
                                     break;

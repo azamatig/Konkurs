@@ -67,7 +67,6 @@ class DatabaseService {
         //userList.add(querySnapshot.documents[i].data[User.fromMap(mapData)]);
       }
     }
-    print("USERSLIST : ${userList.length}");
     return userList;
   }
 
