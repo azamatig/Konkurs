@@ -44,7 +44,7 @@ void main() async {
     if (inviterId != null) {
       InviterStorage(inviterId)
         ..addPoints()
-        ..saveNotificationHistory()
+        ..saveNotification()
             .whenComplete(() => runApp(MyApp(inviterId: inviterId)));
     } else {
       runApp(MyApp());
@@ -135,7 +135,7 @@ class InviterStorage {
         .update({'points': FieldValue.increment(15)});
   }
 
-  Future<void> saveNotificationHistory() async {
+  Future<void> saveNotification() async {
     var timestamp = FieldValue.serverTimestamp();
     final DocumentReference ref = FirebaseFirestore.instance
         .collection('users/$inviterId/notifications')

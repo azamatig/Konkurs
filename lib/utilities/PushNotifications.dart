@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/notifications.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -18,12 +18,7 @@ class PushNotifications {
 
   PushNotifications._internal();
 
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-
   Future initialise() async {
-    if (Platform.isIOS) {
-      _fcm.requestPermission();
-    }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       var notificationData = message.data;
       if ((notificationData['type'] == '1' &&
