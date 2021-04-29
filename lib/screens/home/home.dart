@@ -683,24 +683,6 @@ class _HomeScreen1State extends State<HomeScreen1>
         ));
   }
 
-  Widget _showDate1(DateTime date) {
-    return Container(
-        padding: EdgeInsets.all(2),
-        child: Text(
-          arr[date.weekday - 1],
-          style: TextStyle(color: Colors.black),
-        ));
-  }
-
-  Widget _showWeek1(DateTime date) {
-    return Container(
-        padding: EdgeInsets.all(2),
-        child: Text(
-          '${date.day}',
-          style: TextStyle(color: Colors.black),
-        ));
-  }
-
   Widget buildItems(DocumentSnapshot doc) {
     return PopularEventTile(
       userId: Provider.of<UserData>(context).currentUserId,
