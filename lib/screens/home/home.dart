@@ -134,13 +134,6 @@ class _HomeScreen1State extends State<HomeScreen1>
     _animationController.forward();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _retrieveDynamicLink();
-    }
-  }
-
   Future getUserInfo() async {
     DocumentSnapshot document = await _firestore
         .collection('/users')
@@ -218,15 +211,6 @@ class _HomeScreen1State extends State<HomeScreen1>
   Future setParentLevel3(String inviter, String id) async {
     if (secondParentData.contains(userData)) {
       AuthService.setLevel3(context, inviter, id);
-    }
-  }
-
-  Future<void> _retrieveDynamicLink() async {
-    final PendingDynamicLinkData data =
-        await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data?.link;
-    if (deepLink != null) {
-      Navigator.pushNamed(context, deepLink.path);
     }
   }
 
