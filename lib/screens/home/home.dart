@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/DetailsScreen.dart';
 import 'package:konkurs_app/screens/dashboard.dart';
 import 'package:konkurs_app/screens/notifications.dart';
 import 'package:konkurs_app/services/auth_service.dart';
@@ -20,9 +19,10 @@ import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'all_giveaways.dart';
-import 'closed_giveaways.dart';
-import 'my_giveaways.dart';
+import 'widgets/event_tile.dart';
+import 'widgets/popular_event_tile.dart';
+
+import '../my_giveaways.dart';
 
 class HomeScreen1 extends StatefulWidget {
   static const String routeName = '/';
@@ -524,6 +524,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
                               return EventTile(
+                                userPhoto: userPhoto,
                                 imgAssetPath: eventsType[index].imgAssetPath,
                                 eventType: eventsType[index].eventType,
                               );
@@ -708,251 +709,6 @@ class _HomeScreen1State extends State<HomeScreen1>
       imgeAssetPath: doc.data()['imagepost'],
       date: doc.data()['date'],
       name: doc.data()['name'],
-    );
-  }
-}
-
-class DateTile extends StatelessWidget {
-  String weekDay;
-  String date;
-  bool isSelected;
-
-  DateTile({this.weekDay, this.date, this.isSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: isSelected ? Color(0xffFCCD00) : Colors.transparent,
-          borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            date,
-            style: TextStyle(
-                color: isSelected ? Colors.black : Colors.white,
-                fontWeight: FontWeight.w600),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            weekDay,
-            style: TextStyle(
-                color: isSelected ? Colors.black : Colors.white,
-                fontWeight: FontWeight.w600),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class EventTile extends StatelessWidget {
-  String imgAssetPath;
-  String eventType;
-
-  EventTile({this.imgAssetPath, this.eventType});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        switch (eventType) {
-          case "Все конкурсы":
-            {
-              if (SimpleAccountMenu.isMenuOpen) {
-                SimpleAccountMenu.overlayEntry.remove();
-                SimpleAccountMenu.animationController.reverse();
-                SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
-              }
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AllGiveaways(
-                            userPhoto: userPhoto,
-                          )));
-            }
-            break;
-          case "Мои участия":
-            {
-              if (SimpleAccountMenu.isMenuOpen) {
-                SimpleAccountMenu.overlayEntry.remove();
-                SimpleAccountMenu.animationController.reverse();
-                SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
-              }
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyGiveaways(userId, userPhoto)));
-            }
-            break;
-          case "Завершенные":
-            {
-              if (SimpleAccountMenu.isMenuOpen) {
-                SimpleAccountMenu.overlayEntry.remove();
-                SimpleAccountMenu.animationController.reverse();
-                SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
-              }
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ClosedGiveaways(
-                            userPhoto: userPhoto,
-                          )));
-            }
-            break;
-        }
-      },
-      child: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        margin: EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-            color: Color(0xff29404E), borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              imgAssetPath,
-              height: 30,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              eventType,
-              style: TextStyle(color: Colors.white),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class PopularEventTile extends StatelessWidget {
-  String desc;
-  Timestamp date;
-  String userId;
-  String name;
-  String imgeAssetPath;
-  DocumentSnapshot doc;
-  final db = FirebaseFirestore.instance;
-
-  /// later can be changed with imgUrl
-  PopularEventTile(
-      {this.name,
-      this.date,
-      this.imgeAssetPath,
-      this.desc,
-      this.doc,
-      this.userId});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        if (SimpleAccountMenu.isMenuOpen) {
-          SimpleAccountMenu.overlayEntry.remove();
-          SimpleAccountMenu.animationController.reverse();
-          SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
-        }
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => DetailsScreen(
-                      docId: doc.id,
-                      docRef: doc.reference,
-                      date: doc.data()['date'],
-                      userId: userId,
-                      userPhoto: userPhoto,
-                      instaLink1: doc.data()['task1InstaLink'],
-                      instaLink2: doc.data()['task2InstaLink'],
-                      instaLink3: doc.data()['task3InstaLink'],
-                      endDate: doc.data()['endDate'],
-                      likesCount: doc.data()['likesCount'],
-                      giveawayCost: doc.data()['giveawayCost'],
-                      eventDays: doc.data()['eventDays'],
-                    )));
-      },
-      child: Container(
-        height: 100,
-        margin: EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-            color: Color(0xff29404E), borderRadius: BorderRadius.circular(8)),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: 16),
-                width: MediaQuery.of(context).size.width - 100,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      name,
-                      maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/images/calender.png",
-                          height: 12,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          formatOnlyDate(date.toDate()),
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Image.asset(
-                          "assets/images/location.png",
-                          height: 15,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          '${desc.substring(0, 20)} ...',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(8),
-                    bottomRight: Radius.circular(8)),
-                child: CachedNetworkImage(
-                  imageUrl: imgeAssetPath,
-                  height: 100,
-                  width: 120,
-                  fit: BoxFit.cover,
-                )),
-          ],
-        ),
-      ),
     );
   }
 }
