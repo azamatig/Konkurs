@@ -473,29 +473,32 @@ class _HomeScreen1State extends State<HomeScreen1>
                                     width: 3, color: Color(0xffFAE072)),
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: StreamBuilder(
-                                  stream: db
-                                      .collection('users')
-                                      .doc(userId)
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return CircularProgressIndicator(
-                                        backgroundColor:
-                                            LightColors.kLightYellow,
-                                        valueColor: AlwaysStoppedAnimation(
-                                            LightColors.kBlue),
-                                      );
-                                    }
-                                    User u = User.fromDoc(snapshot.data);
-                                    return CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: userPhoto == null
-                                          ? AssetImage('assets/images/ph.png')
-                                          : CachedNetworkImageProvider(
-                                              u.profileImageUrl),
-                                    );
-                                  }),
+                              child: userId != null
+                                  ? StreamBuilder(
+                                      stream: db
+                                          .collection('users')
+                                          .doc(userId)
+                                          .snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return CircularProgressIndicator(
+                                            backgroundColor:
+                                                LightColors.kLightYellow,
+                                            valueColor: AlwaysStoppedAnimation(
+                                                LightColors.kBlue),
+                                          );
+                                        }
+                                        User u = User.fromDoc(snapshot.data);
+                                        return CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: userPhoto == null
+                                              ? AssetImage(
+                                                  'assets/images/ph.png')
+                                              : CachedNetworkImageProvider(
+                                                  u.profileImageUrl),
+                                        );
+                                      })
+                                  : null,
                             ),
                           )
                         ],
