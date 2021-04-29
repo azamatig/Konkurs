@@ -25,7 +25,7 @@ import 'closed_giveaways.dart';
 import 'my_giveaways.dart';
 
 class HomeScreen1 extends StatefulWidget {
-  static final String id = 'feed_screen';
+  static const String routeName = '/';
   final currentUserId;
   final invitedId;
 

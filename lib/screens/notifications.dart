@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:konkurs_app/screens/home.dart';
 
 class Notifications extends StatefulWidget {
-  static final String id = 'notifications';
+  static const String routeName = 'notifications';
   @override
   _NotificationsState createState() => _NotificationsState();
 }

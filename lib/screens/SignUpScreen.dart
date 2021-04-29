@@ -4,7 +4,7 @@ import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
 class SignupScreen extends StatefulWidget {
-  static final String id = 'SignupScreen';
+  static const String routeName = '/signup';
   final String inviterId;
 
   const SignupScreen({Key key, this.inviterId}) : super(key: key);

@@ -61,6 +61,6 @@ class PushNotifications {
   }
 
   notificationNavigation(Map<String, dynamic> message) {
-    navigatorKey.currentState.pushNamed(Notifications.id);
+    navigatorKey.currentState.pushNamed(Notifications.routeName);
   }
 }

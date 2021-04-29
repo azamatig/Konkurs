@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:js';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -95,30 +96,59 @@ class MyApp extends StatelessWidget {
       create: (context) => UserData(),
       child: OverlaySupport(
         child: MaterialApp(
-          title: 'GiveApp',
-          navigatorKey: navigatorKey,
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
-                  color: Colors.black,
-                ),
-          ),
-          home: _getScreenId(inviterId),
-          routes: {
-            LoginScreen.id: (context) => LoginScreen(
-                  inviterId: inviterId,
-                ),
-            SignupScreen.id: (context) => SignupScreen(
-                  inviterId: inviterId,
-                ),
-            HomeScreen1.id: (context) => HomeScreen1(
-                  invitedId: inviterId,
-                ),
-            Notifications.id: (context) => Notifications(),
-          },
-        ),
+            title: 'GiveApp',
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
+                    color: Colors.black,
+                  ),
+            ),
+            onGenerateRoute: (RouteSettings settings) {
+              final routeName =
+                  settings.name.replaceAll(RegExp(r'(\?|\&).+'), '');
+              switch (routeName) {
+                case LoginScreen.routeName:
+                  {
+                    return _getPageRoute(
+                      LoginScreen(
+                        inviterId: inviterId,
+                      ),
+                      settings,
+                    );
+                  }
+                case SignupScreen.routeName:
+                  {
+                    return _getPageRoute(
+                        SignupScreen(
+                          inviterId: inviterId,
+                        ),
+                        settings);
+                  }
+                case HomeScreen1.routeName:
+                  {
+                    return _getPageRoute(_getScreenId(inviterId), settings);
+                  }
+                case Notifications.routeName:
+                  {
+                    return _getPageRoute(Notifications(), settings);
+                  }
+                default:
+                  {
+                    return _getPageRoute(
+                        Container(
+                            alignment: Alignment.center,
+                            child: Text('404: Not Page')),
+                        settings);
+                  }
+              }
+            }),
       ),
     );
+  }
+
+  MaterialPageRoute _getPageRoute(Widget screen, RouteSettings settings) {
+    return MaterialPageRoute(builder: (context) => screen, settings: settings);
   }
 }
 
