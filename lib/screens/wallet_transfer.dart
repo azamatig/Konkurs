@@ -12,7 +12,7 @@ import 'package:http/http.dart';
 import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/AchievementView.dart';
 import 'package:konkurs_app/screens/confirm_payment.dart';
-import 'package:konkurs_app/screens/home.dart';
+import 'package:konkurs_app/screens/home/home.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 import 'package:url_launcher/url_launcher.dart';

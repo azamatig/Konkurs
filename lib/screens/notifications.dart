@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:konkurs_app/screens/home.dart';
+import 'package:konkurs_app/screens/home/home.dart';
 
 class Notifications extends StatefulWidget {
-  static const String routeName = 'notifications';
+  static const String routeName = '/notifications';
   @override
   _NotificationsState createState() => _NotificationsState();
 }

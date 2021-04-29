@@ -1,5 +1,4 @@
 import 'dart:html';
-import 'dart:js';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,11 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:platform_detect/platform_detect.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/LoginScreen.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
-import 'package:konkurs_app/screens/home.dart';
+import 'package:konkurs_app/screens/home/home.dart';
 import 'package:konkurs_app/screens/notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -36,12 +36,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   initializeDateFormatting();
+  setUrlStrategy(PathUrlStrategy());
 
   final Uri url = await retrieveDynamicLink();
 
   if (url != null) {
     final inviterId = url.queryParameters['invitedby'];
-
     if (inviterId != null) {
       InviterStorage(inviterId)
         ..addPoints()
@@ -107,6 +107,7 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: (RouteSettings settings) {
               final routeName =
                   settings.name.replaceAll(RegExp(r'(\?|\&).+'), '');
+
               switch (routeName) {
                 case LoginScreen.routeName:
                   {
