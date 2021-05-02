@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://giveapp.ru", "http://giveapp.ru", "https://giveapp.me", "http://giveapp.me"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]

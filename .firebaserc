@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "konkurs-50197"
+  },
+  "targets": {
+    "konkurs-50197": {
+      "hosting": {
+        "web": [
+          "giveapp-e3bb1"
+        ]
+      }
+    }
+  }
+}
