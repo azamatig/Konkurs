@@ -152,25 +152,34 @@ class _LoginState extends State<LoginScreen> {
                         SizedBox(
                             height: 48,
                             width: double.maxFinite,
-                            child: TextButton.icon(
+                            child: TextButton(
                               style: TextButton.styleFrom(
                                   backgroundColor: Colors.orangeAccent),
-                              icon: Icon(Icons.login, color: Colors.white),
                               onPressed: () {
                                 _submit();
                               },
-                              label: _isLoading
-                                  ? LinearProgressIndicator(
-                                      backgroundColor:
-                                          LightColors.kLightYellow2,
-                                      valueColor: AlwaysStoppedAnimation(
-                                          LightColors.kBlue),
+                              child: _isLoading
+                                  ? CircularProgressIndicator(
+                                      backgroundColor: Colors.orangeAccent,
                                     )
-                                  : Text(
-                                      "Войти",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 17),
-                                    ),
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                          Icon(Icons.login,
+                                              color: Colors.white),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "Войти",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 17),
+                                          )
+                                        ]),
                             )),
                         SizedBox(height: 50.0),
                         Center(

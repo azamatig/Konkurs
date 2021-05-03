@@ -58,7 +58,6 @@ dependencies:
   google_fonts: ^1.1.2
   web3dart: ^2.0.0-dev.7
   bug_report: ^0.1.0
-  platform_detect: ^1.4.0
   crypto: ^2.1.5
   timelines: ^0.1.0
 

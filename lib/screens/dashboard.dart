@@ -10,6 +10,7 @@ import 'package:konkurs_app/screens/pp_screen.dart';
 import 'package:konkurs_app/screens/task_profile.dart';
 import 'package:konkurs_app/screens/wallet_transfer.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_auth/simple_auth.dart' as simpleAuth;
@@ -236,35 +237,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                           Spacer(),
                           Visibility(
                             visible: true,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => MoneyTransferPage(
-                                              userId: widget.userId,
-                                            )));
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 15.0, right: 15),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Купить',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: _iconColor, fontSize: 12),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Icon(FontAwesomeIcons.wallet,
-                                        size: 22, color: _iconColor),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            child: _buildBuyingButton(),
                           ),
                         ],
                       ),
@@ -289,27 +262,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                           ),
-                          GestureDetector(
-                            onTap: () => {
-                              _isSignedIn == false ? _loginAndGetData() : null
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  FontAwesomeIcons.instagram,
-                                  size: 25,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                _isSignedIn == false && _instaName == null
-                                    ? Text('Подключить instagram')
-                                    : Text('@' + _instaName),
-                              ],
-                            ),
-                          ),
+                          _buildConnectiongInstagramButton(),
                         ],
                       ),
                       Container(
@@ -336,46 +289,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                PartnerProgramScreen(
-                                                  userId: widget.userId,
-                                                )));
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    child: Center(
-                                      child: Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            FontAwesomeIcons.coins,
-                                            size: 30,
-                                            color: _iconColor,
-                                          ),
-                                          Text(
-                                            user.points.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: _textColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30),
-                                          ),
-                                          Text(
-                                            'Доступных койнов',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: _iconColor,
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                _buildGettingCoinButton(user),
                                 Divider(
                                   height: 0.5,
                                   color: Colors.grey,
@@ -389,13 +303,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   ),
                                   children: [
                                     TableRow(children: [
-                                      GestureDetector(
+                                      HandCursor(
+                                          child: GestureDetector(
                                         onTap: _showRefUrlDialog,
                                         child: _actionList(
                                             'assets/images/ic_send.png',
                                             'Пригласить друга'),
-                                      ),
-                                      GestureDetector(
+                                      )),
+                                      HandCursor(
+                                          child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(
                                               context,
@@ -407,21 +323,23 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         child: _actionList(
                                             'assets/images/ic_money.png',
                                             'Выйгрыши'),
-                                      ),
+                                      )),
                                     ]),
                                     TableRow(children: [
-                                      GestureDetector(
-                                          child: _actionList(
-                                              'assets/images/ic_transact.png',
-                                              'Настройки'),
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Settings(user)));
-                                          }),
-                                      GestureDetector(
+                                      HandCursor(
+                                          child: GestureDetector(
+                                              child: _actionList(
+                                                  'assets/images/ic_transact.png',
+                                                  'Настройки'),
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Settings(user)));
+                                              })),
+                                      HandCursor(
+                                          child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(
                                               context,
@@ -434,7 +352,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                         child: _actionList(
                                             'assets/images/ic_reward.png',
                                             'Задания'),
-                                      ),
+                                      )),
                                     ])
                                   ],
                                 ),
@@ -450,6 +368,100 @@ class _DashBoardPageState extends State<DashBoardPage> {
             }),
       ),
     );
+  }
+
+  Widget _buildGettingCoinButton(User user) {
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => PartnerProgramScreen(
+                      userId: widget.userId,
+                    )));
+      },
+      child: Container(
+        height: 100,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Icon(
+                FontAwesomeIcons.coins,
+                size: 30,
+                color: _iconColor,
+              ),
+              Text(
+                user.points.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: _textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30),
+              ),
+              Text(
+                'Доступных койнов',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _iconColor, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
+
+  Widget _buildConnectiongInstagramButton() {
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () => {_isSignedIn == false ? _loginAndGetData() : null},
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            FontAwesomeIcons.instagram,
+            size: 25,
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          _isSignedIn == false && _instaName == null
+              ? Text('Подключить instagram')
+              : Text('@' + _instaName),
+        ],
+      ),
+    ));
+  }
+
+  Widget _buildBuyingButton() {
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MoneyTransferPage(
+                      userId: widget.userId,
+                    )));
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15.0, right: 15),
+        child: Column(
+          children: [
+            Text(
+              'Купить',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: _iconColor, fontSize: 12),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Icon(FontAwesomeIcons.wallet, size: 22, color: _iconColor),
+          ],
+        ),
+      ),
+    ));
   }
 
 // custom action widget
@@ -493,10 +505,11 @@ class _DashBoardPageState extends State<DashBoardPage> {
                 width: dialogWidth,
                 padding: EdgeInsets.symmetric(horizontal: 7),
                 child: Row(children: [
-                  IconButton(
-                      icon: Icon(Icons.copy),
-                      onPressed: () =>
-                          Clipboard.setData(new ClipboardData(text: refUrl))),
+                  HandCursor(
+                      child: IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () => Clipboard.setData(
+                              new ClipboardData(text: refUrl)))),
                   Flexible(
                       child: Text(
                     refUrl,

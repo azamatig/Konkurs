@@ -15,6 +15,7 @@ import 'package:konkurs_app/utilities/PushNotifications.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/date_widget.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -262,7 +263,8 @@ class _HomeScreen1State extends State<HomeScreen1>
                           SizedBox(
                             width: 8,
                           ),
-                          GestureDetector(
+                          HandCursor(
+                              child: GestureDetector(
                             onTap: () {
                               if (SimpleAccountMenu.isMenuOpen) {
                                 SimpleAccountMenu.overlayEntry.remove();
@@ -289,9 +291,10 @@ class _HomeScreen1State extends State<HomeScreen1>
                                 )
                               ],
                             ),
-                          ),
+                          )),
                           Spacer(),
-                          GestureDetector(
+                          HandCursor(
+                              child: GestureDetector(
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -357,7 +360,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                     "assets/images/notify.png",
                                     height: 22,
                                   ),
-                          ),
+                          )),
                           SizedBox(
                             width: 16,
                           ),
@@ -434,7 +437,8 @@ class _HomeScreen1State extends State<HomeScreen1>
                             ],
                           ),
                           Spacer(),
-                          GestureDetector(
+                          HandCursor(
+                              child: GestureDetector(
                             onTap: () {
                               if (SimpleAccountMenu.isMenuOpen) {
                                 SimpleAccountMenu.overlayEntry.remove();
@@ -482,7 +486,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                                       })
                                   : null,
                             ),
-                          )
+                          ))
                         ],
                       ),
                       _buildTableCalendarWithBuilders(),
@@ -550,7 +554,7 @@ class _HomeScreen1State extends State<HomeScreen1>
     );
   }
 
-  var arr = List(7);
+  var arr = List.filled(7, "");
 
   Widget _buildTableCalendarWithBuilders() {
     arr[0] = "Пн";
@@ -608,7 +612,8 @@ class _HomeScreen1State extends State<HomeScreen1>
           return Container();
         },
         dayBuilder: (context, date, events) {
-          return Container(
+          return HandCursor(
+              child: Container(
             margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
             child: Column(
               children: [
@@ -630,7 +635,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                 ),
               ],
             ),
-          );
+          ));
         },
       ),
       onDaySelected: (date, events, holidays) {

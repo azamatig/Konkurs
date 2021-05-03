@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:konkurs_app/widgets/hand_cursor.dart';
+
 class DateWidget extends StatefulWidget {
   final List arr;
   final DateTime date;
@@ -14,38 +16,35 @@ class DateWidget extends StatefulWidget {
 class _DateWidgetState extends State<DateWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: double.infinity,
-            margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
-            decoration: BoxDecoration(
-                color: const Color(0xffFCCD00),
-                borderRadius: BorderRadius.all(Radius.circular(6)),
-                border: Border.all(color: const Color(0xffFCCD00), width: 1)),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.circle,
-                  color: widget.eventDays
-                          .contains(widget.date.toString().substring(0, 10))
-                      ? Colors.red
-                      : Color(0xffFCCD00),
-                  size: 4,
-                ),
-                SizedBox(
-                  height: 2.5,
-                ),
-                _showDate1(widget.date),
-                _showWeek1(widget.date),
-              ],
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () => {},
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+        decoration: BoxDecoration(
+            color: const Color(0xffFCCD00),
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+            border: Border.all(color: const Color(0xffFCCD00), width: 1)),
+        child: Column(
+          children: [
+            Icon(
+              Icons.circle,
+              color: widget.eventDays
+                      .contains(widget.date.toString().substring(0, 10))
+                  ? Colors.red
+                  : Color(0xffFCCD00),
+              size: 4,
             ),
-          ),
+            SizedBox(
+              height: 2.5,
+            ),
+            _showDate1(widget.date),
+            _showWeek1(widget.date),
+          ],
         ),
-      ],
-    );
+      ),
+    ));
   }
 
   Widget _showDate1(DateTime date) {
