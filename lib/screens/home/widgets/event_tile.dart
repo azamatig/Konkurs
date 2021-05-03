@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:konkurs_app/screens/my_giveaways.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 
 import '../../all_giveaways.dart';
 import '../../closed_giveaways.dart';
@@ -16,7 +17,9 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return HandCursor(
+        child: HandCursor(
+            child: GestureDetector(
       onTap: () {
         switch (eventType) {
           case "Все конкурсы":
@@ -87,6 +90,6 @@ class EventTile extends StatelessWidget {
           ],
         ),
       ),
-    );
+    )));
   }
 }

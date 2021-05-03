@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:konkurs_app/screens/DetailsScreen.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 
 // ignore: must_be_immutable
 class PopularEventTile extends StatelessWidget {
@@ -28,7 +29,8 @@ class PopularEventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return HandCursor(
+        child: GestureDetector(
       onTap: () async {
         if (SimpleAccountMenu.isMenuOpen) {
           SimpleAccountMenu.overlayEntry.remove();
@@ -126,6 +128,6 @@ class PopularEventTile extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }
