@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as f;
 import 'package:dio/dio.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -58,7 +57,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Map _userData;
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
-  static final _firestore = f.FirebaseFirestore.instance;
   List<dynamic> children;
 
   void changeTheme() async {
@@ -392,18 +390,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   children: [
                                     TableRow(children: [
                                       GestureDetector(
-                                        onTap: () async {
-                                          final Uri dynamicUrl = await widget
-                                              .parameters
-                                              .buildUrl();
-                                          print(dynamicUrl);
-                                          var response = await FlutterShareMe()
-                                              .shareToSystem(
-                                                  msg: dynamicUrl.toString());
-                                          if (response == 'success') {
-                                            print('navigate success');
-                                          }
-                                        },
+                                        onTap: _showRefUrlDialog,
                                         child: _actionList(
                                             'assets/images/ic_send.png',
                                             'Пригласить друга'),
@@ -490,5 +477,26 @@ class _DashBoardPageState extends State<DashBoardPage> {
         ],
       ),
     );
+  }
+
+  Future<dynamic> _showRefUrlDialog() async {
+    final refUrl = '${Uri.base}?inviterby=${widget.userId}';
+
+    return showDialog(
+        context: context,
+        builder: (ctx) {
+          return Dialog(
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 7),
+                width: 500,
+                child: Row(children: [
+                  Text(refUrl),
+                  IconButton(
+                      icon: Icon(Icons.copy),
+                      onPressed: () =>
+                          {Clipboard.setData(new ClipboardData(text: refUrl))})
+                ])),
+          );
+        });
   }
 }
