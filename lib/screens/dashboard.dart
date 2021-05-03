@@ -480,7 +480,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
   }
 
   Future<dynamic> _showRefUrlDialog() async {
-    final refUrl = '${Uri.base}?invitedby=${widget.userId}';
+    final refUrl = '${Uri.base.origin}?invitedby=${widget.userId}';
 
     return showDialog(
         context: context,
