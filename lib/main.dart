@@ -5,11 +5,12 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:platform_detect/platform_detect.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/screens/LoginScreen.dart';
+import 'package:konkurs_app/screens/splash_screen.dart';
+import 'package:konkurs_app/screens/login_screen.dart';
 import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/screens/home/home.dart';
 import 'package:konkurs_app/screens/notifications.dart';
@@ -52,10 +53,7 @@ void main() async {
 }
 
 Future<Uri> retrieveDynamicLink() async {
-  if (browser.isChrome ||
-      browser.isFirefox ||
-      browser.isSafari ||
-      browser.isInternetExplorer) {
+  if (kIsWeb) {
     return Uri.base;
   }
   final PendingDynamicLinkData data =
@@ -79,9 +77,7 @@ class MyApp extends StatelessWidget {
             invitedId: id,
           );
         } else {
-          return LoginScreen(
-            inviterId: id,
-          );
+          return LoginScreen();
         }
       },
     );
@@ -107,6 +103,10 @@ class MyApp extends StatelessWidget {
                   settings.name.replaceAll(RegExp(r'(\?|\&).+'), '');
 
               switch (routeName) {
+                case HomeScreen1.routeName:
+                  {
+                    return _getPageRoute(_getScreenId(inviterId), settings);
+                  }
                 case LoginScreen.routeName:
                   {
                     return _getPageRoute(
@@ -124,10 +124,7 @@ class MyApp extends StatelessWidget {
                         ),
                         settings);
                   }
-                case HomeScreen1.routeName:
-                  {
-                    return _getPageRoute(_getScreenId(inviterId), settings);
-                  }
+
                 case Notifications.routeName:
                   {
                     return _getPageRoute(Notifications(), settings);
