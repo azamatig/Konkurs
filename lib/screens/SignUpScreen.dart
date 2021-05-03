@@ -33,6 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.inviterId);
     return Scaffold(
       body: Stack(
         children: [
