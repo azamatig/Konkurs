@@ -232,7 +232,7 @@ class _HomeScreen1State extends State<HomeScreen1>
 
   EdgeInsets get paddingOfMainContainer {
     final width = MediaQuery.of(context).size.width;
-    if (width > 660) {
+    if (width > 900) {
       return EdgeInsets.symmetric(vertical: 60, horizontal: 300);
     }
     return EdgeInsets.symmetric(vertical: 60, horizontal: 30);
