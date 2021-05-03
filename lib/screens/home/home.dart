@@ -230,6 +230,14 @@ class _HomeScreen1State extends State<HomeScreen1>
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {}
 
+  EdgeInsets get paddingOfMainContainer {
+    final width = MediaQuery.of(context).size.width;
+    if (width > 660) {
+      return EdgeInsets.symmetric(vertical: 60, horizontal: 300);
+    }
+    return EdgeInsets.symmetric(vertical: 60, horizontal: 30);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,7 +258,7 @@ class _HomeScreen1State extends State<HomeScreen1>
               ),
               SingleChildScrollView(
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+                  padding: paddingOfMainContainer,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -564,92 +572,95 @@ class _HomeScreen1State extends State<HomeScreen1>
     arr[4] = "Пт";
     arr[5] = "Сб";
     arr[6] = "Вс";
-    return TableCalendar(
-      locale: 'ru_RU',
-      calendarController: _calendarController,
-      initialCalendarFormat: CalendarFormat.week,
-      formatAnimation: FormatAnimation.slide,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      availableGestures: AvailableGestures.horizontalSwipe,
-      availableCalendarFormats: const {
-        CalendarFormat.week: '',
-      },
-      calendarStyle: CalendarStyle(
-        outsideDaysVisible: false,
-        weekdayStyle: TextStyle().copyWith(color: Colors.white),
-        weekendStyle: TextStyle().copyWith(color: Colors.deepOrange[300]),
-        holidayStyle: TextStyle().copyWith(color: Colors.deepOrange[300]),
-      ),
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekendStyle: TextStyle().copyWith(
-          color: Colors.deepOrange[300],
-        ),
-        weekdayStyle: TextStyle().copyWith(color: Colors.white),
-      ),
-      headerStyle: HeaderStyle(
-        titleTextStyle: TextStyle(color: Colors.white),
-        rightChevronIcon: Icon(
-          FontAwesomeIcons.chevronRight,
-          color: Colors.white,
-          size: 15,
-        ),
-        leftChevronIcon: Icon(
-          FontAwesomeIcons.chevronLeft,
-          color: Colors.white,
-          size: 15,
-        ),
-        centerHeaderTitle: true,
-        formatButtonVisible: false,
-      ),
-      builders: CalendarBuilders(
-        selectedDayBuilder: (context, date, _) {
-          return FadeTransition(
-              opacity:
-                  Tween(begin: 0.0, end: 1.0).animate(_animationController),
-              child: DateWidget(arr, date, eventDays));
-        },
-        dowWeekdayBuilder: (context, weekday) {
-          return Container();
-        },
-        dayBuilder: (context, date, events) {
-          return HandCursor(
-              child: Container(
-            margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.circle,
-                  color: eventDays.contains(date.toString().substring(0, 10))
-                      ? Colors.red
-                      : Color(0xff102733),
-                  size: 3,
-                ),
-                SizedBox(
-                  height: 2.5,
-                ),
-                Column(
+    return Container(
+        width: 600,
+        child: TableCalendar(
+          locale: 'ru_RU',
+          calendarController: _calendarController,
+          initialCalendarFormat: CalendarFormat.week,
+          formatAnimation: FormatAnimation.slide,
+          startingDayOfWeek: StartingDayOfWeek.monday,
+          availableGestures: AvailableGestures.horizontalSwipe,
+          availableCalendarFormats: const {
+            CalendarFormat.week: '',
+          },
+          calendarStyle: CalendarStyle(
+            outsideDaysVisible: false,
+            weekdayStyle: TextStyle().copyWith(color: Colors.white),
+            weekendStyle: TextStyle().copyWith(color: Colors.deepOrange[300]),
+            holidayStyle: TextStyle().copyWith(color: Colors.deepOrange[300]),
+          ),
+          daysOfWeekStyle: DaysOfWeekStyle(
+            weekendStyle: TextStyle().copyWith(
+              color: Colors.deepOrange[300],
+            ),
+            weekdayStyle: TextStyle().copyWith(color: Colors.white),
+          ),
+          headerStyle: HeaderStyle(
+            titleTextStyle: TextStyle(color: Colors.white),
+            rightChevronIcon: Icon(
+              FontAwesomeIcons.chevronRight,
+              color: Colors.white,
+              size: 15,
+            ),
+            leftChevronIcon: Icon(
+              FontAwesomeIcons.chevronLeft,
+              color: Colors.white,
+              size: 15,
+            ),
+            centerHeaderTitle: true,
+            formatButtonVisible: false,
+          ),
+          builders: CalendarBuilders(
+            selectedDayBuilder: (context, date, _) {
+              return FadeTransition(
+                  opacity:
+                      Tween(begin: 0.0, end: 1.0).animate(_animationController),
+                  child: DateWidget(arr, date, eventDays));
+            },
+            dowWeekdayBuilder: (context, weekday) {
+              return Container();
+            },
+            dayBuilder: (context, date, events) {
+              return HandCursor(
+                  child: Container(
+                margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                child: Column(
                   children: [
-                    _showDate(date),
-                    _showWeek(date),
+                    Icon(
+                      Icons.circle,
+                      color:
+                          eventDays.contains(date.toString().substring(0, 10))
+                              ? Colors.red
+                              : Color(0xff102733),
+                      size: 3,
+                    ),
+                    SizedBox(
+                      height: 2.5,
+                    ),
+                    Column(
+                      children: [
+                        _showDate(date),
+                        _showWeek(date),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ));
-        },
-      ),
-      onDaySelected: (date, events, holidays) {
-        _onDaySelected(date, events, holidays);
-        _animationController.forward(from: 0.0);
-        if (eventDays.contains(date.toString().substring(0, 10)))
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MyGiveaways(userId, userPhoto)));
-      },
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
-    );
+              ));
+            },
+          ),
+          onDaySelected: (date, events, holidays) {
+            _onDaySelected(date, events, holidays);
+            _animationController.forward(from: 0.0);
+            if (eventDays.contains(date.toString().substring(0, 10)))
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyGiveaways(userId, userPhoto)));
+          },
+          onVisibleDaysChanged: _onVisibleDaysChanged,
+          onCalendarCreated: _onCalendarCreated,
+        ));
   }
 
   Widget _showDate(DateTime date) {
