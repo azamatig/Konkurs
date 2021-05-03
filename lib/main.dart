@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -58,7 +56,7 @@ Future<Uri> retrieveDynamicLink() async {
       browser.isFirefox ||
       browser.isSafari ||
       browser.isInternetExplorer) {
-    return Uri.parse(window.location.href);
+    return Uri.base;
   }
   final PendingDynamicLinkData data =
       await FirebaseDynamicLinks.instance.getInitialLink();
