@@ -89,6 +89,7 @@ class AuthService {
   }
 
   static void setLevel1(BuildContext context, String inviter, String id) {
+    print('inviter: ${inviter}');
     var userId = [id];
     _firestore
         .collection('/users')

@@ -58,7 +58,6 @@ class _HomeScreen1State extends State<HomeScreen1>
   String parent2Data;
   List<dynamic> firstParentData;
   List<dynamic> secondParentData;
-  bool _isSeen = false;
   List<dynamic> childrenLvl1;
   List<dynamic> childrenLvl2;
   List<dynamic> childrenLvl3;

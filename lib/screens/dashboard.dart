@@ -482,19 +482,27 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Future<dynamic> _showRefUrlDialog() async {
     final refUrl = '${Uri.base.origin}?invitedby=${widget.userId}';
 
+    final width = MediaQuery.of(context).size.width;
+    final dialogWidth = width < 550 ? 250.0 : 500.0;
+
     return showDialog(
         context: context,
         builder: (ctx) {
           return Dialog(
             child: Container(
+                width: dialogWidth,
                 padding: EdgeInsets.symmetric(horizontal: 7),
-                width: 500,
                 child: Row(children: [
-                  Text(refUrl),
                   IconButton(
                       icon: Icon(Icons.copy),
                       onPressed: () =>
-                          {Clipboard.setData(new ClipboardData(text: refUrl))})
+                          Clipboard.setData(new ClipboardData(text: refUrl))),
+                  Flexible(
+                      child: Text(
+                    refUrl,
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                  )),
                 ])),
           );
         });
