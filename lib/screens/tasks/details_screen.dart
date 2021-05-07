@@ -7,16 +7,15 @@ import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/all_users_giveaways.dart';
-import 'package:konkurs_app/screens/bug.dart';
-import 'package:konkurs_app/screens/tasks_list.dart';
+import 'package:konkurs_app/screens/auxillary/bug.dart';
+import 'package:konkurs_app/screens/auxillary/comments_screen.dart';
+import 'package:konkurs_app/screens/giveaways/all_users_giveaways.dart';
+import 'package:konkurs_app/screens/tasks/tasks_list.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/prize_widget.dart';
 import 'package:konkurs_app/utilities/task_column.dart';
 import 'package:nanoid/nanoid.dart';
-
-import 'AchievementView.dart';
-import 'comments_screen.dart';
 
 // ignore: must_be_immutable
 class DetailsScreen extends StatefulWidget {

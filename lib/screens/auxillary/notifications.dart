@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:konkurs_app/screens/home.dart';
+import 'package:flutter/material.dart';
 
 class Notifications extends StatefulWidget {
   static final String id = 'notifications';
+  final String userid;
+
+  const Notifications({Key key, this.userid}) : super(key: key);
+
   @override
   _NotificationsState createState() => _NotificationsState();
 }
@@ -26,7 +29,7 @@ class _NotificationsState extends State<Notifications> {
       ),
       body: StreamBuilder(
         stream: _database
-            .collection("users/$userId/notifications")
+            .collection("users/${widget.userid}/notifications")
             .orderBy('ts', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -44,7 +47,7 @@ class _NotificationsState extends State<Notifications> {
             var isUnread = v.data()['is_Unread'];
             if (isUnread) {
               _database
-                  .doc("users/$userId/notifications/${v.id}")
+                  .doc("users/${widget.userid}/notifications/${v.id}")
                   .update({'is_Unread': false});
             }
             var notificationWidget = Container(

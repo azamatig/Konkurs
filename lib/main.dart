@@ -6,11 +6,16 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:konkurs_app/blocs/parent_bloc.dart';
+import 'package:konkurs_app/blocs/payment_bloc.dart';
+import 'package:konkurs_app/blocs/pigstagram_auth.dart';
+import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
+import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/screens/LoginScreen.dart';
-import 'package:konkurs_app/screens/SignUpScreen.dart';
-import 'package:konkurs_app/screens/home.dart';
-import 'package:konkurs_app/screens/notifications.dart';
+import 'package:konkurs_app/screens/auxillary/notifications.dart';
+import 'package:konkurs_app/screens/main_screens/home.dart';
+import 'package:konkurs_app/screens/main_screens/login_screen.dart';
+import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -63,16 +68,11 @@ Future<void> retrieveDynamicLink() async {
       if (k == "invitedby") {
         var firestore = FirebaseFirestore.instance;
         inviterId = v;
-        firestore
-            .collection('users')
-            .doc(inviterId)
-            .update({'points': FieldValue.increment(15)});
         var timestamp = FieldValue.serverTimestamp();
         final DocumentReference ref =
             firestore.collection('users/$inviterId/notifications').doc();
-        var docID = ref.id;
         var _postData = {
-          'message': "+15! Вы пригласили нового пользователя!",
+          'message': "Вы пригласили нового пользователя!",
           'type': 1,
           'title': "Реферал!",
           'is_Unread': true,
@@ -95,10 +95,9 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
-          return HomeScreen1(
+          return HomeScreen(
             currentUserId:
                 Provider.of<UserData>(context, listen: false).currentUserId,
-            invitedId: id,
           );
         } else {
           return LoginScreen(
@@ -112,11 +111,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => UserData(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ParentBloc()),
+        ChangeNotifierProvider(create: (context) => USDTPaymentBloc()),
+        ChangeNotifierProvider(create: (context) => TRXPaymentBloc()),
+        ChangeNotifierProvider(create: (context) => PaymentBloc()),
+        ChangeNotifierProvider(create: (context) => InstagramStuff()),
+        ChangeNotifierProvider(
+          create: (context) => UserData(),
+        )
+      ],
       child: OverlaySupport(
         child: MaterialApp(
-          title: 'GivrApp',
+          title: 'GiveApp',
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -126,15 +134,9 @@ class MyApp extends StatelessWidget {
           ),
           home: _getScreenId(inviterId),
           routes: {
-            LoginScreen.id: (context) => LoginScreen(
-                  inviterId: inviterId,
-                ),
-            SignupScreen.id: (context) => SignupScreen(
-                  inviterId: inviterId,
-                ),
-            HomeScreen1.id: (context) => HomeScreen1(
-                  invitedId: inviterId,
-                ),
+            LoginScreen.id: (context) => LoginScreen(),
+            SignupScreen.id: (context) => SignupScreen(),
+            HomeScreen.id: (context) => HomeScreen(),
             Notifications.id: (context) => Notifications(),
           },
         ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_model.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 
-import 'AchievementView.dart';
-import 'edit_profile_screen.dart';
+import '../screens/main_screens/edit_profile_screen.dart';
 
 class Settings extends StatefulWidget {
   final User user;

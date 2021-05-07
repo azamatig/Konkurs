@@ -1,24 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/post_model.dart';
-import 'DetailsScreen.dart';
+import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/screens/tasks/details_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:konkurs_app/models/user_data.dart';
 
-class ClosedGiveaways extends StatefulWidget {
+class MyGiveaways extends StatefulWidget {
+  final String userId;
   final String userPhoto;
+  MyGiveaways(this.userId, this.userPhoto);
 
-  const ClosedGiveaways({
-    Key key,
-    this.userPhoto,
-  }) : super(key: key);
   @override
-  _ClosedGiveawaysState createState() => _ClosedGiveawaysState();
+  _MyGiveawaysState createState() => _MyGiveawaysState();
 }
 
-class _ClosedGiveawaysState extends State<ClosedGiveaways> {
+class _MyGiveawaysState extends State<MyGiveaways> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ScrollController controller;
@@ -31,6 +30,8 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
 
   List<Post> _data = [];
 
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String collectionName = 'post';
@@ -40,15 +41,17 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
     if (_lastVisible == null)
       data = await firestore
           .collection(collectionName)
-          .where('isFinished', isEqualTo: true)
-          .orderBy('date', descending: false)
+          .where('people', arrayContains: widget.userId)
+          .where('isFinished', isEqualTo: false)
+          //.orderBy('date', descending: false)
           .limit(10)
           .get();
     else
       data = await firestore
           .collection(collectionName)
-          .where('isFinished', isEqualTo: true)
-          .orderBy('date', descending: false)
+          .where('people', arrayContains: widget.userId)
+          .where('isFinished', isEqualTo: false)
+          //.orderBy('date', descending: false)
           .startAfter([_lastVisible['date']])
           .limit(10)
           .get();
@@ -82,7 +85,7 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Завершенные конкурсы"),
+        title: Text("Мои участия"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
@@ -151,97 +154,78 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
           ),
         );
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Победитель - " + d.winner,
-            style: TextStyle(
-              color: LightColors.kLightYellow,
-              fontSize: 18,
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Container(
-            height: 100,
-            margin: EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-                color: Color(0xff29404E),
-                borderRadius: BorderRadius.circular(8)),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.only(left: 16),
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        height: 100,
+        margin: EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+            color: Color(0xff29404E), borderRadius: BorderRadius.circular(8)),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 16),
+                width: MediaQuery.of(context).size.width - 100,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      d.name,
+                      maxLines: 2,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
                       children: <Widget>[
+                        Image.asset(
+                          "assets/images/calender.png",
+                          height: 12,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
                         Text(
-                          d.name,
-                          maxLines: 2,
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Image.asset(
-                              "assets/images/calender.png",
-                              height: 15,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              formatOnlyDate(d.date.toDate()),
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 10),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Image.asset(
-                              "assets/images/location.png",
-                              height: 12,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              '${d.description.substring(0, 10)} ...',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 10),
-                            )
-                          ],
-                        ),
+                          formatOnlyDate(d.date.toDate()),
+                          style: TextStyle(color: Colors.white, fontSize: 10),
+                        )
                       ],
                     ),
-                  ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Image.asset(
+                          "assets/images/location.png",
+                          height: 15,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          '${d.description.substring(0, 10)} ...',
+                          style: TextStyle(color: Colors.white, fontSize: 10),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
-                ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(8),
-                        bottomRight: Radius.circular(8)),
-                    child: CachedNetworkImage(
-                      imageUrl: d.imagepost,
-                      height: 100,
-                      width: 120,
-                      fit: BoxFit.cover,
-                    )),
-              ],
+              ),
             ),
-          ),
-        ],
+            ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8)),
+                child: CachedNetworkImage(
+                  imageUrl: d.imagepost,
+                  height: 100,
+                  width: 120,
+                  fit: BoxFit.cover,
+                )),
+          ],
+        ),
       ),
     );
   }

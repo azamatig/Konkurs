@@ -1,23 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/post_model.dart';
-import 'DetailsScreen.dart';
-import 'package:konkurs_app/utilities/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
 import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/screens/tasks/details_screen.dart';
+import 'package:konkurs_app/utilities/constants.dart';
+import 'package:provider/provider.dart';
 
-class MyGiveaways extends StatefulWidget {
-  final String userId;
+class AllGiveaways extends StatefulWidget {
   final String userPhoto;
-  MyGiveaways(this.userId, this.userPhoto);
+
+  const AllGiveaways({Key key, this.userPhoto}) : super(key: key);
 
   @override
-  _MyGiveawaysState createState() => _MyGiveawaysState();
+  _AllGiveawaysState createState() => _AllGiveawaysState();
 }
 
-class _MyGiveawaysState extends State<MyGiveaways> {
+class _AllGiveawaysState extends State<AllGiveaways> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ScrollController controller;
@@ -30,8 +29,6 @@ class _MyGiveawaysState extends State<MyGiveaways> {
 
   List<Post> _data = [];
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String collectionName = 'post';
@@ -41,17 +38,15 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     if (_lastVisible == null)
       data = await firestore
           .collection(collectionName)
-          .where('people', arrayContains: widget.userId)
           .where('isFinished', isEqualTo: false)
-          //.orderBy('date', descending: false)
+          .orderBy('date', descending: false)
           .limit(10)
           .get();
     else
       data = await firestore
           .collection(collectionName)
-          .where('people', arrayContains: widget.userId)
           .where('isFinished', isEqualTo: false)
-          //.orderBy('date', descending: false)
+          .orderBy('date', descending: false)
           .startAfter([_lastVisible['date']])
           .limit(10)
           .get();
@@ -85,7 +80,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
-        title: Text("Мои участия"),
+        title: Text("Все конкурсы"),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
@@ -131,7 +126,7 @@ class _MyGiveawaysState extends State<MyGiveaways> {
   }
 
   Widget dataList(Post d) {
-    return GestureDetector(
+    return InkWell(
       onTap: () async {
         DocumentSnapshot document =
             await firestore.collection("post").doc(d.id).get();

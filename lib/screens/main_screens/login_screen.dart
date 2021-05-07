@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:konkurs_app/screens/SignUpScreen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 
-class SplashScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   final String inviterId;
+  static final String id = 'login_screen';
 
-  const SplashScreen({Key key, this.inviterId}) : super(key: key);
+  const LoginScreen({Key key, this.inviterId}) : super(key: key);
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String _email, _password;
@@ -71,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ],
               ),
               SizedBox(
-                height: 14,
+                height: 10,
               ),
               Text(
                 "Любите участвовать в Конкурсах и Выигрывать Призы? Выполняйте условия Конкурсов - ставьте Лайки, делайте Репосты и Подписки!",
@@ -79,35 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
               ),
               SizedBox(
-                height: 14,
-              ),
-              GestureDetector(
-                onTap: () {
-                  _submit();
-                },
-                child: _isLoading
-                    ? LinearProgressIndicator(
-                        backgroundColor: LightColors.kLightYellow2,
-                        valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
-                      )
-                    : Container(
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Войти",
-                              style: TextStyle(
-                                  color: Colors.orangeAccent, fontSize: 17),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.orangeAccent,
-                            )
-                          ],
-                        ),
-                      ),
+                height: 5,
               ),
               Form(
                 key: _formKey,
@@ -116,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 30.0,
+                        horizontal: 25.0,
                         vertical: 10.0,
                       ),
                       child: TextFormField(
@@ -141,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 30.0,
+                        horizontal: 25.0,
                         vertical: 10.0,
                       ),
                       child: TextFormField(
@@ -163,16 +138,51 @@ class _SplashScreenState extends State<SplashScreen> {
                         obscureText: true,
                       ),
                     ),
-                    SizedBox(height: 50.0),
+                    SizedBox(height: 15.0),
+                    _isLoading
+                        ? LinearProgressIndicator(
+                            backgroundColor: LightColors.kLightYellow2,
+                            valueColor:
+                                AlwaysStoppedAnimation(LightColors.kBlue),
+                          )
+                        : TextButton(
+                            style: TextButton.styleFrom(
+                              primary: LightColors.kDarkBlue,
+                              backgroundColor: LightColors.yellow2,
+                              onSurface: Colors.grey,
+                            ),
+                            onPressed: () {
+                              _submit();
+                            },
+                            child: Container(
+                              width: 245,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Войти",
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Icon(
+                                    FontAwesomeIcons.arrowRight,
+                                    size: 15,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                    SizedBox(height: 15.0),
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          nextScreen(
                               context,
-                              MaterialPageRoute(
-                                  builder: (_) => SignupScreen(
-                                        inviterId: widget.inviterId,
-                                      )));
+                              SignupScreen(
+                                inviterId: widget.inviterId,
+                              ));
                         },
                         child: Container(
                           alignment: Alignment.center,

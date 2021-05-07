@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:konkurs_app/models/post_model.dart';
-import 'DetailsScreen.dart';
-import 'package:konkurs_app/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/screens/tasks/details_screen.dart';
+import 'package:konkurs_app/utilities/constants.dart';
+import 'package:provider/provider.dart';
 
 class MyWins extends StatefulWidget {
   final String userPhoto;

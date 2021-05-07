@@ -88,7 +88,7 @@ class AuthService {
     }
   }
 
-  static void setLevel1(BuildContext context, String inviter, String id) {
+  void setLevel1(String inviter, String id) {
     var userId = [id];
     _firestore
         .collection('/users')
@@ -98,7 +98,7 @@ class AuthService {
         .update({'children': FieldValue.arrayUnion(userId)});
   }
 
-  static void setLevel2(BuildContext context, String inviter, String id) {
+  void setLevel2(String inviter, String id) {
     var userId = [id];
     _firestore
         .collection('/users')
@@ -108,7 +108,7 @@ class AuthService {
         .update({'children': FieldValue.arrayUnion(userId)});
   }
 
-  static void setLevel3(BuildContext context, String inviter, String id) {
+  void setLevel3(String inviter, String id) {
     var userId = [id];
     _firestore
         .collection('/users')
