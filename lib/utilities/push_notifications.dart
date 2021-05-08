@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
@@ -7,7 +9,7 @@ import 'package:overlay_support/overlay_support.dart';
 
 class PushNotifications {
   static final PushNotifications _push = PushNotifications._internal();
-  static final _firestore = FirebaseFirestore.instance;
+  static final _firestore = FirebaseStorage.instance;
 
   factory PushNotifications() {
     return _push;

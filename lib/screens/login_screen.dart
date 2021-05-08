@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:konkurs_app/screens/SignUpScreen.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/widgets/hand_cursor.dart';
+
+import 'main_screens/sign_up_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final String inviterId;

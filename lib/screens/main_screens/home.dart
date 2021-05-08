@@ -21,7 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
-  static final String id = 'feed_screen';
+  static const String routeName = '/home';
   final currentUserId;
 
   const HomeScreen({Key key, this.currentUserId}) : super(key: key);

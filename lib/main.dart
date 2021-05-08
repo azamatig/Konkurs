@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -13,11 +14,12 @@ import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
 import 'package:konkurs_app/screens/main_screens/home.dart';
-import 'package:konkurs_app/screens/main_screens/login_screen.dart';
+import 'package:konkurs_app/screens/login_screen.dart';
 import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/login_screen.dart';
 import 'utilities/constants.dart';
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -36,7 +38,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   initializeDateFormatting();
-  setUrlStrategy(PathUrlStrategy());
 
   final Uri url = await retrieveDynamicLink();
 
@@ -112,7 +113,7 @@ class MyApp extends StatelessWidget {
                   settings.name.replaceAll(RegExp(r'(\?|\&).+'), '');
 
               switch (routeName) {
-                case HomeScreen1.routeName:
+                case HomeScreen.routeName:
                   {
                     return _getPageRoute(_getScreenId(inviterId), settings);
                   }
