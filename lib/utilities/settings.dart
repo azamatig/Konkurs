@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/achievements_view.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 
 import '../screens/main_screens/edit_profile_screen.dart';
 
@@ -35,13 +36,11 @@ class _SettingsState extends State<Settings> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EditProfileScreen(
-                            user: widget.user,
-                          )),
-                );
+                nextScreen(
+                    context,
+                    EditProfileScreen(
+                      user: widget.user,
+                    ));
               },
               child: Text(
                 'Настройки профиля',

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/tasks/details_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 
 // ignore: must_be_immutable
 class PopularEventTile extends StatelessWidget {
@@ -35,23 +36,22 @@ class PopularEventTile extends StatelessWidget {
           SimpleAccountMenu.animationController.reverse();
           SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
         }
-        Navigator.push(
+        nextScreen(
             context,
-            MaterialPageRoute(
-                builder: (_) => DetailsScreen(
-                      docId: doc.id,
-                      docRef: doc.reference,
-                      date: doc.data()['date'],
-                      userId: userId,
-                      userPhoto: userPhoto,
-                      instaLink1: doc.data()['task1InstaLink'],
-                      instaLink2: doc.data()['task2InstaLink'],
-                      instaLink3: doc.data()['task3InstaLink'],
-                      endDate: doc.data()['endDate'],
-                      likesCount: doc.data()['likesCount'],
-                      giveawayCost: doc.data()['giveawayCost'],
-                      eventDays: doc.data()['eventDays'],
-                    )));
+            DetailsScreen(
+              docId: doc.id,
+              docRef: doc.reference,
+              date: doc.data()['date'],
+              userId: userId,
+              userPhoto: userPhoto,
+              instaLink1: doc.data()['task1InstaLink'],
+              instaLink2: doc.data()['task2InstaLink'],
+              instaLink3: doc.data()['task3InstaLink'],
+              endDate: doc.data()['endDate'],
+              likesCount: doc.data()['likesCount'],
+              giveawayCost: doc.data()['giveawayCost'],
+              eventDays: doc.data()['eventDays'],
+            ));
       },
       child: Container(
         height: 100,

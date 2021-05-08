@@ -5,6 +5,7 @@ import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/tasks/details_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:provider/provider.dart';
 
 class ClosedGiveaways extends StatefulWidget {
@@ -132,10 +133,9 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
       onTap: () async {
         DocumentSnapshot document =
             await firestore.collection("post").doc(d.id).get();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => DetailsScreen(
+        nextScreen(
+            context,
+            DetailsScreen(
               docId: d.id,
               docRef: document.reference,
               date: d.date,
@@ -147,9 +147,7 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
               endDate: d.endDate,
               likesCount: d.likesCount,
               giveawayCost: d.giveawayCost,
-            ),
-          ),
-        );
+            ));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

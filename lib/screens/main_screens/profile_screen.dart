@@ -383,11 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               'assets/images/ic_transact.png',
                                               'Настройки'),
                                           onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Settings(user)));
+                                            nextScreen(context, Settings(user));
                                           }),
                                       GestureDetector(
                                         onTap: () {

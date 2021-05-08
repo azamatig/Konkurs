@@ -3,6 +3,7 @@ import 'package:konkurs_app/screens/giveaways/all_giveaways.dart';
 import 'package:konkurs_app/screens/giveaways/closed_giveaways.dart';
 import 'package:konkurs_app/screens/giveaways/my_giveaways.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 
 // ignore: must_be_immutable
 class EventTile extends StatelessWidget {
@@ -26,12 +27,11 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              Navigator.push(
+              nextScreenCloseOthers(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => AllGiveaways(
-                            userPhoto: userPhoto,
-                          )));
+                  AllGiveaways(
+                    userPhoto: userPhoto,
+                  ));
             }
             break;
           case "Мои участия":
@@ -41,10 +41,7 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyGiveaways(userId, userPhoto)));
+              nextScreen(context, MyGiveaways(userId, userPhoto));
             }
             break;
           case "Завершенные":
@@ -54,12 +51,11 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              Navigator.push(
+              nextScreenCloseOthers(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => ClosedGiveaways(
-                            userPhoto: userPhoto,
-                          )));
+                  ClosedGiveaways(
+                    userPhoto: userPhoto,
+                  ));
             }
             break;
         }
