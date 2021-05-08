@@ -42,10 +42,43 @@ class User {
     );
   }
 
-  factory User.fromFirestore(DocumentSnapshot snapshot) {
-    var d = snapshot.data();
+  factory User.fromFirestore(DocumentSnapshot d) {
     return User(
-      id: snapshot.id,
+      id: d['id'],
+      name: d['name'],
+      profileImageUrl: d['profileImageUrl'] ??
+          'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png',
+      email: d['email'],
+      insta: d['insta'],
+      phone: d['phone'],
+      location: d['location'],
+      points: d['points'],
+      eventDays: d['eventDays'],
+      partner: d['partner'],
+      parent: d['parent'],
+    );
+  }
+
+  factory User.fromFirestoreLevel2(DocumentSnapshot d) {
+    return User(
+      id: d['id'],
+      name: d['name'],
+      profileImageUrl: d['profileImageUrl'] ??
+          'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png',
+      email: d['email'],
+      insta: d['insta'],
+      phone: d['phone'],
+      location: d['location'],
+      points: d['points'],
+      eventDays: d['eventDays'],
+      partner: d['partner'],
+      parent: d['parent'],
+    );
+  }
+
+  factory User.fromFirestoreLevel3(DocumentSnapshot d) {
+    return User(
+      id: d['id'],
       name: d['name'],
       profileImageUrl: d['profileImageUrl'] ??
           'https://www.seekpng.com/png/detail/115-1150053_avatar-png-transparent-png-royalty-free-default-user.png',

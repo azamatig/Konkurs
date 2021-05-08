@@ -60,6 +60,10 @@ dependencies:
   bug_report: ^0.1.0
   crypto: ^2.1.5
   timelines: ^0.1.0
+  tdlib: ^1.5.0
+  country_pickers: ^1.2.1
+  get_it: ^1.0.3
+  permission_handler: ^5.0.1
 
 dev_dependencies:
   flutter_test:

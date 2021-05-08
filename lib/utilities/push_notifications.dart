@@ -1,9 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
-import 'package:konkurs_app/screens/notifications.dart';
+import 'package:konkurs_app/screens/auxillary/notifications.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class PushNotifications {

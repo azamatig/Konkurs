@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/AchievementView.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/back_button.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/task_container.dart';
@@ -45,7 +45,6 @@ Animation _animation;
 Animation _animation2;
 File file;
 String urlString;
-int _coins = 0;
 
 Future<void> sharing(BuildContext context, String type, String url,
     String instaUrl, String userId, DocumentReference ref, User user) async {

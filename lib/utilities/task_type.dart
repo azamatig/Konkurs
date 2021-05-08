@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/comments_screen.dart';
+import 'package:konkurs_app/screens/auxillary/comments_screen.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:social_share/social_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -60,13 +61,12 @@ class TaskType {
 
   void setGiveComment(
       BuildContext context, String userId, DocumentReference ref, User user) {
-    Navigator.push(
+    nextScreen(
         context,
-        MaterialPageRoute(
-            builder: (_) => CommentsScreen(
-                  userId: userId,
-                  documentReference: ref,
-                  user: user,
-                )));
+        CommentsScreen(
+          userId: userId,
+          documentReference: ref,
+          user: user,
+        ));
   }
 }

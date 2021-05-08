@@ -1,31 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:konkurs_app/blocs/pigstagram_auth.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/pp_screen.dart';
-import 'package:konkurs_app/screens/task_profile.dart';
-import 'package:konkurs_app/screens/wallet_transfer.dart';
+import 'package:konkurs_app/screens/giveaways/my_wins.dart';
+import 'package:konkurs_app/screens/payment/pp_screen.dart';
+import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
+import 'package:konkurs_app/screens/tasks/task_profile.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/widgets/hand_cursor.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_auth/simple_auth.dart' as simpleAuth;
-import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 
-import 'my_wins.dart';
-import 'settings.dart';
+import '../../utilities/settings.dart';
 
 // ignore: must_be_immutable
-class DashBoardPage extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   final String userId;
   final String userPhoto;
   DynamicLinkParameters parameters;
 
-  DashBoardPage(this.userId, this.userPhoto) {
+  ProfileScreen(this.userId, this.userPhoto) {
     parameters = DynamicLinkParameters(
         uriPrefix: 'https://giveapp.page.link',
         link: Uri.parse(
@@ -42,10 +41,10 @@ class DashBoardPage extends StatefulWidget {
   }
 
   @override
-  _DashBoardPageState createState() => _DashBoardPageState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _DashBoardPageState extends State<DashBoardPage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   List<Color> _backgroundColor;
   Color _iconColor;
   Color _textColor;
@@ -53,12 +52,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
   Color _borderContainer;
   bool colorSwitched = false;
   var logoImage;
-  String _errorMsg;
-  String _instaName;
-  Map _userData;
-  bool _isSignedIn = false;
-  bool get isSignedIn => _isSignedIn;
-  List<dynamic> children;
 
   void changeTheme() async {
     if (colorSwitched) {
@@ -102,74 +95,21 @@ class _DashBoardPageState extends State<DashBoardPage> {
     }
   }
 
-  Future setSignIn(String data) async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setBool('signed_in', true);
-    sp.setString('instaName', data);
-    _isSignedIn = true;
-  }
-
-  void checkSignIn() async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
-    _instaName = sp.getString('instaName');
-    _isSignedIn = sp.getBool('signed_in') ?? false;
-  }
-
-  final simpleAuth.InstagramApi _igApi = simpleAuth.InstagramApi(
-    "instagram",
-    InstagramApiConstants.igClientId,
-    InstagramApiConstants.igClientSecret,
-    InstagramApiConstants.igRedirectURL,
-    scopes: [
-      'user_profile', // For getting username, account type, etc.
-      'user_media', // For accessing media count & data like posts, videos etc.
-    ],
-  );
-
-  Future<void> _loginAndGetData() async {
-    _igApi.authenticate().then(
-      (simpleAuth.Account _user) async {
-        simpleAuth.OAuthAccount user = _user;
-
-        var igUserResponse =
-            await Dio(BaseOptions(baseUrl: 'https://graph.instagram.com')).get(
-          '/me',
-          queryParameters: {
-            // Get the fields you need.
-            // https://developers.facebook.com/docs/instagram-basic-display-api/reference/user
-            "fields": "username",
-            "access_token": user.token,
-          },
-        );
-        setState(() {
-          _userData = igUserResponse.data;
-          var instaName = _userData['username'];
-          _errorMsg = null;
-          setSignIn(instaName);
-        });
-      },
-    ).catchError(
-      (Object e) {
-        setState(() => _errorMsg = e.toString());
-      },
-    );
-  }
-
   @override
   void initState() {
     changeTheme();
-    checkSignIn();
-    SimpleAuthFlutter.init(context);
+    context.read<InstagramStuff>().checkSignIn();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var uid = Provider.of<UserData>(context).currentUserId;
+    var uid = context.watch<UserData>();
+    final ib = context.watch<InstagramStuff>();
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-            future: usersRef.doc(uid).get(),
+            future: usersRef.doc(uid.currentUserId).get(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
@@ -235,9 +175,30 @@ class _DashBoardPageState extends State<DashBoardPage> {
                             ),
                           ),
                           Spacer(),
-                          Visibility(
-                            visible: true,
-                            child: _buildBuyingButton(),
+                          _buildBuyingButton(),
+                          GestureDetector(
+                            onTap: () {
+                              nextScreen(context, null);
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 15.0, right: 15),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Телеграм',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _iconColor, fontSize: 12),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Icon(FontAwesomeIcons.telegram,
+                                      size: 22, color: _iconColor),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -313,12 +274,10 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                       HandCursor(
                                           child: GestureDetector(
                                         onTap: () {
-                                          Navigator.push(
+                                          nextScreen(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => MyWins(
-                                                      widget.userId,
-                                                      widget.userPhoto)));
+                                              MyWins(widget.userId,
+                                                  widget.userPhoto));
                                         },
                                         child: _actionList(
                                             'assets/images/ic_money.png',
@@ -332,22 +291,17 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                                   'assets/images/ic_transact.png',
                                                   'Настройки'),
                                               onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Settings(user)));
+                                                nextScreen(
+                                                    context, Settings(user));
                                               })),
                                       HandCursor(
                                           child: GestureDetector(
                                         onTap: () {
-                                          Navigator.push(
+                                          nextScreen(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      TaskProfileList(
-                                                        userId: user.id,
-                                                      )));
+                                              TaskProfileList(
+                                                userId: user.id,
+                                              ));
                                         },
                                         child: _actionList(
                                             'assets/images/ic_reward.png',
@@ -374,12 +328,11 @@ class _DashBoardPageState extends State<DashBoardPage> {
     return HandCursor(
         child: GestureDetector(
       onTap: () {
-        Navigator.push(
+        nextScreen(
             context,
-            MaterialPageRoute(
-                builder: (_) => PartnerProgramScreen(
-                      userId: widget.userId,
-                    )));
+            PartnerProgramScreen(
+              userId: widget.userId,
+            ));
       },
       child: Container(
         height: 100,
@@ -412,9 +365,10 @@ class _DashBoardPageState extends State<DashBoardPage> {
   }
 
   Widget _buildConnectiongInstagramButton() {
+    final ib = context.watch<InstagramStuff>();
     return HandCursor(
         child: GestureDetector(
-      onTap: () => {_isSignedIn == false ? _loginAndGetData() : null},
+      onTap: () => {ib.isSignedIn == false ? ib.loginAndGetData() : null},
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -426,9 +380,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
           SizedBox(
             width: 5,
           ),
-          _isSignedIn == false && _instaName == null
+          ib.isSignedIn == false && ib.instaName == null
               ? Text('Подключить instagram')
-              : Text('@' + _instaName),
+              : Text('@' + ib.instaName),
         ],
       ),
     ));

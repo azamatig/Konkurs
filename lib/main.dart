@@ -5,15 +5,16 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'package:flutter/foundation.dart';
-
+import 'package:konkurs_app/blocs/parent_bloc.dart';
+import 'package:konkurs_app/blocs/payment_bloc.dart';
+import 'package:konkurs_app/blocs/pigstagram_auth.dart';
+import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
+import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/models/user_data.dart';
-import 'package:konkurs_app/screens/splash_screen.dart';
-import 'package:konkurs_app/screens/login_screen.dart';
-import 'package:konkurs_app/screens/SignUpScreen.dart';
-import 'package:konkurs_app/screens/home/home.dart';
-import 'package:konkurs_app/screens/notifications.dart';
+import 'package:konkurs_app/screens/auxillary/notifications.dart';
+import 'package:konkurs_app/screens/main_screens/home.dart';
+import 'package:konkurs_app/screens/main_screens/login_screen.dart';
+import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -71,10 +72,9 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
-          return HomeScreen1(
+          return HomeScreen(
             currentUserId:
                 Provider.of<UserData>(context, listen: false).currentUserId,
-            invitedId: id,
           );
         } else {
           return LoginScreen();
@@ -86,8 +86,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => UserData(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ParentBloc()),
+        ChangeNotifierProvider(create: (context) => USDTPaymentBloc()),
+        ChangeNotifierProvider(create: (context) => TRXPaymentBloc()),
+        ChangeNotifierProvider(create: (context) => PaymentBloc()),
+        ChangeNotifierProvider(create: (context) => InstagramStuff()),
+        ChangeNotifierProvider(
+          create: (context) => UserData(),
+        )
+      ],
       child: OverlaySupport(
         child: MaterialApp(
             title: 'GiveApp',

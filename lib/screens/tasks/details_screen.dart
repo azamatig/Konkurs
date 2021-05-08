@@ -7,16 +7,16 @@ import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
-import 'package:konkurs_app/screens/all_users_giveaways.dart';
-import 'package:konkurs_app/screens/bug.dart';
-import 'package:konkurs_app/screens/tasks_list.dart';
+import 'package:konkurs_app/screens/auxillary/bug.dart';
+import 'package:konkurs_app/screens/auxillary/comments_screen.dart';
+import 'package:konkurs_app/screens/giveaways/all_users_giveaways.dart';
+import 'package:konkurs_app/screens/tasks/tasks_list.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/prize_widget.dart';
 import 'package:konkurs_app/utilities/task_column.dart';
 import 'package:nanoid/nanoid.dart';
-
-import 'AchievementView.dart';
-import 'comments_screen.dart';
 
 // ignore: must_be_immutable
 class DetailsScreen extends StatefulWidget {
@@ -206,14 +206,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         height: 20,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(
+                            nextScreen(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (_) => CommentsScreen(
-                                          userId: widget.userId,
-                                          documentReference: widget.docRef,
-                                          user: widget.currentUser,
-                                        )));
+                                CommentsScreen(
+                                  userId: widget.userId,
+                                  documentReference: widget.docRef,
+                                  user: widget.currentUser,
+                                ));
                           },
                           icon: Icon(
                             FontAwesomeIcons.commentAlt,
@@ -326,10 +325,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => ReportIssuePage()));
+                        nextScreen(context, ReportIssuePage());
                       },
                       child: Container(
                           width: 40,
@@ -486,12 +482,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            nextScreenCloseOthers(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (_) => AllGivesUsers(
-                                          doc: post,
-                                        )));
+                                AllGivesUsers(
+                                  doc: post,
+                                ));
                           },
                           child: post.people.contains(widget.userId)
                               ? Row(
@@ -647,17 +642,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
               onTap: () {
                 if (post.people.contains(widget.userId) &&
                     post.isFinished == false) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TaskList(
-                              userId: widget.userId,
-                              docId: widget.docId,
-                              dates: post.date,
-                              currentUser: widget.currentUser,
-                              docRef: widget.docRef,
-                            )),
-                  );
+                  nextScreen(
+                      context,
+                      TaskList(
+                        userId: widget.userId,
+                        docId: widget.docId,
+                        dates: post.date,
+                        currentUser: widget.currentUser,
+                        docRef: widget.docRef,
+                      ));
                 } else if (post.isFinished == true) {
                   popup.show(
                     title: 'Данный конкурс завершен!',
@@ -723,12 +716,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
+                nextScreen(
                     context,
-                    MaterialPageRoute(
-                        builder: (_) => PrizeWidget(
-                              postImage: post.prize,
-                            )));
+                    PrizeWidget(
+                      postImage: post.prize,
+                    ));
               },
               child: Container(
                 decoration: BoxDecoration(

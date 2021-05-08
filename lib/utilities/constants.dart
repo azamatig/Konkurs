@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show GlobalKey, NavigatorState;
 import 'package:intl/intl.dart';
 
 final _firestore = FirebaseFirestore.instance;
