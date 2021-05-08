@@ -1,21 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
-class ConfirmPayemnt extends StatefulWidget {
+class ConfirmPayment extends StatefulWidget {
   final userId;
   final txId;
 
-  ConfirmPayemnt({Key key, this.userId, this.txId}) : super(key: key);
+  ConfirmPayment({Key key, this.userId, this.txId}) : super(key: key);
 
   @override
-  _ConfirmPayemntState createState() => _ConfirmPayemntState();
+  _ConfirmPaymentState createState() => _ConfirmPaymentState();
 }
 
-class _ConfirmPayemntState extends State<ConfirmPayemnt> {
+class _ConfirmPaymentState extends State<ConfirmPayment> {
   final db = FirebaseFirestore.instance;
   ScrollController controller;
 
@@ -105,6 +107,8 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
   }
 
   Widget dataList(DocumentSnapshot th) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return Container(
       height: 75,
       margin: EdgeInsets.only(bottom: 16),
@@ -115,54 +119,69 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
           Expanded(
             child: Container(
               padding: EdgeInsets.only(left: 16),
-              width: MediaQuery.of(context).size.width - 100,
+              width: MediaQuery.of(context).size.width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     th.data()['txHash'] ?? '',
                     maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 8,
+                    style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
                   Text(
-                    "Сумма - " + numberFormat(th.data()['amount']) + ' ETH' ??
-                        '',
+                    "Сумма - " + numberFormat(th.data()['amount']) ?? '',
                     maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
                   Row(
                     children: <Widget>[
                       Image.asset(
                         "assets/images/calender.png",
-                        height: 12,
+                        height: 11,
                       ),
                       SizedBox(
                         width: 8,
                       ),
                       Text(
                         formatOnlyDate(th.data()['time'].toDate() ?? ''),
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
                       )
                     ],
-                  ),
-                  SizedBox(
-                    height: 8,
                   ),
                 ],
               ),
             ),
           ),
-          Center(child: _transferButton(th)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0, left: 5, right: 5),
+            child: GestureDetector(
+              onTap: () {
+                popup.show(
+                    title: 'Инфо платежа',
+                    content: th.data()['checkOutUrl'] ?? '',
+                    actions: [
+                      Container(
+                          child: CachedNetworkImage(
+                              width: 175,
+                              height: 175,
+                              imageUrl: th.data()['qrUrl'] ?? '')),
+                    ],
+                    barrierDismissible: true);
+              },
+              child: Icon(
+                FontAwesomeIcons.infoCircle,
+                color: LightColors.kLavender,
+                size: 30,
+              ),
+            ),
+          ),
+          Center(child: _confirmButton(th)),
         ],
       ),
     );
   }
 
-  Widget _transferButton(DocumentSnapshot snap) {
+  Widget _confirmButton(DocumentSnapshot snap) {
     return _isLoading
         ? CircularProgressIndicator(
             backgroundColor: LightColors.kLightYellow,
@@ -183,6 +202,40 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
                 awardPoints5000(snap.data()['txHash']);
               }
               if (snap.data()['amount'] == '0.09800000' &&
+                  snap.data()['is_confirmed'] == false) {
+                setPartner(snap.data()['txHash']);
+              }
+              // Tron
+              if (snap.data()['amount'] == '85.00000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints1000(snap.data()['txHash']);
+              }
+              if (snap.data()['amount'] == '155.00000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints2000(snap.data()['txHash']);
+              }
+              if (snap.data()['amount'] == '230.00000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints3000(snap.data()['txHash']);
+              }
+              if (snap.data()['amount'] == '1515.00000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                setPartner(snap.data()['txHash']);
+              }
+              // USDT
+              if (snap.data()['amount'] == '163.02000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints1000(snap.data()['txHash']);
+              }
+              if (snap.data()['amount'] == '285.48000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints2000(snap.data()['txHash']);
+              }
+              if (snap.data()['amount'] == '405.37000000' &&
+                  snap.data()['is_confirmed'] == false) {
+                awardPoints3000(snap.data()['txHash']);
+              }
+              if (snap.data()['amount'] == '2480.37000000' &&
                   snap.data()['is_confirmed'] == false) {
                 setPartner(snap.data()['txHash']);
               }
@@ -222,6 +275,32 @@ class _ConfirmPayemntState extends State<ConfirmPayemnt> {
   void awardPoints2000(String transId) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2000)});
+    print('1232131');
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('transactions')
+        .doc(transId);
+    confirm.update({'is_confirmed': true});
+  }
+
+  void awardPoints1000(String transId) async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': FieldValue.increment(1000)});
+    print('1232131');
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('transactions')
+        .doc(transId);
+    confirm.update({'is_confirmed': true});
+  }
+
+  void awardPoints3000(String transId) async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': FieldValue.increment(3000)});
     print('1232131');
 
     var confirm = db

@@ -22,7 +22,7 @@ class ReportIssuePage extends StatelessWidget {
           owner: "Azamatig", // e.g. Puepis
           repositoryName: "Konkurs", // e.g. bug_report
           authToken:
-              "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", // keep it safe!
+              "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", // keep it safe!
         ),
       ),
     );

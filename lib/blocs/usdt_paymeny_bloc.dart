@@ -4,12 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart' as f;
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/payment/confirm_payment.dart';
 import 'package:konkurs_app/screens/payment/payment_info.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
@@ -61,9 +61,9 @@ class USDTPaymentBloc extends ChangeNotifier {
     var secret = utf8.encode(
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=10&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=121&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
 
-    price = '10';
+    price = '121';
 
     Hmac hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     Digest digest = hmacSha256.convert(bytes);
@@ -76,8 +76,8 @@ class USDTPaymentBloc extends ChangeNotifier {
     var secret = utf8.encode(
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=20&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    price25 = '20';
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=242&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
+    price25 = '242';
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
@@ -89,8 +89,8 @@ class USDTPaymentBloc extends ChangeNotifier {
     var secret = utf8.encode(
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=30&currency1=TRX&currency2=TRX&buyer_email=azerbaev87%40gmail.com');
-    price50 = '30';
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=363&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
+    price50 = '363';
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
@@ -102,8 +102,8 @@ class USDTPaymentBloc extends ChangeNotifier {
     var secret = utf8.encode(
         '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
     var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=200&currency1=TRX&currency2=TRX&buyer_email=azerbaev87%40gmail.com');
-    partnerPrice = '200';
+        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=2438&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
+    partnerPrice = '2438';
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
@@ -113,7 +113,7 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   setTransid(String txid, String address, String amount, String checkout,
-      String status, String userId) async {
+      String status, String userId, String qrUrl) async {
     db
         .collection('users')
         .doc(userId)
@@ -122,6 +122,7 @@ class USDTPaymentBloc extends ChangeNotifier {
         .set({
       'txHash': txid,
       'address': address,
+      'qrUrl': qrUrl,
       'amount': amount,
       'checkOutUrl': checkout,
       'status': status,
@@ -131,8 +132,6 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyUSDT1(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransaction10USDT().whenComplete(() => {
@@ -147,8 +146,8 @@ class USDTPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -158,15 +157,9 @@ class USDTPaymentBloc extends ChangeNotifier {
                         checkOutUrl: checkOut,
                       )))
             });
-        print(txId);
-        print(statusUrl);
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        notifyListeners();
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -194,8 +187,6 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyUSDT2(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransaction20USDT().whenComplete(() => {
@@ -210,8 +201,8 @@ class USDTPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -221,13 +212,9 @@ class USDTPaymentBloc extends ChangeNotifier {
                         checkOutUrl: checkOut,
                       )))
             });
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и в Истории оплат подтвердите что вы оплатили счет, \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        notifyListeners();
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -255,8 +242,6 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyUSDT3(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransaction30USDT().whenComplete(() => {
@@ -271,8 +256,8 @@ class USDTPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -282,13 +267,9 @@ class USDTPaymentBloc extends ChangeNotifier {
                         checkOutUrl: checkOut,
                       )))
             });
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        notifyListeners();
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -316,8 +297,6 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget partnerUSDTButton(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransactionPartner().whenComplete(() => {
@@ -332,8 +311,8 @@ class USDTPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -343,13 +322,9 @@ class USDTPaymentBloc extends ChangeNotifier {
                         checkOutUrl: checkOut,
                       )))
             });
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        notifyListeners();
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -381,7 +356,7 @@ class USDTPaymentBloc extends ChangeNotifier {
       onTap: () {
         nextScreen(
             context,
-            ConfirmPayemnt(
+            ConfirmPayment(
               userId: userId,
               txId: txId,
             ));

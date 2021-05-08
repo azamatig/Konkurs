@@ -4,12 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart' as f;
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/payment/confirm_payment.dart';
 import 'package:konkurs_app/screens/payment/payment_info.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
@@ -120,7 +120,7 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   setTransid(String txid, String address, String amount, String checkout,
-      String status, String userId) async {
+      String status, String userId, String qrUrl) async {
     db
         .collection('users')
         .doc(userId)
@@ -129,6 +129,7 @@ class TRXPaymentBloc extends ChangeNotifier {
         .set({
       'txHash': txid,
       'address': address,
+      'qrUrl': qrUrl,
       'amount': amount,
       'checkOutUrl': checkout,
       'status': status,
@@ -141,8 +142,6 @@ class TRXPaymentBloc extends ChangeNotifier {
     BuildContext context,
     String userId,
   ) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransaction10TRX().whenComplete(() => {
@@ -157,8 +156,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -169,13 +168,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                       )))
             });
         notifyListeners();
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -203,8 +197,6 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyTRX2(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransaction25USD().whenComplete(() => {
@@ -219,8 +211,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -231,13 +223,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                       )))
             });
         notifyListeners();
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и в Истории оплат подтвердите что вы оплатили счет, \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -265,8 +252,6 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyTRX3(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransaction50USD().whenComplete(() => {
@@ -281,8 +266,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -293,13 +278,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                       )))
             });
         notifyListeners();
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -327,8 +307,6 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   Widget partnerTRXButton(BuildContext context, String userId) {
-    final popup =
-        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
         createTransactionPartner().whenComplete(() => {
@@ -343,8 +321,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                         statusUrl = result.result.statusUrl,
                         amount = result.result.amount,
                       })
-                  .whenComplete(() => setTransid(
-                      txId, address, amount, checkOut, statusUrl, userId))
+                  .whenComplete(() => setTransid(txId, address, amount,
+                      checkOut, statusUrl, userId, qrUrl))
                   .whenComplete(() => nextScreen(
                       context,
                       PaymentInfoPage(
@@ -355,13 +333,8 @@ class TRXPaymentBloc extends ChangeNotifier {
                       )))
             });
         notifyListeners();
-        popup.show(
-          title: 'Спасибо!',
-          content:
-              'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь сюда и нажмите Подтвердить оплату! \n'
-              'Средства будут начислены после подтверждения',
-          barrierDismissible: true,
-        );
+        showAchievementView2(
+            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -393,7 +366,7 @@ class TRXPaymentBloc extends ChangeNotifier {
       onTap: () {
         nextScreen(
             context,
-            ConfirmPayemnt(
+            ConfirmPayment(
               userId: userId,
               txId: txId,
             ));

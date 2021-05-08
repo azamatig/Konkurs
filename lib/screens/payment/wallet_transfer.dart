@@ -6,7 +6,6 @@ import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
 import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MoneyTransferPage extends StatefulWidget {
   final userId;
@@ -17,7 +16,6 @@ class MoneyTransferPage extends StatefulWidget {
   _MoneyTransferPageState createState() => _MoneyTransferPageState();
 }
 
-bool _isLoading = false;
 bool eth;
 bool tron;
 bool usdt;
@@ -33,6 +31,9 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
 
   @override
   Widget build(BuildContext context) {
+    final pb = context.watch<PaymentBloc>();
+    final tb = context.watch<TRXPaymentBloc>();
+    final ub = context.watch<USDTPaymentBloc>();
     return Scaffold(
         backgroundColor: LightColors.navyBlue1,
         body: SafeArea(
@@ -55,15 +56,6 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
             ],
           ),
         ));
-  }
-
-  void setUrl(String urlString) async {
-    var url = urlString;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   Widget _buttonWidget() {
@@ -247,5 +239,10 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

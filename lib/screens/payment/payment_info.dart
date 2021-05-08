@@ -12,9 +12,15 @@ class PaymentInfoPage extends StatefulWidget {
   final String address;
   final String checkOutUrl;
   final String qrUrl;
+  final bool isLoading;
 
   PaymentInfoPage(
-      {Key key, this.userId, this.address, this.checkOutUrl, this.qrUrl})
+      {Key key,
+      this.userId,
+      this.address,
+      this.checkOutUrl,
+      this.qrUrl,
+      this.isLoading})
       : super(key: key);
 
   @override
@@ -45,18 +51,19 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
               SizedBox(
                 height: 10,
               ),
+              infoText(),
+              SizedBox(
+                height: 10,
+              ),
               qrPicture(),
               SizedBox(
-                height: 50,
+                height: 15,
               ),
               addressWidget(),
               SizedBox(
-                height: 50,
+                height: 15,
               ),
               _buttonWidget(),
-              SizedBox(
-                height: 50,
-              ),
             ],
           ),
         ));
@@ -79,6 +86,17 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
     );
   }
 
+  Widget infoText() {
+    return Container(
+      width: 300,
+      child: Text(
+        'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь в историю оплат и нажмите Подтвердить оплату! \n'
+        'Средства будут начислены после подтверждения',
+        style: TextStyle(fontSize: 11, color: LightColors.kPalePink),
+      ),
+    );
+  }
+
   Widget addressWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +105,7 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
         Container(
           width: 320,
           child: Text(
-            'Адрес кошелька \n ' + widget.address,
+            'Адрес кошелька \n' + widget.address,
             style: TextStyle(fontSize: 12, color: LightColors.kLightYellow),
           ),
         ),
@@ -96,7 +114,7 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
         ),
         Container(
           width: 320,
-          child: Text('Ссылка на оплату \n ' + widget.checkOutUrl,
+          child: Text('Ссылка на оплату \n' + widget.checkOutUrl,
               style: TextStyle(fontSize: 12, color: LightColors.kLightYellow)),
         )
       ],
