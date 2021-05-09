@@ -4,6 +4,7 @@ import 'package:konkurs_app/screens/giveaways/closed_giveaways.dart';
 import 'package:konkurs_app/screens/giveaways/my_giveaways.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 
 // ignore: must_be_immutable
 class EventTile extends StatelessWidget {
@@ -17,7 +18,8 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return HandCursor(
+        child: GestureDetector(
       onTap: () {
         switch (eventType) {
           case "Все конкурсы":
@@ -83,6 +85,6 @@ class EventTile extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }

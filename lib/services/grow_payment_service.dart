@@ -1,8 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
-import 'package:konkurs_app/screens/wallet_transfer.dart';
-
 const paymentUrl = "https://sandbox.ps.grow.mybuilder.site/";
 
 class GrowPaymentService {

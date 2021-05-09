@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
                 Provider.of<UserData>(context, listen: false).currentUserId,
           );
         } else {
-          return LoginScreen();
+          return LoginScreen(inviterId: inviterId);
         }
       },
     );
