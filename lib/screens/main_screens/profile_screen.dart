@@ -10,6 +10,7 @@ import 'package:konkurs_app/screens/giveaways/my_wins.dart';
 import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
+import 'package:konkurs_app/telegram/telegram_login.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:provider/provider.dart';
@@ -203,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              nextScreen(context, null);
+                              nextScreen(context, TelegramLogin());
                             },
                             child: Padding(
                               padding:

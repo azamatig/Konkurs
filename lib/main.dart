@@ -16,6 +16,9 @@ import 'package:konkurs_app/screens/auxillary/notifications.dart';
 import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/screens/main_screens/login_screen.dart';
 import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
+import 'package:konkurs_app/telegram/code_entry.dart';
+import 'package:konkurs_app/telegram/services/telegram_service.dart';
+import 'package:konkurs_app/telegram/telegram_login.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -113,6 +116,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => TelegramService()),
         ChangeNotifierProvider(create: (context) => ParentBloc()),
         ChangeNotifierProvider(create: (context) => USDTPaymentBloc()),
         ChangeNotifierProvider(create: (context) => TRXPaymentBloc()),
@@ -134,6 +138,8 @@ class MyApp extends StatelessWidget {
           ),
           home: _getScreenId(inviterId),
           routes: {
+            CoodeEntrySreen.id: (context) => CoodeEntrySreen(),
+            TelegramLogin.id: (context) => TelegramLogin(),
             LoginScreen.id: (context) => LoginScreen(),
             SignupScreen.id: (context) => SignupScreen(),
             HomeScreen.id: (context) => HomeScreen(),
