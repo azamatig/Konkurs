@@ -75,7 +75,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
-                        Center(child: CircularProgressIndicator());
+                        return Center(child: CircularProgressIndicator());
                       } else {
                         return ListView.builder(
                           padding: EdgeInsets.only(top: 30, bottom: 20),

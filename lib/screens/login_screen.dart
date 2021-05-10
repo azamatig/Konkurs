@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:konkurs_app/widgets/hand_cursor.dart';
 
 import 'main_screens/sign_up_screen.dart';
 
@@ -151,17 +149,20 @@ class _LoginState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(
+                          height: 22,
+                        ),
+                        SizedBox(
                             height: 48,
-                            width: double.maxFinite,
+                            width: 345,
                             child: TextButton(
                               style: TextButton.styleFrom(
-                                  backgroundColor: Colors.orangeAccent),
+                                  backgroundColor: LightColors.yellow2),
                               onPressed: () {
                                 _submit();
                               },
                               child: _isLoading
                                   ? CircularProgressIndicator(
-                                      backgroundColor: Colors.orangeAccent,
+                                      backgroundColor: LightColors.kBlue,
                                     )
                                   : Row(
                                       mainAxisAlignment:
