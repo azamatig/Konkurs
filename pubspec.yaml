@@ -125,7 +125,8 @@ flutter:
       fonts:
        - asset: assets/fonts/Cera Compact Pro Medium.otf
 
-
+flutter_web_plugins:
+    sdk: flutter
   #     - asset: fonts/Schyler-Italic.ttf
   #       style: italic
   # - family: Trajan Pro

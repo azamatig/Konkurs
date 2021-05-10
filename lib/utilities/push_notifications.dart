@@ -1,7 +1,6 @@
-import 'dart:io' show Platform;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
 import 'package:konkurs_app/utilities/constants.dart';
@@ -19,16 +18,8 @@ class PushNotifications {
 
   PushNotifications._internal();
 
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-
   Future initialise() async {
-    if (Platform.isIOS) {
-      _fcm.requestPermission();
-    }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-
       var notificationData = message.data;
       if ((notificationData['type'] == '1' &&
               notificationData['to'] == userId.toString()) ||
@@ -70,6 +61,6 @@ class PushNotifications {
   }
 
   notificationNavigation(Map<String, dynamic> message) {
-    navigatorKey.currentState.pushNamed(Notifications.id);
+    navigatorKey.currentState.pushNamed(Notifications.routeName);
   }
 }

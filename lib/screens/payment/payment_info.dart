@@ -81,7 +81,7 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
   Widget qrPicture() {
     return Container(
       child: CachedNetworkImage(
-        imageUrl: widget.qrUrl,
+        imageUrl: widget.qrUrl == null ? '' : widget.qrUrl,
       ),
     );
   }

@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Notifications extends StatefulWidget {
-  static final String id = 'notifications';
+  Notifications({this.userid});
+  static const String routeName = '/notifications';
   final String userid;
-
-  const Notifications({Key key, this.userid}) : super(key: key);
 
   @override
   _NotificationsState createState() => _NotificationsState();

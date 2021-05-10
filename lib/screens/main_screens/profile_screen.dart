@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/blocs/pigstagram_auth.dart';
 import 'package:konkurs_app/models/user_data.dart';
@@ -11,6 +12,7 @@ import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -173,34 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              nextScreen(
-                                  context,
-                                  MoneyTransferPage(
-                                    userId: widget.userId,
-                                  ));
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15.0, right: 15),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Купить',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: _iconColor, fontSize: 12),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Icon(FontAwesomeIcons.wallet,
-                                      size: 22, color: _iconColor),
-                                ],
-                              ),
-                            ),
-                          ),
+                          _buildBuyingButton(),
                           GestureDetector(
                             onTap: () {
                               nextScreen(context, null);
@@ -248,29 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                           ),
-                          GestureDetector(
-                            onTap: () => {
-                              ib.isSignedIn == false
-                                  ? ib.loginAndGetData()
-                                  : null
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  FontAwesomeIcons.instagram,
-                                  size: 25,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                ib.isSignedIn == false && ib.instaName == null
-                                    ? Text('Подключить instagram')
-                                    : Text('@' + ib.instaName),
-                              ],
-                            ),
-                          ),
+                          _buildConnectiongInstagramButton(),
                         ],
                       ),
                       Container(
@@ -297,44 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    nextScreen(
-                                        context,
-                                        PartnerProgramScreen(
-                                          userId: widget.userId,
-                                        ));
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    child: Center(
-                                      child: Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            FontAwesomeIcons.coins,
-                                            size: 30,
-                                            color: _iconColor,
-                                          ),
-                                          Text(
-                                            user.points.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: _textColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30),
-                                          ),
-                                          Text(
-                                            'Доступных койнов',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: _iconColor,
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                _buildGettingCoinButton(user),
                                 Divider(
                                   height: 0.5,
                                   color: Colors.grey,
@@ -348,24 +264,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   children: [
                                     TableRow(children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          final Uri dynamicUrl = await widget
-                                              .parameters
-                                              .buildUrl();
-                                          print(dynamicUrl);
-                                          var response = await FlutterShareMe()
-                                              .shareToSystem(
-                                                  msg: dynamicUrl.toString());
-                                          if (response == 'success') {
-                                            print('navigate success');
-                                          }
-                                        },
+                                      HandCursor(
+                                          child: GestureDetector(
+                                        onTap: _showRefUrlDialog,
                                         child: _actionList(
                                             'assets/images/ic_send.png',
                                             'Пригласить друга'),
-                                      ),
-                                      GestureDetector(
+                                      )),
+                                      HandCursor(
+                                          child: GestureDetector(
                                         onTap: () {
                                           nextScreen(
                                               context,
@@ -375,17 +282,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         child: _actionList(
                                             'assets/images/ic_money.png',
                                             'Выйгрыши'),
-                                      ),
+                                      )),
                                     ]),
                                     TableRow(children: [
-                                      GestureDetector(
-                                          child: _actionList(
-                                              'assets/images/ic_transact.png',
-                                              'Настройки'),
-                                          onTap: () {
-                                            nextScreen(context, Settings(user));
-                                          }),
-                                      GestureDetector(
+                                      HandCursor(
+                                          child: GestureDetector(
+                                              child: _actionList(
+                                                  'assets/images/ic_transact.png',
+                                                  'Настройки'),
+                                              onTap: () {
+                                                nextScreen(
+                                                    context, Settings(user));
+                                              })),
+                                      HandCursor(
+                                          child: GestureDetector(
                                         onTap: () {
                                           nextScreen(
                                               context,
@@ -396,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         child: _actionList(
                                             'assets/images/ic_reward.png',
                                             'Задания'),
-                                      ),
+                                      )),
                                     ])
                                   ],
                                 ),
@@ -412,6 +322,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }),
       ),
     );
+  }
+
+  Widget _buildGettingCoinButton(User user) {
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () {
+        nextScreen(
+            context,
+            PartnerProgramScreen(
+              userId: widget.userId,
+            ));
+      },
+      child: Container(
+        height: 100,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Icon(
+                FontAwesomeIcons.coins,
+                size: 30,
+                color: _iconColor,
+              ),
+              Text(
+                user.points.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: _textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30),
+              ),
+              Text(
+                'Доступных койнов',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _iconColor, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
+
+  Widget _buildConnectiongInstagramButton() {
+    final ib = context.watch<InstagramStuff>();
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () => {ib.isSignedIn == false ? ib.loginAndGetData() : null},
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            FontAwesomeIcons.instagram,
+            size: 25,
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          ib.isSignedIn == false && ib.instaName == null
+              ? Text('Подключить instagram')
+              : Text('@' + ib.instaName),
+        ],
+      ),
+    ));
+  }
+
+  Widget _buildBuyingButton() {
+    return HandCursor(
+        child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => MoneyTransferPage(
+                      userId: widget.userId,
+                    )));
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15.0, right: 15),
+        child: Column(
+          children: [
+            Text(
+              'Купить',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: _iconColor, fontSize: 12),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Icon(FontAwesomeIcons.wallet, size: 22, color: _iconColor),
+          ],
+        ),
+      ),
+    ));
   }
 
 // custom action widget
@@ -439,5 +443,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Future<dynamic> _showRefUrlDialog() async {
+    final String refUrl = '${Uri.base.origin}?invitedby=${widget.userId}';
+
+    final width = MediaQuery.of(context).size.width;
+    final dialogWidth = width < 550 ? 280 : 500.0;
+
+    return showDialog(
+        context: context,
+        builder: (ctx) {
+          return Dialog(
+            child: Container(
+                width: dialogWidth,
+                padding: EdgeInsets.symmetric(horizontal: 7),
+                child: Row(children: [
+                  HandCursor(
+                      child: IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () => Clipboard.setData(
+                              new ClipboardData(text: refUrl)))),
+                  Flexible(
+                      fit: FlexFit.tight,
+                      child: Text(
+                        refUrl,
+                        overflow: TextOverflow.clip,
+                        maxLines: 1,
+                        softWrap: false,
+                      )),
+                ])),
+          );
+        });
   }
 }
