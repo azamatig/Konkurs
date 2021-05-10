@@ -10,6 +10,7 @@ import 'package:konkurs_app/screens/giveaways/my_wins.dart';
 import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
+import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/telegram/telegram_login.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
@@ -221,6 +222,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     height: 5,
                                   ),
                                   Icon(FontAwesomeIcons.telegram,
+                                      size: 22, color: _iconColor),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              AuthService.logout();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 15.0, right: 15),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Телеграм',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _iconColor, fontSize: 12),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Icon(FontAwesomeIcons.signOutAlt,
                                       size: 22, color: _iconColor),
                                 ],
                               ),
