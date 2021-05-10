@@ -10,6 +10,7 @@ import 'package:konkurs_app/screens/giveaways/my_wins.dart';
 import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
+import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/widgets/hand_cursor.dart';
@@ -201,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              nextScreen(context, null);
+                              AuthService.logout();
                             },
                             child: Padding(
                               padding:
