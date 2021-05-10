@@ -275,7 +275,6 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
   void awardPoints2000(String transId) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2000)});
-    print('1232131');
 
     var confirm = db
         .collection('users')
