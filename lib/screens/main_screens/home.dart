@@ -2,17 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/blocs/parent_bloc.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
 import 'package:konkurs_app/screens/giveaways/my_giveaways.dart';
 import 'package:konkurs_app/screens/main_screens/profile_screen.dart';
-import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/services/data.dart';
 import 'package:konkurs_app/utilities/date_widget.dart';
-import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:konkurs_app/utilities/event_tile.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/popular_events_tile.dart';
@@ -99,238 +96,172 @@ class _HomeScreenState extends State<HomeScreen>
     final u = context.watch<ParentBloc>();
     return Scaffold(
       key: scaffoldState,
-      body: GestureDetector(
-        onTap: () {
-          if (SimpleAccountMenu.isMenuOpen) {
-            SimpleAccountMenu.overlayEntry.remove();
-            SimpleAccountMenu.animationController.reverse();
-            SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
-          }
-        },
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(color: Color(0xff102733)),
-              ),
-              SingleChildScrollView(
-                child: Container(
-                  padding: paddingOfMainContainer,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Image.asset(
-                            "assets/images/logo.png",
-                            height: 28,
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (SimpleAccountMenu.isMenuOpen) {
-                                SimpleAccountMenu.overlayEntry.remove();
-                                SimpleAccountMenu.animationController.reverse();
-                                SimpleAccountMenu.isMenuOpen =
-                                    !SimpleAccountMenu.isMenuOpen;
-                              }
-                            },
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  "GIVE",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                                Text(
-                                  "APP",
-                                  style: TextStyle(
-                                      color: Color(0xffFCCD00),
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w800),
-                                )
-                              ],
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(color: Color(0xff102733)),
+            ),
+            SingleChildScrollView(
+              child: Container(
+                padding: paddingOfMainContainer,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Image.asset(
+                          "assets/images/logo.png",
+                          height: 28,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              "GIVE",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800),
                             ),
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              nextScreen(
-                                  context,
-                                  Notifications(
-                                    userid: u.uid,
-                                  ));
-                            },
-                            child: u.uid != null
-                                ? notificationsWidget()
-                                : Image.asset(
-                                    "assets/images/notify.png",
-                                    height: 22,
-                                  ),
-                          ),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Container(
-                            child: SimpleAccountMenu(
-                              icons: [
-                                Icon(Icons.person),
-                                Icon(Icons.share),
-                                Icon(Icons.exit_to_app),
-                              ],
-                              iconColor: Colors.white,
-                              onChange: (index) async {
-                                switch (index) {
-                                  case 0:
-                                    {
-                                      if (SimpleAccountMenu.isMenuOpen) {
-                                        SimpleAccountMenu.overlayEntry.remove();
-                                        SimpleAccountMenu.animationController
-                                            .reverse();
-                                        SimpleAccountMenu.isMenuOpen =
-                                            !SimpleAccountMenu.isMenuOpen;
-                                      }
-                                      nextScreen(context,
-                                          ProfileScreen(u.uid, u.imageUrl));
-                                    }
-                                    break;
-                                  case 1:
-                                    {
-                                      var response = await FlutterShareMe()
-                                          .shareToSystem(
-                                              msg:
-                                                  'https://play.google.com/store/apps/details?id=konkurs.aza.com.konkurs_app');
-                                      if (response == 'success') {}
-                                    }
-                                    break;
-                                  case 2:
-                                    {
-                                      AuthService.logout();
-                                    }
-                                    break;
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                u.name != null ? "Привет, " + u.name : "Привет",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 21),
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text(
-                                "Добро пожаловать к нам!",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              )
-                            ],
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              if (SimpleAccountMenu.isMenuOpen) {
-                                SimpleAccountMenu.overlayEntry.remove();
-                                SimpleAccountMenu.animationController.reverse();
-                                SimpleAccountMenu.isMenuOpen =
-                                    !SimpleAccountMenu.isMenuOpen;
-                              }
-                              nextScreen(
-                                  context, ProfileScreen(u.uid, u.imageUrl));
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 3, color: Color(0xffFAE072)),
-                                  borderRadius: BorderRadius.circular(30),
+                            Text(
+                              "APP",
+                              style: TextStyle(
+                                  color: Color(0xffFCCD00),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800),
+                            )
+                          ],
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            nextScreen(
+                                context,
+                                Notifications(
+                                  userid: u.uid,
+                                ));
+                          },
+                          child: u.uid != null
+                              ? notificationsWidget()
+                              : Image.asset(
+                                  "assets/images/notify.png",
+                                  height: 22,
                                 ),
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage: u.imageUrl == null
-                                      ? AssetImage('assets/images/ph.png')
-                                      : CachedNetworkImageProvider(u.imageUrl),
-                                )),
-                          )
-                        ],
-                      ),
-                      _buildTableCalendarWithBuilders(),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              u.name != null ? "Привет, " + u.name : "Привет",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 21),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              "Добро пожаловать к нам!",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                            )
+                          ],
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            nextScreen(
+                                context, ProfileScreen(u.uid, u.imageUrl));
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 3, color: Color(0xffFAE072)),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: u.imageUrl == null
+                                    ? AssetImage('assets/images/ph.png')
+                                    : CachedNetworkImageProvider(u.imageUrl),
+                              )),
+                        )
+                      ],
+                    ),
+                    _buildTableCalendarWithBuilders(),
 
-                      /// Events
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        "Конкурсы",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Container(
-                        height: 100,
-                        child: ListView.builder(
-                            itemCount: eventsType.length,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return EventTile(
-                                imgAssetPath: eventsType[index].imgAssetPath,
-                                eventType: eventsType[index].eventType,
-                                userPhoto: u.imageUrl,
-                                userId: u.imageUrl,
-                              );
-                            }),
-                      ),
-
-                      /// Popular Events
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        "Популярные конкурсы",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      StreamBuilder(
-                          stream: db
-                              .collection('post')
-                              .where('isFinished', isEqualTo: false)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Column(
-                                children: snapshot.data.docs
-                                    .map<Widget>((doc) => buildItems(doc))
-                                    .toList(),
-                              );
-                            }
-                            return SizedBox();
+                    /// Events
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Конкурсы",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      height: 100,
+                      child: ListView.builder(
+                          itemCount: eventsType.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return EventTile(
+                              imgAssetPath: eventsType[index].imgAssetPath,
+                              eventType: eventsType[index].eventType,
+                              userPhoto: u.imageUrl,
+                              userId: u.imageUrl,
+                            );
                           }),
-                    ],
-                  ),
+                    ),
+
+                    /// Popular Events
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Популярные конкурсы",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    StreamBuilder(
+                        stream: db
+                            .collection('post')
+                            .where('isFinished', isEqualTo: false)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Column(
+                              children: snapshot.data.docs
+                                  .map<Widget>((doc) => buildItems(doc))
+                                  .toList(),
+                            );
+                          }
+                          return SizedBox();
+                        }),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

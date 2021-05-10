@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,8 +11,8 @@ import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:provider/provider.dart';
 
 import '../../utilities/settings.dart';
@@ -195,6 +194,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     height: 5,
                                   ),
                                   Icon(FontAwesomeIcons.telegram,
+                                      size: 22, color: _iconColor),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              nextScreen(context, null);
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 15.0, right: 15),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Выйти',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _iconColor, fontSize: 12),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Icon(FontAwesomeIcons.signOutAlt,
                                       size: 22, color: _iconColor),
                                 ],
                               ),
