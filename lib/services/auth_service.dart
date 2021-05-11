@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/models/user_data.dart';
+import 'package:konkurs_app/screens/main_screens/login_screen.dart';
+import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:provider/provider.dart';
 
 class AuthService {
@@ -122,11 +124,12 @@ class AuthService {
     _auth.signOut();
   }
 
-  static void login(String email, String password) async {
+  static void login(BuildContext context, String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
-      print(e);
+      Navigator.pushReplacementNamed(context, LoginScreen.id);
+      showError(context, 'Ошибка', 'Проверьте правильность введённых данных');
     }
   }
 }

@@ -73,7 +73,6 @@ class TRXPaymentBloc extends ChangeNotifier {
 
     hmac = digest.toString();
     notifyListeners();
-    print(digest);
   }
 
   Future<void> createTransaction25USD() async {
@@ -113,7 +112,6 @@ class TRXPaymentBloc extends ChangeNotifier {
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
-    print(digest);
 
     hmac = digest;
     notifyListeners();

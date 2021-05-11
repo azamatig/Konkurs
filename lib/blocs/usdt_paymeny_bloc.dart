@@ -69,7 +69,6 @@ class USDTPaymentBloc extends ChangeNotifier {
     Digest digest = hmacSha256.convert(bytes);
 
     hmac = digest.toString();
-    print(digest);
   }
 
   Future<void> createTransaction20USDT() async {
@@ -107,7 +106,6 @@ class USDTPaymentBloc extends ChangeNotifier {
 
     var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
     var digest = hmacSha256.convert(bytes);
-    print(digest);
 
     hmac = digest;
   }

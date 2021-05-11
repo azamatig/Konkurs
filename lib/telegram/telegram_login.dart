@@ -2,6 +2,7 @@ import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/telegram/services/telegram_service.dart';
+import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:tdlib/td_api.dart' show TdError;
 
@@ -14,7 +15,7 @@ class TelegramLogin extends StatefulWidget {
 }
 
 class _TelegramLoginState extends State<TelegramLogin> {
-  final String title = 'Your Phone';
+  final String title = 'Авторизация';
   final _phoneNumberController = TextEditingController();
   final _countryNameController = TextEditingController();
   Country _selectedCountry;
@@ -56,8 +57,14 @@ class _TelegramLoginState extends State<TelegramLogin> {
       _countryNameController.text = _selectedCountry.name;
     }*/
     return Scaffold(
+      backgroundColor: LightColors.kLightYellow,
       appBar: AppBar(
-        title: Text(title),
+        leading: BackButton(color: Colors.white),
+        backgroundColor: LightColors.kDarkBlue,
+        title: Text(
+          title,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.fromLTRB(20, 12, 20, 12),
@@ -69,7 +76,7 @@ class _TelegramLoginState extends State<TelegramLogin> {
                 onTap: _openCountryPickerDialog,
                 controller: _countryNameController,
                 decoration: InputDecoration(
-                  labelText: "Country",
+                  labelText: "Страна",
                   border: OutlineInputBorder(),
                 ),
                 readOnly: true,
@@ -86,7 +93,7 @@ class _TelegramLoginState extends State<TelegramLogin> {
                             ? '+${_selectedCountry.phoneCode}  '
                             : ' +  ',
                         alignLabelWithHint: true,
-                        labelText: "Phone",
+                        labelText: "Телефон",
                         errorText: _phoneNumberError ?? null,
 
                         errorStyle: TextStyle(
@@ -104,7 +111,7 @@ class _TelegramLoginState extends State<TelegramLogin> {
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Text(
                   _phoneNumberError == null
-                      ? 'We will send a SMS with a confirmation code to your phone number.'
+                      ? 'Мы отправим SMS на ваш номер для подтверждения.'
                       : '',
                   style: TextStyle(color: Colors.grey, fontSize: 15.0),
                 ),
@@ -116,11 +123,12 @@ class _TelegramLoginState extends State<TelegramLogin> {
 
       floatingActionButton: _canShowButton
           ? FloatingActionButton(
+              backgroundColor: LightColors.kDarkBlue,
               onPressed: () => _nextStep(_phoneNumberController.text),
               tooltip: 'checkphone',
               child: _loadingStep
                   ? CircularProgressIndicator(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: LightColors.kLightYellow,
                     )
                   : Icon(Icons.navigate_next),
             )
@@ -154,9 +162,9 @@ class _TelegramLoginState extends State<TelegramLogin> {
           child: CountryPickerDialog(
             titlePadding: EdgeInsets.all(8.0),
             searchCursorColor: Colors.pinkAccent,
-            searchInputDecoration: InputDecoration(hintText: 'Search...'),
+            searchInputDecoration: InputDecoration(hintText: 'Поиск...'),
             isSearchable: true,
-            title: Text('Select your phone code'),
+            title: Text('Код страны'),
             onValuePicked: _onPickCountry,
             itemBuilder: _buildDialogItem,
           ),

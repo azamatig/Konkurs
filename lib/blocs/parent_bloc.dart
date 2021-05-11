@@ -45,7 +45,6 @@ class ParentBloc extends ChangeNotifier {
       this._email = snap.data()['email'];
       this._imageUrl = snap.data()['profileImageUrl'];
       this._parentId = snap.data()['parent'];
-      print(_name);
     });
     notifyListeners();
   }

@@ -55,19 +55,18 @@ void showAchievementView2(BuildContext context, var title, var message) {
 }
 
 void showError(BuildContext context, var title, var message) {
-  if (pushIsOn)
-    Flushbar(
-        maxWidth: 250,
-        icon: Icon(
-          FontAwesomeIcons.times,
-          size: 28.0,
-          color: Colors.red[300],
-        ),
-        flushbarStyle: FlushbarStyle.FLOATING,
-        leftBarIndicatorColor: Colors.red[300],
-        flushbarPosition: FlushbarPosition.TOP,
-        title: title,
-        message: message,
-        duration: Duration(seconds: 3))
-      ..show(context);
+  Flushbar(
+      maxWidth: 250,
+      icon: Icon(
+        FontAwesomeIcons.times,
+        size: 28.0,
+        color: Colors.red[300],
+      ),
+      flushbarStyle: FlushbarStyle.FLOATING,
+      leftBarIndicatorColor: Colors.red[300],
+      flushbarPosition: FlushbarPosition.TOP,
+      title: title,
+      message: message,
+      duration: Duration(seconds: 3))
+    ..show(context);
 }

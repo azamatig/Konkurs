@@ -237,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 children: [
                                   Text(
-                                    'Телеграм',
+                                    'Выйти',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: _iconColor, fontSize: 12),
@@ -379,13 +379,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           final Uri dynamicUrl = await widget
                                               .parameters
                                               .buildUrl();
-                                          print(dynamicUrl);
                                           var response = await FlutterShareMe()
                                               .shareToSystem(
                                                   msg: dynamicUrl.toString());
-                                          if (response == 'success') {
-                                            print('navigate success');
-                                          }
+                                          if (response == 'success') {}
                                         },
                                         child: _actionList(
                                             'assets/images/ic_send.png',

@@ -26,8 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = true;
       });
-
-      AuthService.login(_email, _password);
+      AuthService.login(context, _email, _password);
     }
   }
 
@@ -67,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     "APP",
                     style: TextStyle(
-                        color: Color(0xffFFA700),
+                        color: LightColors.yellow2,
                         fontSize: 25,
                         fontWeight: FontWeight.w800),
                   )
@@ -155,7 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               _submit();
                             },
                             child: Container(
-                              width: 245,
+                              height: 45,
+                              width: 265,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 " Зарегистрируйтесь здесь",
                                 style: TextStyle(
-                                    color: Colors.orangeAccent, fontSize: 15),
+                                    color: LightColors.yellow2, fontSize: 15),
                               ),
                             ],
                           ),

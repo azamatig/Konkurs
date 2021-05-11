@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:konkurs_app/telegram/services/telegram_service.dart';
+import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:tdlib/td_api.dart' show TdError;
 
@@ -10,7 +11,7 @@ class CoodeEntrySreen extends StatefulWidget {
 }
 
 class _CoodeEntrySreenState extends State<CoodeEntrySreen> {
-  final String title = 'Submit Code';
+  final String title = 'Проверка кода';
   final TextEditingController _codeController = TextEditingController();
   bool _canShowButton = false;
   String _codeError;
@@ -41,8 +42,14 @@ class _CoodeEntrySreenState extends State<CoodeEntrySreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LightColors.kLightYellow,
       appBar: AppBar(
-        title: Text(title),
+        leading: BackButton(color: Colors.white),
+        backgroundColor: LightColors.kDarkBlue,
+        title: Text(
+          title,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Container(
         padding: const EdgeInsets.all(30.0),
@@ -70,11 +77,12 @@ class _CoodeEntrySreenState extends State<CoodeEntrySreen> {
       ),
       floatingActionButton: _canShowButton
           ? FloatingActionButton(
+              backgroundColor: LightColors.kDarkBlue,
               onPressed: () => _nextStep(_codeController.text),
               tooltip: 'checkcode',
               child: _loadingStep
                   ? CircularProgressIndicator(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: LightColors.kLightYellow,
                     )
                   : Icon(Icons.navigate_next),
             )

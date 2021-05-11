@@ -17,9 +17,7 @@ class TaskType {
     PickedFile pick = await _picker.getImage(source: ImageSource.gallery);
     file = File(pick.path);
     SocialShare.checkInstalledAppsForShare();
-    SocialShare.shareInstagramStory(file.path).then((data) {
-      print(data);
-    });
+    SocialShare.shareInstagramStory(file.path).then((data) {});
   }
 
   void setTweet() async {
@@ -37,9 +35,7 @@ class TaskType {
     var response = await FlutterShareMe().shareToSystem(
         msg:
             'https://play.google.com/store/apps/details?id=konkurs.aza.com.konkurs_app');
-    if (response == 'success') {
-      print('navigate success');
-    }
+    if (response == 'success') {}
   }
 
   void setFacebook() async {
