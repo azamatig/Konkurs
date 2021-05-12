@@ -9,9 +9,9 @@ import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class ConfirmPayment extends StatefulWidget {
   final userId;
-  final txId;
+  final qrUrl;
 
-  ConfirmPayment({Key key, this.userId, this.txId}) : super(key: key);
+  ConfirmPayment({Key key, this.userId, this.qrUrl}) : super(key: key);
 
   @override
   _ConfirmPaymentState createState() => _ConfirmPaymentState();
@@ -70,7 +70,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                     stream: db
                         .collection('users')
                         .doc(widget.userId)
-                        .collection('transactions')
+                        .collection('web-transactions')
                         .orderBy('time', descending: true)
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -98,7 +98,6 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                           },
                         );
                       }
-                      return CircularProgressIndicator();
                     }),
               ),
             ],
@@ -124,12 +123,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    th.data()['txHash'] ?? '',
-                    maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                  Text(
-                    "Сумма - " + numberFormat(th.data()['amount']) ?? '',
+                    th.data()['qrUrl'] ?? '',
                     maxLines: 3,
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
@@ -158,7 +152,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
               onTap: () {
                 popup.show(
                     title: 'Инфо платежа',
-                    content: th.data()['checkOutUrl'] ?? '',
+                    content: 'QR код' ?? '',
                     actions: [
                       Container(
                           child: CachedNetworkImage(
@@ -191,36 +185,36 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
             onTap: () {
               if (snap.data()['amount'] == '0.00980000' &&
                   snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap.data()['txHash']);
+                awardPoints2000(snap);
               }
               if (snap.data()['amount'] == '0.01200000' &&
                   snap.data()['is_confirmed'] == false) {
-                awardPoints2500(snap.data()['txHash']);
+                awardPoints2500(snap);
               }
               if (snap.data()['amount'] == '0.02400000' &&
                   snap.data()['is_confirmed'] == false) {
-                awardPoints5000(snap.data()['txHash']);
+                awardPoints5000(snap);
               }
               if (snap.data()['amount'] == '0.09800000' &&
                   snap.data()['is_confirmed'] == false) {
-                setPartner(snap.data()['txHash']);
+                setPartner(snap);
               }
               // Tron
               if (snap.data()['amount'] == '85.00000000' &&
                   snap.data()['is_confirmed'] == false) {
-                awardPoints1000(snap.data()['txHash']);
+                awardPoints1000(snap);
               }
               if (snap.data()['amount'] == '155.00000000' &&
                   snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap.data()['txHash']);
+                awardPoints2000(snap);
               }
               if (snap.data()['amount'] == '230.00000000' &&
                   snap.data()['is_confirmed'] == false) {
-                awardPoints3000(snap.data()['txHash']);
+                awardPoints3000(snap);
               }
               if (snap.data()['amount'] == '1515.00000000' &&
                   snap.data()['is_confirmed'] == false) {
-                setPartner(snap.data()['txHash']);
+                setPartner(snap);
               }
               // USDT
               if (snap.data()['amount'] == '163.02000000' &&
@@ -272,20 +266,19 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
           );
   }
 
-  void awardPoints2000(String transId) async {
+  void awardPoints2000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2000)});
-    print('1232131');
 
     var confirm = db
         .collection('users')
         .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
+        .collection('web-transactions')
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints1000(String transId) async {
+  void awardPoints1000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(1000)});
     print('1232131');
@@ -294,11 +287,11 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
         .collection('users')
         .doc(widget.userId)
         .collection('transactions')
-        .doc(transId);
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints3000(String transId) async {
+  void awardPoints3000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(3000)});
     print('1232131');
@@ -307,11 +300,11 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
         .collection('users')
         .doc(widget.userId)
         .collection('transactions')
-        .doc(transId);
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints2500(String transId) async {
+  void awardPoints2500(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2500)});
 
@@ -319,11 +312,11 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
         .collection('users')
         .doc(widget.userId)
         .collection('transactions')
-        .doc(transId);
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints5000(String transId) async {
+  void awardPoints5000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(5000)});
 
@@ -331,11 +324,11 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
         .collection('users')
         .doc(widget.userId)
         .collection('transactions')
-        .doc(transId);
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void setPartner(String transId) {
+  void setPartner(DocumentSnapshot snap) {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'partner': true});
 
@@ -343,7 +336,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
         .collection('users')
         .doc(widget.userId)
         .collection('transactions')
-        .doc(transId);
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 }

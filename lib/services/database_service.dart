@@ -9,7 +9,6 @@ import 'package:konkurs_app/utilities/constants.dart';
 
 class DatabaseService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  Reference _storageReference;
   final _firestore = FirebaseFirestore.instance;
   final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
   Message _message;

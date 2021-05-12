@@ -9,18 +9,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PaymentInfoPage extends StatefulWidget {
   final String userId;
-  final String address;
-  final String checkOutUrl;
   final String qrUrl;
   final bool isLoading;
 
-  PaymentInfoPage(
-      {Key key,
-      this.userId,
-      this.address,
-      this.checkOutUrl,
-      this.qrUrl,
-      this.isLoading})
+  PaymentInfoPage({Key key, this.userId, this.qrUrl, this.isLoading})
       : super(key: key);
 
   @override
@@ -59,10 +51,6 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
               SizedBox(
                 height: 15,
               ),
-              addressWidget(),
-              SizedBox(
-                height: 15,
-              ),
               _buttonWidget(),
             ],
           ),
@@ -94,30 +82,6 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
         'Средства будут начислены после подтверждения',
         style: TextStyle(fontSize: 11, color: LightColors.kPalePink),
       ),
-    );
-  }
-
-  Widget addressWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 320,
-          child: Text(
-            'Адрес кошелька \n' + widget.address,
-            style: TextStyle(fontSize: 12, color: LightColors.kLightYellow),
-          ),
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Container(
-          width: 320,
-          child: Text('Ссылка на оплату \n' + widget.checkOutUrl,
-              style: TextStyle(fontSize: 12, color: LightColors.kLightYellow)),
-        )
-      ],
     );
   }
 

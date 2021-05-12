@@ -31,9 +31,6 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pb = context.watch<PaymentBloc>();
-    final tb = context.watch<TRXPaymentBloc>();
-    final ub = context.watch<USDTPaymentBloc>();
     return Scaffold(
         backgroundColor: LightColors.navyBlue1,
         body: SafeArea(
@@ -68,8 +65,6 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
             ? Column(
                 children: [
                   pb.buyButtons(context, widget.userId),
-                  pb.buyButtons2(context, widget.userId),
-                  pb.buyButtons3(context, widget.userId),
                   pb.partnerButton(context, widget.userId),
                   pb.transferButton(context, widget.userId),
                 ],
