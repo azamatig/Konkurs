@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/tasks/details_screen.dart';
@@ -83,6 +85,14 @@ class _MyWinsState extends State<MyWins> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            FontAwesomeIcons.chevronLeft,
+          ),
+        ),
         backgroundColor: Color(0xff102733),
         title: Text("Выйгранные конкурсы"),
         centerTitle: true,
@@ -134,7 +144,7 @@ class _MyWinsState extends State<MyWins> {
       onTap: () async {
         DocumentSnapshot document =
             await firestore.collection("post").doc(d.id).get();
-        nextScreenCloseOthers(
+        nextScreen(
             context,
             DetailsScreen(
               docId: d.id,
@@ -168,7 +178,8 @@ class _MyWinsState extends State<MyWins> {
                     Text(
                       d.name,
                       maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style:
+                          GoogleFonts.roboto(color: Colors.white, fontSize: 18),
                     ),
                     SizedBox(
                       height: 8,
@@ -184,7 +195,8 @@ class _MyWinsState extends State<MyWins> {
                         ),
                         Text(
                           formatOnlyDate(d.date.toDate()),
-                          style: TextStyle(color: Colors.white, fontSize: 10),
+                          style: GoogleFonts.roboto(
+                              color: Colors.white, fontSize: 10),
                         )
                       ],
                     ),

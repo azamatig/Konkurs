@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
@@ -116,6 +117,14 @@ class _AllGiveawaysState extends State<AllGivesUsers> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff102733),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            FontAwesomeIcons.chevronLeft,
+          ),
+        ),
         title: Text("Участники"),
         centerTitle: true,
         iconTheme: IconThemeData(

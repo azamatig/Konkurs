@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
@@ -44,7 +45,7 @@ class _SettingsState extends State<Settings> {
               },
               child: Text(
                 'Настройки профиля',
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: GoogleFonts.roboto(color: Colors.white, fontSize: 20),
               ),
             ),
             SizedBox(
@@ -57,7 +58,8 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Уведомления',
-                    style: TextStyle(color: Colors.white, fontSize: 20)),
+                    style:
+                        GoogleFonts.roboto(color: Colors.white, fontSize: 20)),
                 Switch(
                   value: isSwitched,
                   onChanged: (value) {

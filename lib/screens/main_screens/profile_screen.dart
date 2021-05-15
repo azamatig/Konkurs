@@ -3,6 +3,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/pigstagram_auth.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -188,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Text(
                                     'Телеграм',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.roboto(
                                         color: _iconColor, fontSize: 12),
                                   ),
                                   SizedBox(
@@ -212,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Text(
                                     'Выйти',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.roboto(
                                         color: _iconColor, fontSize: 12),
                                   ),
                                   SizedBox(
@@ -238,11 +239,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Text(
                             'Привет!',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: GoogleFonts.roboto(
+                                fontSize: 18, color: Colors.black),
                           ),
                           Text(
                             user.name,
-                            style: TextStyle(
+                            style: GoogleFonts.roboto(
                                 fontSize: 22,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
@@ -371,7 +373,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 user.points.toString(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.roboto(
                     color: _textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 30),
@@ -379,7 +381,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 'Доступных койнов',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _iconColor, fontSize: 16),
+                style: GoogleFonts.roboto(color: _iconColor, fontSize: 16),
               ),
             ],
           ),
@@ -430,7 +432,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Text(
               'Купить',
               textAlign: TextAlign.center,
-              style: TextStyle(color: _iconColor, fontSize: 12),
+              style: GoogleFonts.roboto(color: _iconColor, fontSize: 12),
             ),
             SizedBox(
               height: 5,
@@ -462,7 +464,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           Text(
             desc,
-            style: TextStyle(color: _iconColor),
+            style: GoogleFonts.roboto(color: _iconColor),
           )
         ],
       ),

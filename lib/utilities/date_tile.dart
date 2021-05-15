@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
 class DateTile extends StatelessWidget {
@@ -21,7 +22,7 @@ class DateTile extends StatelessWidget {
         children: <Widget>[
           Text(
             date,
-            style: TextStyle(
+            style: GoogleFonts.roboto(
                 color: isSelected ? Colors.black : Colors.white,
                 fontWeight: FontWeight.w600),
           ),
@@ -30,7 +31,7 @@ class DateTile extends StatelessWidget {
           ),
           Text(
             weekDay,
-            style: TextStyle(
+            style: GoogleFonts.roboto(
                 color: isSelected ? Colors.black : Colors.white,
                 fontWeight: FontWeight.w600),
           )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
 class MyBackButton extends StatelessWidget {
@@ -23,7 +24,8 @@ class MyBackButton extends StatelessWidget {
             ),
             Text(
               'Назад',
-              style: TextStyle(fontSize: 16, color: LightColors.kDarkBlue),
+              style: GoogleFonts.roboto(
+                  fontSize: 16, color: LightColors.kDarkBlue),
             )
           ],
         ),

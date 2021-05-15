@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/parent_bloc.dart';
 import 'package:konkurs_app/models/event.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
@@ -121,14 +122,14 @@ class _HomeScreenState extends State<HomeScreen>
                           children: <Widget>[
                             Text(
                               "GIVE",
-                              style: TextStyle(
+                              style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800),
                             ),
                             Text(
                               "APP",
-                              style: TextStyle(
+                              style: GoogleFonts.roboto(
                                   color: Color(0xffFCCD00),
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800),
@@ -166,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen>
                           children: <Widget>[
                             Text(
                               u.name != null ? "Привет, " + u.name : "Привет",
-                              style: TextStyle(
+                              style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 21),
@@ -176,8 +177,8 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                             Text(
                               "Добро пожаловать к нам!",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
+                              style: GoogleFonts.roboto(
+                                  color: Colors.white, fontSize: 15),
                             )
                           ],
                         ),
@@ -210,7 +211,8 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Text(
                       "Конкурсы",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style:
+                          GoogleFonts.roboto(color: Colors.white, fontSize: 20),
                     ),
                     SizedBox(
                       height: 16,
@@ -305,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen>
             weekdayStyle: TextStyle().copyWith(color: Colors.white),
           ),
           headerStyle: HeaderStyle(
-            titleTextStyle: TextStyle(color: Colors.white),
+            titleTextStyle: GoogleFonts.roboto(color: Colors.white),
             rightChevronIcon: Icon(
               FontAwesomeIcons.chevronRight,
               color: Colors.white,
@@ -336,17 +338,12 @@ class _HomeScreenState extends State<HomeScreen>
                 margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.circle,
-                      color:
-                          eventDays.contains(date.toString().substring(0, 10))
-                              ? Colors.red
-                              : Color(0xff102733),
-                      size: 3,
-                    ),
-                    SizedBox(
-                      height: 2.5,
-                    ),
+                    Icon(Icons.circle,
+                        color:
+                            eventDays.contains(date.toString().substring(0, 10))
+                                ? Colors.red
+                                : Color(0xff102733),
+                        size: 1),
                     Column(
                       children: [
                         _showDate(date),
@@ -384,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen>
         //padding: EdgeInsets.all(2),
         child: Text(
       arr[date.weekday - 1],
-      style: TextStyle(color: Colors.white),
+      style: GoogleFonts.roboto(color: Colors.white),
     ));
   }
 
@@ -393,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen>
         padding: EdgeInsets.all(2),
         child: Text(
           '${date.day}',
-          style: TextStyle(color: Colors.white),
+          style: GoogleFonts.roboto(color: Colors.white),
         ));
   }
 
@@ -448,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         child: Text(
                           '',
-                          style: TextStyle(
+                          style: GoogleFonts.roboto(
                             color: Colors.white,
                             fontSize: 8,
                           ),

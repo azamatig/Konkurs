@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TaskColumn extends StatelessWidget {
   final IconData icon;
@@ -31,7 +32,7 @@ class TaskColumn extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: TextStyle(
+              style: GoogleFonts.roboto(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w700,
               ),
@@ -40,7 +41,7 @@ class TaskColumn extends StatelessWidget {
               subtitle,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
-              style: TextStyle(
+              style: GoogleFonts.roboto(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                   color: Colors.black45),

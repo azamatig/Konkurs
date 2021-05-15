@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
@@ -126,8 +127,8 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
       child: Text(
         '------------------------------------------',
         maxLines: 1,
-        style:
-            TextStyle(fontSize: 20.0, color: Colors.black12, letterSpacing: 5),
+        style: GoogleFonts.roboto(
+            fontSize: 20.0, color: Colors.black12, letterSpacing: 5),
       ),
     );
   }
@@ -171,7 +172,7 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                             children: [
                               Text(
                                 'Задания',
-                                style: TextStyle(
+                                style: GoogleFonts.roboto(
                                     fontSize: 30.0,
                                     fontWeight: FontWeight.w700),
                               ),
@@ -180,7 +181,7 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                               ),
                               Text(
                                 'Задания для конкурса',
-                                style: TextStyle(
+                                style: GoogleFonts.roboto(
                                   fontSize: 18.0,
                                   color: Colors.grey,
                                   fontWeight: FontWeight.w400,
@@ -203,7 +204,7 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Дата ' + formatOnlyDate(p.date.toDate()),
-                        style: TextStyle(
+                        style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w400,
                             fontSize: 15,
                             color: Colors.grey),
@@ -229,7 +230,7 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
                                             ? 'Условия конкурса - Выполнены!'
                                             : 'Условия конкурса - не выполнены',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 12.0,
                                             fontWeight: FontWeight.w700,
                                             color: task1 && task2 && task3

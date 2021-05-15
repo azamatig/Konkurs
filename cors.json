@@ -1,14 +1,6 @@
 [
   {
-    "origin": [
-      "https://konkurs-50197.firebaseapp.com",
-      "https://konkurs-50197.web.app",
-      "https://giveapp-e3bb1.web.app",
-      "https://giveapp-e3bb1.firebaseapp.com",
-      "https://giveapp.ru",
-      "http://giveapp.ru",
-      "https://giveapp.me",
-      "http://giveapp.me"],
+    "origin": ["*"],
     "method": ["GET"],
     "maxAgeSeconds": 3600
   }

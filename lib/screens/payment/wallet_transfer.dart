@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/payment_bloc.dart';
 import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
 import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
@@ -64,31 +65,55 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
         eth == true
             ? Column(
                 children: [
-                  pb.buyButtons(context, widget.userId),
-                  pb.partnerButton(context, widget.userId),
-                  pb.transferButton(context, widget.userId),
+                  pb.button1 == true || pb.button2 == true
+                      ? CircularProgressIndicator()
+                      : Column(
+                          children: [
+                            pb.buyButtons(context, widget.userId),
+                            pb.partnerButton(context, widget.userId),
+                            pb.transferButton(context, widget.userId),
+                          ],
+                        ),
                 ],
               )
             : SizedBox(),
         tron == true
             ? Column(
                 children: [
-                  tb.buyTRX1(context, widget.userId),
-                  tb.buyTRX2(context, widget.userId),
-                  tb.buyTRX3(context, widget.userId),
-                  tb.partnerTRXButton(context, widget.userId),
-                  tb.transferTRXButton(context, widget.userId),
+                  tb.button1 == true ||
+                          tb.button2 == true ||
+                          tb.button3 == true ||
+                          tb.button4 == true
+                      ? CircularProgressIndicator()
+                      : Column(
+                          children: [
+                            tb.buyTRX1(context, widget.userId),
+                            tb.buyTRX2(context, widget.userId),
+                            tb.buyTRX3(context, widget.userId),
+                            tb.partnerTRXButton(context, widget.userId),
+                            tb.transferTRXButton(context, widget.userId),
+                          ],
+                        ),
                 ],
               )
             : SizedBox(),
         usdt == true
             ? Column(
                 children: [
-                  ub.buyUSDT1(context, widget.userId),
-                  ub.buyUSDT2(context, widget.userId),
-                  ub.buyUSDT3(context, widget.userId),
-                  ub.partnerUSDTButton(context, widget.userId),
-                  ub.transferUSDTButton(context, widget.userId),
+                  ub.button1 == true ||
+                          ub.button2 == true ||
+                          ub.button3 == true ||
+                          ub.button4 == true
+                      ? CircularProgressIndicator()
+                      : Column(
+                          children: [
+                            ub.buyUSDT1(context, widget.userId),
+                            ub.buyUSDT2(context, widget.userId),
+                            ub.buyUSDT3(context, widget.userId),
+                            ub.partnerUSDTButton(context, widget.userId),
+                            ub.transferUSDTButton(context, widget.userId),
+                          ],
+                        ),
                 ],
               )
             : SizedBox(),
@@ -126,7 +151,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
               ),
               Text(
                 'Etherium',
-                style: TextStyle(
+                style: GoogleFonts.roboto(
                     color: LightColors.kLightYellow,
                     fontWeight: FontWeight.bold),
               )
@@ -162,7 +187,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
               ),
               Text(
                 'TRON',
-                style: TextStyle(
+                style: GoogleFonts.roboto(
                     color: LightColors.kLightYellow,
                     fontWeight: FontWeight.bold),
               )
@@ -198,7 +223,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
               ),
               Text(
                 'Tether',
-                style: TextStyle(
+                style: GoogleFonts.roboto(
                     color: LightColors.kLightYellow,
                     fontWeight: FontWeight.bold),
               )
@@ -229,7 +254,8 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
           ),
           Text(
             'Назад',
-            style: TextStyle(fontSize: 16, color: LightColors.kLightYellow),
+            style: GoogleFonts.roboto(
+                fontSize: 16, color: LightColors.kLightYellow),
           )
         ],
       ),

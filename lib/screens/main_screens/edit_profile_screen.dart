@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/services/database_service.dart';
@@ -101,7 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Color(0xff102733),
         title: Text(
           'Редактировать профиль',
-          style: TextStyle(color: LightColors.kLightYellow),
+          style: GoogleFonts.roboto(color: LightColors.kLightYellow),
         ),
         centerTitle: true,
         iconTheme: IconThemeData(
@@ -134,13 +135,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       onPressed: _handleImageFromGallery,
                       child: Text(
                         'Загрузить фото профиля',
-                        style: TextStyle(
+                        style: GoogleFonts.roboto(
                             color: LightColors.kLightYellow, fontSize: 16.0),
                       ),
                     ),
                     TextFormField(
                       initialValue: _name,
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
                           icon: Icon(
                             Icons.person,
@@ -148,7 +150,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             color: LightColors.kLightYellow,
                           ),
                           labelText: 'ФИО',
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: GoogleFonts.roboto(color: Colors.white),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -164,7 +166,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     TextFormField(
                       initialValue: _insta,
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
                           icon: Icon(
                             Icons.book,
@@ -172,7 +175,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             color: LightColors.kLightYellow,
                           ),
                           labelText: 'Ваш профиль в instagram',
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: GoogleFonts.roboto(color: Colors.white),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -188,7 +191,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     TextFormField(
                       initialValue: _phone,
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
                           icon: Icon(
                             Icons.account_circle,
@@ -196,7 +200,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             color: LightColors.kLightYellow,
                           ),
                           labelText: 'Телефон',
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: GoogleFonts.roboto(color: Colors.white),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -211,7 +215,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     TextFormField(
                       initialValue: _location,
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      style: GoogleFonts.roboto(
+                          fontSize: 18.0, color: Colors.white),
                       decoration: InputDecoration(
                           icon: Icon(
                             Icons.pin_drop,
@@ -219,7 +224,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             color: LightColors.kLightYellow,
                           ),
                           labelText: 'Город',
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: GoogleFonts.roboto(color: Colors.white),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -249,7 +254,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               textColor: LightColors.kDarkBlue,
                               child: Text(
                                 'Сохранить',
-                                style: TextStyle(fontSize: 18.0),
+                                style: GoogleFonts.roboto(fontSize: 18.0),
                               ),
                             ),
                           ),

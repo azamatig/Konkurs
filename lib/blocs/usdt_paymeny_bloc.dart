@@ -11,24 +11,35 @@ import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class USDTPaymentBloc extends ChangeNotifier {
-  String qrUrl;
   final db = f.FirebaseFirestore.instance;
+  bool button1 = false;
+  bool button2 = false;
+  bool button3 = false;
+  bool button4 = false;
 
-  HttpsCallable get10USDTCall = FirebaseFunctions.instance.httpsCallable(
-      'create10USDT',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 7)));
+  HttpsCallable get10USDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create10USDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable get20USDTCall = FirebaseFunctions.instance.httpsCallable(
-      'create20USDT',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 7)));
+  HttpsCallable get20USDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create20USDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable get30USDTCall = FirebaseFunctions.instance.httpsCallable(
-      'create30USDT',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 7)));
+  HttpsCallable get30USDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create30USDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable getPartnerUSDTCall = FirebaseFunctions.instance.httpsCallable(
-      'createpartnerUSDT',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 7)));
+  HttpsCallable getPartnerUSDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'createpartnerUSDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  String address;
+
+  String txId;
 
   Future get10USDT() async {
     try {
@@ -37,14 +48,9 @@ class USDTPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
   Future get20USDT() async {
@@ -54,14 +60,9 @@ class USDTPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
   Future get30USDT() async {
@@ -71,13 +72,9 @@ class USDTPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
   Future getPartnerUSDT() async {
@@ -87,24 +84,21 @@ class USDTPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  setTransid(String userId, String qrUrl) async {
+  setTransid(String userId, String address, String tx, int type) async {
     db
         .collection('users')
         .doc(userId)
         .collection('web-transactions')
         .doc()
         .set({
-      'qrUrl': qrUrl,
+      'qrUrl': address,
+      'tx': tx,
+      'type': type,
       'is_confirmed': false,
       'time': f.FieldValue.serverTimestamp(),
     });
@@ -115,25 +109,34 @@ class USDTPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get10USDT().then((value) => {
-              if (value != null)
+        button1 = true;
+        get10USDT().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 1).whenComplete(
+                    () => {
+                      nextScreen(
+                          context,
+                          PaymentInfoPage(
+                            userId: userId,
+                            address: address,
+                          )),
+                      button1 = false,
+                      notifyListeners(),
+                    },
+                  ),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button1 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -165,25 +168,34 @@ class USDTPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get20USDT().then((value) => {
-              if (value != null)
+        button2 = true;
+        get20USDT().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 2).whenComplete(
+                    () => {
+                      nextScreen(
+                          context,
+                          PaymentInfoPage(
+                            userId: userId,
+                            address: address,
+                          )),
+                      button2 = false,
+                      notifyListeners(),
+                    },
+                  ),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button2 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -215,25 +227,32 @@ class USDTPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get30USDT().then((value) => {
-              if (value != null)
+        button3 = true;
+        get30USDT().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 3).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button3 = false,
+                        notifyListeners(),
+                      })
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button3 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -265,25 +284,32 @@ class USDTPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        getPartnerUSDT().then((value) => {
-              if (value != null)
+        button4 = true;
+        getPartnerUSDT().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 4).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button4 = false,
+                        notifyListeners(),
+                      }),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button4 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -317,7 +343,7 @@ class USDTPaymentBloc extends ChangeNotifier {
             context,
             ConfirmPayment(
               userId: userId,
-              qrUrl: qrUrl,
+              qrUrl: address,
             ));
       },
       child: Container(

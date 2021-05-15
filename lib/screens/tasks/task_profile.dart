@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/services/database_service.dart';
@@ -109,7 +110,7 @@ class _TaskProfileListState extends State<TaskProfileList> {
                           children: [
                             Text(
                               'Задания',
-                              style: TextStyle(
+                              style: GoogleFonts.roboto(
                                   fontSize: 30.0, fontWeight: FontWeight.w700),
                             ),
                             SizedBox(
@@ -117,7 +118,7 @@ class _TaskProfileListState extends State<TaskProfileList> {
                             ),
                             Text(
                               'Ваши действующие задания',
-                              style: TextStyle(
+                              style: GoogleFonts.roboto(
                                 fontSize: 18.0,
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w400,
@@ -167,7 +168,8 @@ class _TaskProfileListState extends State<TaskProfileList> {
                             const EdgeInsets.fromLTRB(15.0, 15.0, 0.0, 10.0),
                         child: Text(
                           "Название конкурса - " + post.name,
-                          style: TextStyle(fontSize: 14, color: Colors.white),
+                          style: GoogleFonts.roboto(
+                              fontSize: 14, color: Colors.white),
                         ),
                       ),
                       Divider(),
@@ -197,8 +199,8 @@ class _TaskProfileListState extends State<TaskProfileList> {
                               ),
                               Text(
                                 '   - - - - - - - - ',
-                                style:
-                                    TextStyle(color: LightColors.kLightYellow),
+                                style: GoogleFonts.roboto(
+                                    color: LightColors.kLightYellow),
                               ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -243,8 +245,8 @@ class _TaskProfileListState extends State<TaskProfileList> {
                               ),
                               Text(
                                 '   - - - - - - - - ',
-                                style:
-                                    TextStyle(color: LightColors.kLightYellow),
+                                style: GoogleFonts.roboto(
+                                    color: LightColors.kLightYellow),
                               ),
                               Column(
                                 children: [
@@ -287,8 +289,8 @@ class _TaskProfileListState extends State<TaskProfileList> {
                               ),
                               Text(
                                 '   - - - - - - - - ',
-                                style:
-                                    TextStyle(color: LightColors.kLightYellow),
+                                style: GoogleFonts.roboto(
+                                    color: LightColors.kLightYellow),
                               ),
                               Column(
                                 children: [

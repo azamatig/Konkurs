@@ -1,9 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
@@ -33,22 +33,6 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              Positioned(
-                left: -140,
-                top: -300,
-                child: CircleAvatar(
-                  radius: 190,
-                  backgroundColor: LightColors.lightBlue2,
-                ),
-              ),
-              Positioned(
-                left: -130,
-                top: -330,
-                child: CircleAvatar(
-                  radius: 190,
-                  backgroundColor: LightColors.lightBlue1,
-                ),
-              ),
               Positioned(
                   left: 0,
                   top: 30,
@@ -125,7 +109,8 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                   Text(
                     th.data()['qrUrl'] ?? '',
                     maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style:
+                        GoogleFonts.roboto(color: Colors.white, fontSize: 12),
                   ),
                   Row(
                     children: <Widget>[
@@ -138,7 +123,8 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                       ),
                       Text(
                         formatOnlyDate(th.data()['time'].toDate() ?? ''),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
+                        style: GoogleFonts.roboto(
+                            color: Colors.white, fontSize: 12),
                       )
                     ],
                   ),
@@ -152,14 +138,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
               onTap: () {
                 popup.show(
                     title: 'Инфо платежа',
-                    content: 'QR код' ?? '',
-                    actions: [
-                      Container(
-                          child: CachedNetworkImage(
-                              width: 175,
-                              height: 175,
-                              imageUrl: th.data()['qrUrl'] ?? '')),
-                    ],
+                    content: th.data()['qrUrl'],
                     barrierDismissible: true);
               },
               child: Icon(
@@ -169,6 +148,9 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
               ),
             ),
           ),
+          SizedBox(
+            width: 20,
+          ),
           Center(child: _confirmButton(th)),
         ],
       ),
@@ -176,94 +158,29 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
   }
 
   Widget _confirmButton(DocumentSnapshot snap) {
-    return _isLoading
-        ? CircularProgressIndicator(
-            backgroundColor: LightColors.kLightYellow,
-            valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
-          )
-        : GestureDetector(
-            onTap: () {
-              if (snap.data()['amount'] == '0.00980000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap);
-              }
-              if (snap.data()['amount'] == '0.01200000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2500(snap);
-              }
-              if (snap.data()['amount'] == '0.02400000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints5000(snap);
-              }
-              if (snap.data()['amount'] == '0.09800000' &&
-                  snap.data()['is_confirmed'] == false) {
-                setPartner(snap);
-              }
-              // Tron
-              if (snap.data()['amount'] == '85.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints1000(snap);
-              }
-              if (snap.data()['amount'] == '155.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap);
-              }
-              if (snap.data()['amount'] == '230.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints3000(snap);
-              }
-              if (snap.data()['amount'] == '1515.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                setPartner(snap);
-              }
-              // USDT
-              if (snap.data()['amount'] == '163.02000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints1000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '285.48000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '405.37000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints3000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '2480.37000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                setPartner(snap.data()['txHash']);
-              }
-            },
-            child: Container(
-                width: 130,
-                margin: EdgeInsets.only(bottom: 20, right: 15),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                decoration: BoxDecoration(
-                    color: snap.data()['is_confirmed'] == true
-                        ? LightColors.kGreen
-                        : LightColors.yellow2,
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: Wrap(
-                  children: <Widget>[
-                    Transform.rotate(
-                      angle: 70,
-                      child: Icon(
-                        FontAwesomeIcons.moneyBill,
-                        color: LightColors.kDarkBlue,
-                        size: 12,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    TitleText(
-                      text: snap.data()['is_confirmed'] == true
-                          ? "Оплачено"
-                          : "Подтвердить",
-                      color: LightColors.kDarkBlue,
-                      fontSize: 10,
-                    ),
-                  ],
-                )),
-          );
+    return Container(
+        width: 130,
+        height: 75,
+        child: Center(
+          child: Row(
+            children: [
+              Text(
+                snap.data()['is_confirmed'] == true
+                    ? 'Оплачено'
+                    : 'Не оплачено',
+                style: GoogleFonts.roboto(color: LightColors.kLavender),
+              ),
+              Icon(
+                snap.data()['is_confirmed'] == true
+                    ? FontAwesomeIcons.check
+                    : FontAwesomeIcons.times,
+                color: snap.data()['is_confirmed'] == true
+                    ? LightColors.kGreen
+                    : LightColors.kRed,
+              ),
+            ],
+          ),
+        ));
   }
 
   void awardPoints2000(DocumentSnapshot snap) async {
@@ -274,68 +191,6 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
         .collection('users')
         .doc(widget.userId)
         .collection('web-transactions')
-        .doc(snap.id);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void awardPoints1000(DocumentSnapshot snap) async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(1000)});
-    print('1232131');
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
-        .doc(snap.id);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void awardPoints3000(DocumentSnapshot snap) async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(3000)});
-    print('1232131');
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
-        .doc(snap.id);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void awardPoints2500(DocumentSnapshot snap) async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(2500)});
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
-        .doc(snap.id);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void awardPoints5000(DocumentSnapshot snap) async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(5000)});
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
-        .doc(snap.id);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void setPartner(DocumentSnapshot snap) {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'partner': true});
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
         .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }

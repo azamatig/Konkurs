@@ -11,21 +11,21 @@ import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class PaymentBloc extends ChangeNotifier {
-  String qrUrl;
   String txId;
   String address;
-  String checkOut;
-  String amount;
   final db = f.FirebaseFirestore.instance;
-  bool isLoading = false;
+  bool button1 = false;
+  bool button2 = false;
 
-  HttpsCallable get10ETHCall = FirebaseFunctions.instance.httpsCallable(
-      'create10ETH',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  HttpsCallable get10ETHCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create10ETH',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable getPartnerETHCall = FirebaseFunctions.instance.httpsCallable(
-      'createPartnerETH',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  HttpsCallable getPartnerETHCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'createPartnerETH',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
   Future get10ETH() async {
     try {
@@ -34,7 +34,8 @@ class PaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
+      address = result.data['address'];
+      txId = result.data['tx'];
     } on FirebaseFunctionsException catch (e) {
       print('caught firebase functions exception');
       print(e.code);
@@ -46,33 +47,27 @@ class PaymentBloc extends ChangeNotifier {
 
   Future getPartnerETH() async {
     try {
-      final HttpsCallableResult result = await get10ETHCall.call(
+      final HttpsCallableResult result = await getPartnerETHCall.call(
         <String, dynamic>{
           'message': '1',
         },
       );
-      qrUrl = result.data()['qrcode'];
-      txId = result.data()['txn'];
-      checkOut = result.data()['check'];
-      amount = result.data()['amountRes'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  setTransid(String userId, String qrUrl) async {
+  setTransid(String userId, String address, String tx, int type) async {
     db
         .collection('users')
         .doc(userId)
         .collection('web-transactions')
         .doc()
         .set({
-      'qrUrl': qrUrl,
+      'qrUrl': address,
+      'tx': tx,
       'is_confirmed': false,
+      'type': type,
       'time': f.FieldValue.serverTimestamp(),
     });
   }
@@ -82,25 +77,32 @@ class PaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get10ETH().then((value) => {
-              if (value != null)
+        button1 = true;
+        get10ETH().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 0).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button1 = false,
+                        notifyListeners(),
+                      })
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button1 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -132,25 +134,32 @@ class PaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        getPartnerETH().then((value) => {
-              if (value != null)
+        button2 = true;
+        getPartnerETH().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 4).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button2 = false,
+                        notifyListeners(),
+                      }),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button2 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -184,7 +193,7 @@ class PaymentBloc extends ChangeNotifier {
             context,
             ConfirmPayment(
               userId: userId,
-              qrUrl: qrUrl,
+              qrUrl: address,
             ));
       },
       child: Container(

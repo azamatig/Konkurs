@@ -11,24 +11,35 @@ import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class TRXPaymentBloc extends ChangeNotifier {
-  String qrUrl;
   final db = f.FirebaseFirestore.instance;
+  bool button1 = false;
+  bool button2 = false;
+  bool button3 = false;
+  bool button4 = false;
 
-  HttpsCallable get10TRXCall = FirebaseFunctions.instance.httpsCallable(
-      'create10TRX',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  HttpsCallable get10TRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create10TRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable get20TRXCall = FirebaseFunctions.instance.httpsCallable(
-      'create20TRX',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  HttpsCallable get20TRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create20TRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable get30TRXCall = FirebaseFunctions.instance.httpsCallable(
-      'create30TRX',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  HttpsCallable get30TRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create30TRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable getPartnerTRXCall = FirebaseFunctions.instance.httpsCallable(
-      'createPartnerTRX',
-      options: HttpsCallableOptions(timeout: Duration(seconds: 5)));
+  HttpsCallable getPartnerTRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'createPartnerTRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  String address;
+
+  String txId;
 
   Future get10TRX() async {
     try {
@@ -37,14 +48,9 @@ class TRXPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
   Future get20TRX() async {
@@ -54,14 +60,9 @@ class TRXPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
   Future get30TRX() async {
@@ -71,14 +72,9 @@ class TRXPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
   Future getPartnerTRX() async {
@@ -88,24 +84,21 @@ class TRXPaymentBloc extends ChangeNotifier {
           'message': '1',
         },
       );
-      qrUrl = result.data['qrcode'];
-    } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-    } catch (e) {
-      print('caught generic exception');
-      print(e);
-    }
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  setTransid(String userId, String qrUrl) async {
+  setTransid(String userId, String address, String tx, int type) async {
     db
         .collection('users')
         .doc(userId)
         .collection('web-transactions')
         .doc()
         .set({
-      'qrUrl': qrUrl,
+      'qrUrl': address,
+      'tx': tx,
+      'type': type,
       'is_confirmed': false,
       'time': f.FieldValue.serverTimestamp(),
     });
@@ -119,25 +112,32 @@ class TRXPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get10TRX().then((value) => {
-              if (value != null)
+        button1 = true;
+        get10TRX().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 1).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button1 = false,
+                        notifyListeners(),
+                      }),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button1 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -169,25 +169,32 @@ class TRXPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get20TRX().then((value) => {
-              if (value != null)
+        button2 = true;
+        get20TRX().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 2).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button2 = false,
+                        notifyListeners(),
+                      }),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button2 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -219,25 +226,32 @@ class TRXPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        get30TRX().then((value) => {
-              if (value != null)
+        button3 = true;
+        get30TRX().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 3).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button3 = false,
+                        notifyListeners(),
+                      })
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button3 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -269,25 +283,32 @@ class TRXPaymentBloc extends ChangeNotifier {
         BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        getPartnerTRX().then((value) => {
-              if (value != null)
+        button4 = true;
+        getPartnerTRX().whenComplete(() => {
+              if (address != null)
                 {
-                  setTransid(userId, value).whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                      ))),
-                  notifyListeners(),
+                  setTransid(userId, address, txId, 4).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button4 = false,
+                        notifyListeners(),
+                      }),
                 }
               else
                 {
                   popup.show(
                     title: 'Извините...',
                     content: 'Что-то пошло не так, попробуйте позже' ?? '',
-                  )
+                  ),
+                  button4 = false,
+                  notifyListeners(),
                 }
             });
+        notifyListeners();
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -321,7 +342,7 @@ class TRXPaymentBloc extends ChangeNotifier {
             context,
             ConfirmPayment(
               userId: userId,
-              qrUrl: qrUrl,
+              qrUrl: address,
             ));
       },
       child: Container(
