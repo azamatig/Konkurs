@@ -119,3 +119,12 @@ exports.createpartnerUSDT = functions.region("europe-west3").https.onCall((data,
                                     }
                             });
             });
+
+
+exports.getTx = functions.region("europe-west3").https.onCall((data, context) => {
+              return client.getTx({'txid' : data.txId},function(err,result){
+                                    return {
+                                     status : result.status,
+                                                                     }
+                            });
+            });

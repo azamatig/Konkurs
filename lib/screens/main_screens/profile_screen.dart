@@ -179,30 +179,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildBuyingButton(),
                           GestureDetector(
                             onTap: () {
-                              nextScreen(context, null);
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15.0, right: 15),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Телеграм',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.roboto(
-                                        color: _iconColor, fontSize: 12),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Icon(FontAwesomeIcons.telegram,
-                                      size: 22, color: _iconColor),
-                                ],
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
                               AuthService.logout();
                             },
                             child: Padding(
