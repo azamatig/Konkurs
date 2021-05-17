@@ -149,7 +149,7 @@ class _AllGiveawaysState extends State<AllGiveaways> {
               docRef: document.reference,
               date: d.date,
               userPhoto: widget.userPhoto,
-              userId: Provider.of<UserData>(context).currentUserId,
+              userId: Provider.of<UserData>(context, listen: false).currentUserId,
               instaLink1: document.data()['task1InstaLink'],
               instaLink2: document.data()['task2InstaLink'],
               instaLink3: document.data()['task3InstaLink'],

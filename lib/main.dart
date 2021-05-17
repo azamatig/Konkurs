@@ -46,7 +46,6 @@ void main() async {
     final inviterId = url.queryParameters['invitedby'];
     if (inviterId != null) {
       InviterStorage(inviterId)
-        ..addPoints()
         ..saveNotification()
             .whenComplete(() => runApp(MyApp(inviterId: inviterId)));
     } else {
@@ -75,8 +74,7 @@ class MyApp extends StatelessWidget {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
           return HomeScreen(
-            currentUserId:
-                Provider.of<UserData>(context, listen: false).currentUserId,
+            currentUserId: Provider.of<UserData>(context).currentUserId,
           );
         } else {
           return LoginScreen(inviterId: inviterId);
@@ -164,13 +162,6 @@ class InviterStorage {
   final String inviterId;
 
   InviterStorage(this.inviterId) : _firestore = FirebaseFirestore.instance;
-
-  addPoints() {
-    _firestore
-        .collection('users')
-        .doc(inviterId)
-        .update({'points': FieldValue.increment(15)});
-  }
 
   Future<void> saveNotification() async {
     var timestamp = FieldValue.serverTimestamp();

@@ -145,7 +145,7 @@ class _TaskListState extends State<TaskList> with TickerProviderStateMixin {
               return CircularProgressIndicator();
             }
             Post p = Post.fromDoc(snapshot.data);
-            var user = Provider.of<UserData>(context).currentUserId;
+            var user = Provider.of<UserData>(context, listen: false).currentUserId;
             var task1 = p.task1TypeShared.contains(user);
             var task2 = p.task2TypeShared.contains(user);
             var task3 = p.task3TypeShared.contains(user);

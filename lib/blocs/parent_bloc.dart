@@ -30,6 +30,9 @@ class ParentBloc extends ChangeNotifier {
   String _greatGrandParentId;
   String get greatGrandParentId => _greatGrandParentId;
 
+  bool _registered;
+  bool get registered => _registered;
+
   DocumentSnapshot myParentData;
   DocumentSnapshot grandParentData;
   DocumentSnapshot greatGrandParentData;
@@ -45,14 +48,27 @@ class ParentBloc extends ChangeNotifier {
       this._email = snap.data()['email'];
       this._imageUrl = snap.data()['profileImageUrl'];
       this._parentId = snap.data()['parent'];
+      this._registered = snap.data()['registered'];
     });
     notifyListeners();
   }
 
+  void setRegToTrue() async {
+    var doc = firestore.collection('users').doc(uid);
+    doc.update({'registered': true});
+  }
+
+  void giveRefPoints() async {
+    var doc = firestore.collection('users').doc(parentId);
+    doc.update({'points': FieldValue.increment(7)});
+  }
+
   Future getPartnerSetup(String uid) async {
     getUserDatafromFirebase(uid).whenComplete(() => {
-          if (parentId != null)
+          if (parentId != null && registered == false)
             {
+              setRegToTrue(),
+              giveRefPoints(),
               setPartnerDepth(),
             }
         });
