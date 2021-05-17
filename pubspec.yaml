@@ -65,6 +65,7 @@ dependencies:
   country_pickers: ^1.2.1
   get_it: ^1.0.3
   permission_handler: ^5.0.1
+  responsive_framework: ^0.0.15
 
 dev_dependencies:
   flutter_test:

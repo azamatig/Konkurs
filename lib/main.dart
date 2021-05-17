@@ -19,6 +19,7 @@ import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import 'screens/login_screen.dart';
 import 'utilities/constants.dart';
@@ -99,6 +100,19 @@ class MyApp extends StatelessWidget {
       ],
       child: OverlaySupport(
         child: MaterialApp(
+            builder: (context, widget) => ResponsiveWrapper.builder(
+                BouncingScrollWrapper.builder(context, widget),
+                maxWidth: 1960,
+                minWidth: 412,
+                defaultScale: true,
+                breakpoints: [
+                  ResponsiveBreakpoint.resize(450, name: MOBILE),
+                  ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                  ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+                  ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                  ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+                ],
+                background: Container(color: Color(0xFFF5F5F5))),
             title: 'GiveApp',
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
