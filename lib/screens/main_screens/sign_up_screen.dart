@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
+import 'package:konkurs_app/utilities/next_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   static const String routeName = '/signup';
@@ -19,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   String _phone, _name, _email, _password;
   bool _isLoading = false;
 
-  _submit() {
+  Future _submit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       setState(() {
@@ -28,7 +30,6 @@ class _SignupScreenState extends State<SignupScreen> {
       // Logging in the user w/ Firebase
       AuthService.signUpUser(
           context, _phone, _name, _email, _password, widget.inviterId);
-      Navigator.pop(context);
     }
   }
 
@@ -181,7 +182,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         SizedBox(height: 20.0),
                         GestureDetector(
                           onTap: () {
-                            _submit();
+                            _submit().whenComplete(() => {
+                                  Future.delayed(Duration(seconds: 4), () {
+                                    nextScreenCloseOthers(
+                                        context, HomeScreen());
+                                  }),
+                                });
                           },
                           child: Container(
                             child: _isLoading

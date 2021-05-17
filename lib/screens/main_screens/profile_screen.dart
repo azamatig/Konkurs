@@ -8,6 +8,7 @@ import 'package:konkurs_app/blocs/pigstagram_auth.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/giveaways/my_wins.dart';
+import 'package:konkurs_app/screens/login_screen.dart';
 import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
@@ -180,6 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           GestureDetector(
                             onTap: () {
                               AuthService.logout();
+                              nextScreenCloseOthers(context, LoginScreen());
                             },
                             child: Padding(
                               padding:

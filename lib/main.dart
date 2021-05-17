@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:konkurs_app/blocs/parent_bloc.dart';
 import 'package:konkurs_app/blocs/payment_bloc.dart';
@@ -14,8 +14,8 @@ import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
 import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
-import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/screens/login_screen.dart';
+import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -179,7 +179,7 @@ class InviterStorage {
         .doc();
 
     var _postData = {
-      'message': "+15! Вы пригласили нового пользователя!",
+      'message': "Вы пригласили нового пользователя!",
       'type': 1,
       'title': "Реферал!",
       'is_Unread': true,

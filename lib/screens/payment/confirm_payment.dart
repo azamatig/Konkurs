@@ -279,7 +279,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                   size: 12,
                 ),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 5),
               TitleText(
                 text: snap.data()['is_confirmed'] == true
                     ? "Оплачено"

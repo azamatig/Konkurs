@@ -20,7 +20,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^9.2.0",
-    "firebase-functions": "^3.11.0"
+    "firebase-functions": "^3.11.0",
+    "instagram-private-api": "^1.45.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

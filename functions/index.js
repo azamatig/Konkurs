@@ -1,7 +1,8 @@
+import { IgApiClient, LiveEntity } from '../src';
+import Bluebird = require('bluebird');
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
-
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -128,3 +129,4 @@ exports.getTx = functions.region("europe-west3").https.onCall((data, context) =>
                                                                      }
                             });
             });
+
