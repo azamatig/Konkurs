@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/payment_bloc.dart';
-import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
-import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -46,10 +44,6 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
               SizedBox(
                 height: 10,
               ),
-              iconsRow(),
-              SizedBox(
-                height: 50,
-              ),
               _buttonWidget(),
             ],
           ),
@@ -58,178 +52,47 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
 
   Widget _buttonWidget() {
     final pb = context.watch<PaymentBloc>();
-    final tb = context.watch<TRXPaymentBloc>();
-    final ub = context.watch<USDTPaymentBloc>();
     return Column(
       children: <Widget>[
-        eth == true
-            ? Column(
-                children: [
-                  pb.button1 == true || pb.button2 == true
-                      ? CircularProgressIndicator()
-                      : Column(
-                          children: [
-                            pb.buyButtons(context, widget.userId),
-                            pb.partnerButton(context, widget.userId),
-                            pb.transferButton(context, widget.userId),
-                          ],
-                        ),
-                ],
-              )
-            : SizedBox(),
-        tron == true
-            ? Column(
-                children: [
-                  tb.button1 == true ||
-                          tb.button2 == true ||
-                          tb.button3 == true ||
-                          tb.button4 == true
-                      ? CircularProgressIndicator()
-                      : Column(
-                          children: [
-                            tb.buyTRX1(context, widget.userId),
-                            tb.buyTRX2(context, widget.userId),
-                            tb.buyTRX3(context, widget.userId),
-                            tb.partnerTRXButton(context, widget.userId),
-                            tb.transferTRXButton(context, widget.userId),
-                          ],
-                        ),
-                ],
-              )
-            : SizedBox(),
-        usdt == true
-            ? Column(
-                children: [
-                  ub.button1 == true ||
-                          ub.button2 == true ||
-                          ub.button3 == true ||
-                          ub.button4 == true
-                      ? CircularProgressIndicator()
-                      : Column(
-                          children: [
-                            ub.buyUSDT1(context, widget.userId),
-                            ub.buyUSDT2(context, widget.userId),
-                            ub.buyUSDT3(context, widget.userId),
-                            ub.partnerUSDTButton(context, widget.userId),
-                            ub.transferUSDTButton(context, widget.userId),
-                          ],
-                        ),
-                ],
-              )
-            : SizedBox(),
-      ],
-    );
-  }
-
-  Row iconsRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              eth = true;
-              tron = false;
-              usdt = false;
-            });
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: LightColors.kLavender,
-                child: Icon(
-                  FontAwesomeIcons.ethereum,
-                  color: LightColors.yellow2,
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'Etherium',
-                style: GoogleFonts.roboto(
-                    color: LightColors.kLightYellow,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              eth = false;
-              tron = true;
-              usdt = false;
-            });
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: LightColors.kLavender,
-                child: Image.network(
-                  'https://cdn0.iconfinder.com/data/icons/blockchain-classic/256/TRON-512.png',
-                  width: 30,
-                  height: 30,
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'TRON',
-                style: GoogleFonts.roboto(
-                    color: LightColors.kLightYellow,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              eth = false;
-              tron = false;
-              usdt = true;
-            });
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: LightColors.kLavender,
-                child: Image.network(
-                  'https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/1024/Tether-USDT-icon.png',
-                  width: 30,
-                  height: 30,
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'Tether',
-                style: GoogleFonts.roboto(
-                    color: LightColors.kLightYellow,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-        ),
+        Column(
+          children: [
+            pb.button1 == true ||
+                    pb.button2 == true ||
+                    pb.button3 == true ||
+                    pb.button4 == true
+                ? CircularProgressIndicator()
+                : Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Оплата с coinbase',
+                            style: GoogleFonts.roboto(
+                                fontSize: 12, color: LightColors.kLightYellow),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Image.asset(
+                            "assets/images/coinbase.png",
+                            height: 30,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      pb.buyButtons(context, widget.userId),
+                      pb.buyButtons20(context, widget.userId),
+                      pb.buyButtons30(context, widget.userId),
+                      pb.partnerButton(context, widget.userId),
+                      pb.transferButton(context, widget.userId),
+                    ],
+                  ),
+          ],
+        )
       ],
     );
   }

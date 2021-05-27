@@ -23,8 +23,10 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
   ScrollController controller;
 
   bool _isLoading = false;
-
+  List<dynamic> resuldados = [];
   var status;
+  bool isDone = false;
+  bool isCanceled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,18 +46,11 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
-                        left: 0,
-                        top: 30,
+                        left: 10,
+                        top: 10,
                         child: Row(
                           children: <Widget>[
-                            BackButton(
-                              color: Colors.white,
-                            ),
-                            SizedBox(width: 5),
-                            TitleText(
-                              text: "Назад",
-                              color: Colors.white,
-                            )
+                            backButton(),
                           ],
                         )),
                     Padding(
@@ -169,94 +164,87 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
     );
   }
 
+  Widget backButton() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Row(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Icon(
+              FontAwesomeIcons.chevronLeft,
+              size: 25,
+              color: LightColors.kLightYellow,
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Text(
+            'Назад',
+            style: GoogleFonts.roboto(
+                fontSize: 16, color: LightColors.kLightYellow),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _confirmButton(DocumentSnapshot snap) {
     final popup = BeautifulPopup(context: context, template: TemplateCoin);
+
     return GestureDetector(
       onTap: () {
         setState(() {
           _isLoading = true;
         });
         getTxId(snap.data()['tx']).whenComplete(() => {
-              if (snap.data()['type'] == 0 &&
-                  snap.data()['is_confirmed'] == false &&
-                  status >= 100)
-                {
-                  awardPoints10000(snap),
-                },
+              checkCompletion(),
               if (snap.data()['type'] == 4 &&
                   snap.data()['is_confirmed'] == false &&
-                  status >= 100)
+                  isDone == true)
                 {
                   setPartner(snap),
                 },
-              // Tron
               if (snap.data()['type'] == 1 &&
                   snap.data()['is_confirmed'] == false &&
-                  status >= 100)
+                  isDone == true)
                 {
                   awardPoints1000(snap),
                 },
               if (snap.data()['type'] == 2 &&
                   snap.data()['is_confirmed'] == false &&
-                  status >= 100)
+                  isDone == true)
                 {
                   awardPoints2000(snap),
                 },
               if (snap.data()['type'] == 3 &&
                   snap.data()['is_confirmed'] == false &&
-                  status >= 100)
+                  isDone == true)
                 {
                   awardPoints3000(snap),
                 },
-              if (snap.data()['type'] == 4 &&
-                  snap.data()['is_confirmed'] == false &&
-                  status >= 100)
-                {
-                  setPartner(snap),
-                },
-              // USDT
-              if (snap.data()['type'] == 1 &&
-                  snap.data()['is_confirmed'] == false &&
-                  status >= 100)
-                {
-                  awardPoints1000(snap),
-                },
-              if (snap.data()['type'] == 2 &&
-                  snap.data()['is_confirmed'] == false &&
-                  status >= 100)
-                {
-                  awardPoints2000(snap),
-                },
-              if (snap.data()['type'] == 3 &&
-                  snap.data()['is_confirmed'] == false &&
-                  status >= 100)
-                {
-                  awardPoints3000(snap),
-                },
-              if (snap.data()['type'] == 4 &&
-                  snap.data()['is_confirmed'] == false &&
-                  status >= 100)
-                {
-                  setPartner(snap),
-                },
-              if (status != 100)
+              if (isCanceled == false && isDone == false)
                 {
                   popup.show(
-                      title: 'Инфо платежа',
+                      title: 'В ожидании',
                       content:
                           "Вы не можете подтвердить на данный момент, так как процесс оплаты еще не завершен в системе, попробуйте еще раз через некоторое время!",
                       barrierDismissible: true),
                 },
-              if (status == -1)
+              if (isCanceled == true && isDone == false)
                 {
                   popup.show(
-                      title: 'Инфо платежа',
+                      title: 'Отмена',
                       content: "Ваш платеж был отменен, или просрочен",
                       barrierDismissible: true),
                 },
-
               setState(() {
+                isDone = false;
                 _isLoading = false;
+                isCanceled = false;
               }),
             });
       },
@@ -292,18 +280,30 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
     );
   }
 
+  void checkCompletion() {
+    var complete = resuldados.where((e) => e['status'] == 'COMPLETE');
+    var cancelled = resuldados
+        .where((e) => e['status'] == 'CANCELED' || e['status'] == 'EXPIRED');
+    if (complete.isNotEmpty) {
+      isDone = true;
+    }
+    if (cancelled.isNotEmpty) {
+      isCanceled = true;
+    }
+  }
+
   HttpsCallable getTx = FirebaseFunctions.instanceFor(region: "europe-west3")
-      .httpsCallable('getTx',
+      .httpsCallable('checkCrypto',
           options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
   Future getTxId(String txId) async {
     try {
       final HttpsCallableResult result = await getTx.call(
         <String, dynamic>{
-          'txId': txId,
+          'message': txId,
         },
       );
-      status = result.data['status'];
+      resuldados = result.data['status'];
     } on FirebaseFunctionsException catch (e) {
       print('caught firebase functions exception');
       print(e.code);

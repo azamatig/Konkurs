@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/payment_bloc.dart';
@@ -48,15 +47,15 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
               SizedBox(
                 height: 25,
               ),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   qrPicture(),
                   SizedBox(
-                    width: 10,
+                    height: 10,
                   ),
-                  copyText(),
+                  urlButton(widget.address),
                 ],
               ),
               SizedBox(
@@ -79,43 +78,56 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
 
   Widget qrPicture() {
     return Container(
+      width: 150,
       child: Text(
         widget.address == null
             ? 'Ошибка данных...попробуйте снова'
-            : widget.address,
-        style: GoogleFonts.roboto(fontSize: 14, color: LightColors.yellow),
+            : 'Перейти в платежную систему',
+        style: GoogleFonts.roboto(fontSize: 10, color: LightColors.yellow),
       ),
     );
   }
 
-  Widget copyText() {
-    return TextButton(
-      style: TextButton.styleFrom(backgroundColor: LightColors.yellow2),
-      onPressed: () => {
-        Clipboard.setData(ClipboardData(text: widget.address)),
-        setState(() {
-          copied = true;
-        }),
-      },
-      child: copied == true
-          ? Icon(
-              FontAwesomeIcons.checkCircle,
-              color: LightColors.kGreen,
-            )
-          : Icon(
-              FontAwesomeIcons.copy,
-              color: LightColors.kDarkBlue,
-            ),
+  Widget urlButton(String url) {
+    return Container(
+      width: 150,
+      child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: LightColors.kBlue, shadowColor: Colors.grey),
+          onPressed: () => {
+                setUrl(url),
+              },
+          child: url != null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.wallet,
+                      color: LightColors.kDarkBlue,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Оплата',
+                      style: GoogleFonts.roboto(
+                          color: LightColors.kDarkBlue, fontSize: 12),
+                    )
+                  ],
+                )
+              : SizedBox()),
     );
   }
 
   Widget infoText() {
     return Container(
-      width: 350,
+      width: 400,
       child: Text(
-        'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь в историю оплат и нажмите Подтвердить оплату! \n'
+        'Cсылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь в историю оплат и нажмите Подтвердить оплату! \n'
         'Средства будут начислены после подтверждения',
         style: TextStyle(fontSize: 14, color: LightColors.kPalePink),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -123,12 +135,8 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
   Widget _buttonWidget() {
     final pb = context.watch<PaymentBloc>();
     return Column(
-      children: <Widget>[
-        Column(
-          children: [
-            pb.transferButton(context, widget.userId),
-          ],
-        )
+      children: [
+        pb.transferButton(context, widget.userId),
       ],
     );
   }

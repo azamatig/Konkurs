@@ -272,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           child: GestureDetector(
                                         onTap: _showRefUrlDialog,
                                         child: _actionList(
-                                            'assets/images/ic_send.png',
+                                            FontAwesomeIcons.telegramPlane,
                                             'Пригласить друга'),
                                       )),
                                       HandCursor(
@@ -284,15 +284,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   widget.userPhoto));
                                         },
                                         child: _actionList(
-                                            'assets/images/ic_money.png',
-                                            'Выйгрыши'),
+                                            FontAwesomeIcons.gift, 'Выйгрыши'),
                                       )),
                                     ]),
                                     TableRow(children: [
                                       HandCursor(
                                           child: GestureDetector(
                                               child: _actionList(
-                                                  'assets/images/ic_transact.png',
+                                                  FontAwesomeIcons.cogs,
                                                   'Настройки'),
                                               onTap: () {
                                                 nextScreen(
@@ -308,8 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ));
                                         },
                                         child: _actionList(
-                                            'assets/images/ic_reward.png',
-                                            'Задания'),
+                                            FontAwesomeIcons.tasks, 'Задания'),
                                       )),
                                     ])
                                   ],
@@ -423,22 +421,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 // custom action widget
-  Widget _actionList(String iconPath, String desc) {
+  Widget _actionList(IconData iconPath, String desc) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(
+          Icon(
             iconPath,
-            fit: BoxFit.contain,
-            height: 45.0,
-            width: 45.0,
             color: _iconColor,
+            size: 30,
           ),
           SizedBox(
-            height: 8,
+            height: 30,
           ),
           Text(
             desc,

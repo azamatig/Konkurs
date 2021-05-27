@@ -16,26 +16,38 @@ class PaymentBloc extends ChangeNotifier {
   final db = f.FirebaseFirestore.instance;
   bool button1 = false;
   bool button2 = false;
+  bool button3 = false;
+  bool button4 = false;
 
-  HttpsCallable get10ETHCall =
+  HttpsCallable get10Call =
       FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
-          'create10ETH',
+          'create10dollars',
           options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  HttpsCallable getPartnerETHCall =
+  HttpsCallable getPartnerCall =
       FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
-          'createPartnerETH',
+          'createPartner',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable get20Call =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create20dollars',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable get30Call =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create30dollars',
           options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
   Future get10ETH() async {
     try {
-      final HttpsCallableResult result = await get10ETHCall.call(
+      final HttpsCallableResult result = await get10Call.call(
         <String, dynamic>{
           'message': '1',
         },
       );
-      address = result.data['address'];
-      txId = result.data['tx'];
+      address = result.data['url'];
+      txId = result.data['id'];
     } on FirebaseFunctionsException catch (e) {
       print('caught firebase functions exception');
       print(e.code);
@@ -45,19 +57,52 @@ class PaymentBloc extends ChangeNotifier {
     }
   }
 
-  Future getPartnerETH() async {
+  Future get20D() async {
     try {
-      final HttpsCallableResult result = await getPartnerETHCall.call(
+      final HttpsCallableResult result = await get20Call.call(
         <String, dynamic>{
           'message': '1',
         },
       );
-      address = result.data['address'];
-      txId = result.data['tx'];
+      address = result.data['url'];
+      txId = result.data['id'];
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+    } catch (e) {
+      print('caught generic exception');
+      print(e);
+    }
+  }
+
+  Future get30D() async {
+    try {
+      final HttpsCallableResult result = await get30Call.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['url'];
+      txId = result.data['id'];
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+    } catch (e) {
+      print('caught generic exception');
+    }
+  }
+
+  Future getPartnerETH() async {
+    try {
+      final HttpsCallableResult result = await getPartnerCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['url'];
+      txId = result.data['id'];
     } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  setTransid(String userId, String address, String tx, int type) async {
+  setTransid(String userId, String address, String id, int type) async {
     db
         .collection('users')
         .doc(userId)
@@ -65,7 +110,7 @@ class PaymentBloc extends ChangeNotifier {
         .doc()
         .set({
       'qrUrl': address,
-      'tx': tx,
+      'tx': id,
       'is_confirmed': false,
       'type': type,
       'time': f.FieldValue.serverTimestamp(),
@@ -81,7 +126,7 @@ class PaymentBloc extends ChangeNotifier {
         get10ETH().whenComplete(() => {
               if (address != null)
                 {
-                  setTransid(userId, address, txId, 0).whenComplete(() => {
+                  setTransid(userId, address, txId, 1).whenComplete(() => {
                         nextScreen(
                             context,
                             PaymentInfoPage(
@@ -105,8 +150,8 @@ class PaymentBloc extends ChangeNotifier {
         notifyListeners();
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -121,7 +166,121 @@ class PaymentBloc extends ChangeNotifier {
               ),
               SizedBox(width: 5),
               TitleText(
-                text: "100\$ - 10000 gc",
+                text: "10\$ - 1000 gc",
+                color: LightColors.kDarkBlue,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget buyButtons20(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
+    return GestureDetector(
+      onTap: () {
+        button3 = true;
+        get20D().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 2).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button3 = false,
+                        notifyListeners(),
+                      })
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button3 = false,
+                  notifyListeners(),
+                }
+            });
+        notifyListeners();
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+              color: LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.coins,
+                  color: LightColors.kDarkBlue,
+                ),
+              ),
+              SizedBox(width: 5),
+              TitleText(
+                text: "20\$ - 2000 gc",
+                color: LightColors.kDarkBlue,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget buyButtons30(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
+    return GestureDetector(
+      onTap: () {
+        button4 = true;
+        get30D().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 3).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button4 = false,
+                        notifyListeners(),
+                      })
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button4 = false,
+                  notifyListeners(),
+                }
+            });
+        notifyListeners();
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+              color: LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.coins,
+                  color: LightColors.kDarkBlue,
+                ),
+              ),
+              SizedBox(width: 5),
+              TitleText(
+                text: "30\$ - 3000 gc",
                 color: LightColors.kDarkBlue,
               ),
             ],
@@ -162,8 +321,8 @@ class PaymentBloc extends ChangeNotifier {
         notifyListeners();
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -178,7 +337,7 @@ class PaymentBloc extends ChangeNotifier {
               ),
               SizedBox(width: 10),
               TitleText(
-                text: "Партнерская программа 200\$",
+                text: "Стать партнером",
                 color: LightColors.kDarkBlue,
               ),
             ],
@@ -197,8 +356,8 @@ class PaymentBloc extends ChangeNotifier {
             ));
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),

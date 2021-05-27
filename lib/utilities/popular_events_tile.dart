@@ -127,7 +127,7 @@ class PopularEventTile extends StatelessWidget {
                   imageUrl: imgeAssetPath,
                   height: 100,
                   width: 120,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                 )),
           ],
         ),

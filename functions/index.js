@@ -1,5 +1,4 @@
-import { IgApiClient, LiveEntity } from '../src';
-import Bluebird = require('bluebird');
+const axios = require('axios');
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
@@ -13,120 +12,133 @@ const runtimeOpts = {
 
 var express = require("express"),
       app = express(),
-         coinpayments = require("coinpayments"),
          bodyParser = require("body-parser")
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-var Coinpayments = require('coinpayments');
-var client = new Coinpayments({
-      key: "bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380",
-      secret: "1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB",
-});
+const partner = {
+  name : "GiveApp Partnership",
+          description : "Give App token",
+          local_price : {
+             amount : "200.00",
+             currency : "USD"
+          },
+          pricing_type : "fixed_price",
+           redirect_url : "https://giveapp.ru",
+           cancel_url : "https://giveapp.ru"
 
- exports.create10ETH = functions.region("europe-west3").https.onCall((data, context) => {
-    return client.createTransaction({'currency1' : 'ETH', 'currency2' : 'ETH', 'amount' : 0.025, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                          return {
-                            address : result.address,
-                            tx : result.txn_id,
-                          }
-                  });
-  });
+}
 
- exports.createPartnerETH = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.createTransaction({'currency1' : 'ETH', 'currency2' : 'ETH', 'amount' : 0.052, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                    return {
-                                     address : result.address,
-                                     tx : result.txn_id,
-                                    }
-                            });
-            });
+const create10 = {
+    name : "Give App Coin",
+          description : "Give App token",
+          local_price : {
+             amount : "10.00",
+             currency : "USD"
+          },
+          pricing_type : "fixed_price",
+           redirect_url : "https://giveapp.ru",
+           cancel_url : "https://giveapp.ru"
 
+};
 
-exports.create10TRX = functions.region("europe-west3").https.onCall((data, context) => {
-    return client.createTransaction({'currency1' : 'TRX', 'currency2' : 'TRX', 'amount' : 85, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                          return {
-                            address : result.address,
-                            tx : result.txn_id,
-                          }
-                  });
+const create20 = {
+  name : "2000 GiveApp Coin",
+          description : "Give App token",
+          local_price : {
+             amount : "20.00",
+             currency : "USD"
+          },
+          pricing_type : "fixed_price",
+           redirect_url : "https://giveapp.ru",
+           cancel_url : "https://giveapp.ru"
 
-  });
+}
 
-exports.create20TRX = functions.region("europe-west3").https.onCall((data, context) => {
-      return client.createTransaction({'currency1' : 'TRX', 'currency2' : 'TRX', 'amount' : 155, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                            return {
-                              address : result.address,
-                              tx : result.txn_id,
-                            }
-                    });
-    });
+const create30 = {
+  name : "3000 Give App Coin",
+          description : "Give App token",
+          local_price : {
+             amount : "30.00",
+             currency : "USD"
+          },
+          pricing_type : "fixed_price",
+           redirect_url : "https://giveapp.ru",
+           cancel_url : "https://giveapp.ru"
 
+}
 
-    exports.create30TRX = functions.region("europe-west3").https.onCall((data, context) => {
-          return client.createTransaction({'currency1' : 'TRX', 'currency2' : 'TRX', 'amount' : 230, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                return {
-                                  address : result.address,
-                                tx : result.txn_id,
-                                }
-                        });
-        });
+exports.create10dollars = functions.region("europe-west3").https.onCall( async (stuff, context) => {
+return await axios.post('https://api.commerce.coinbase.com/charges', create10, {
+             headers: { "Content-Type": "application/json", "X-CC-Api-Key": "**************", "X-CC-Version": "2018-03-22"},
+             })
+                                              .then((res) => {
+                                                return {
+                                                                                 url: res.data.data.hosted_url,
+                                                                                 id: res.data.data.code
+                                                                                 }
+                                              }).catch((err) => {
+                                               console.log(err);
+                                              });
+          });
 
+exports.create20dollars = functions.region("europe-west3").https.onCall( async (stuff, context) => {
+return await axios.post('https://api.commerce.coinbase.com/charges', create20, {
+                          headers: { "Content-Type": "application/json", "X-CC-Api-Key": "********", "X-CC-Version": "2018-03-22"},
 
-    exports.createPartnerTRX = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.createTransaction({'currency1' : 'TRX', 'currency2' : 'TRX', 'amount' : 1515, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                    return {
-                                      address : result.address,
-                                    tx : result.txn_id,
-                                    }
-                            });
-            });
+                          })
+                                 .then((res) => {
+                                  return {
+                                  url: res.data.data.hosted_url,
+                                 id: res.data.data.code
+                                  }
+                                 }).catch((err) => {
+                                  console.log(err);
+                                 });
+          });
 
+exports.create30dollars = functions.region("europe-west3").https.onCall( async (stuff, context) => {
+return await axios.post('https://api.commerce.coinbase.com/charges', create30, {
+                          headers: { "Content-Type": "application/json", "X-CC-Api-Key": "**********", "X-CC-Version": "2018-03-22"},
 
-exports.create10USDT = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.createTransaction({'currency1' : 'USDT.ERC20', 'currency2' : 'USDT.ERC20', 'amount' : 121, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                    return {
-                                      address : result.address,
-                                      tx : result.txn_id,
-                                    }
-                            });
-            });
+                          })
+                                 .then((res) => {
+                                  return {
+                                  url: res.data.data.hosted_url,
+                                  id: res.data.data.code
+                                  }
+                                 }).catch((err) => {
+                                  console.log(err);
+                                 });
+          });
 
+exports.createPartner = functions.region("europe-west3").https.onCall( async (stuff, context) => {
+return await axios.post('https://api.commerce.coinbase.com/charges', partner, {
+                          headers: { "Content-Type": "application/json", "X-CC-Api-Key": "************", "X-CC-Version": "2018-03-22"},
 
+                          })
+                                 .then((res) => {
+                                  return {
+                                  url: res.data.data.hosted_url,
+                                  id: res.data.data.code
+                                  }
+                                 }).catch((err) => {
+                                  console.log(err);
+                                 });
+          });
 
-exports.create20USDT = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.createTransaction({'currency1' : 'USDT.ERC20', 'currency2' : 'USDT.ERC20', 'amount' : 242, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                    return {
-                                     address : result.address,
-                                     tx : result.txn_id,
-                                    }
-                            });
-            });
+exports.checkCrypto = functions.region("europe-west3").https.onCall( async (stuff, context) => {
+return await axios.get('https://api.commerce.coinbase.com/charges/' + stuff.message, {
+                                                                                       headers: { "Content-Type": "application/json", "X-CC-Api-Key": "*********", "X-CC-Version": "2018-03-22"},
 
-exports.create30USDT = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.createTransaction({'currency1' : 'USDT.ERC20', 'currency2' : 'USDT.ERC20', 'amount' : 363, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                    return {
-                                     address : result.address,
-                                    tx : result.txn_id,
-                                    }
-                            });
-            });
+                                                                                     })
+                                 .then((res) => {
+                                  return {
+                                  status: res.data.data.timeline,
+                                  }
+                                 }).catch((err) => {
+                                  console.log('error');
+                                 });
+          });
 
-exports.createpartnerUSDT = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.createTransaction({'currency1' : 'USDT.ERC20', 'currency2' : 'USDT.ERC20', 'amount' : 2438, 'buyer_email' : 'azerbaev87@gmail.com'},function(err,result){
-                                    return {
-                                     address : result.address,
-                                     tx : result.txn_id,
-                                    }
-                            });
-            });
-
-
-exports.getTx = functions.region("europe-west3").https.onCall((data, context) => {
-              return client.getTx({'txid' : data.txId},function(err,result){
-                                    return {
-                                     status : result.status,
-                                                                     }
-                            });
-            });
 
