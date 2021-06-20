@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/screens/giveaways/all_giveaways.dart';
 import 'package:konkurs_app/screens/giveaways/closed_giveaways.dart';
 import 'package:konkurs_app/screens/giveaways/my_giveaways.dart';
@@ -29,7 +30,7 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              nextScreenCloseOthers(
+              nextScreen(
                   context,
                   AllGiveaways(
                     userPhoto: userPhoto,
@@ -53,7 +54,7 @@ class EventTile extends StatelessWidget {
                 SimpleAccountMenu.animationController.reverse();
                 SimpleAccountMenu.isMenuOpen = !SimpleAccountMenu.isMenuOpen;
               }
-              nextScreenCloseOthers(
+              nextScreen(
                   context,
                   ClosedGiveaways(
                     userPhoto: userPhoto,
@@ -80,7 +81,7 @@ class EventTile extends StatelessWidget {
             ),
             Text(
               eventType,
-              style: TextStyle(color: Colors.white),
+              style: GoogleFonts.roboto(color: Colors.white),
             )
           ],
         ),

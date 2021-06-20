@@ -1,165 +1,142 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart' as f;
-import 'package:crypto/crypto.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart';
-import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/payment/confirm_payment.dart';
 import 'package:konkurs_app/screens/payment/payment_info.dart';
-import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class USDTPaymentBloc extends ChangeNotifier {
-  var httpClient = Client();
-
-  String price;
-  String price25;
-  String price50;
-  String partnerPrice;
-  var hmac;
-  var results;
-  CpTransaction result;
-  String qrUrl;
-  String txId;
-  String address;
-  String checkOut;
-  String statusUrl;
-  String amount;
   final db = f.FirebaseFirestore.instance;
+  bool button1 = false;
+  bool button2 = false;
+  bool button3 = false;
+  bool button4 = false;
 
-  Future<Response> getUSDT(String price) async {
-    const String baseUrl = 'https://www.coinpayments.net/api.php';
-    Map<String, String> headers = new Map();
-    headers["Content-Type"] =
-        "application/x-www-form-urlencoded; charset=UTF-8";
-    headers["HMAC"] = "$hmac";
-    var data = {
-      "version": "1",
-      "key": "bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380",
-      "cmd": "create_transaction",
-      "amount": price,
-      "currency1": "USDT.ERC20",
-      "currency2": "USDT.ERC20",
-      "buyer_email": "azerbaev87@gmail.com"
-    };
-    var parts = [];
-    data.forEach((key, value) {
-      parts.add('${Uri.encodeQueryComponent(key)}='
-          '${Uri.encodeQueryComponent(value)}');
-    });
-    var formData = parts.join('&');
+  HttpsCallable get10USDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create10USDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-    return await httpClient.post('$baseUrl', headers: headers, body: formData);
+  HttpsCallable get20USDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create20USDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable get30USDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create30USDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable getPartnerUSDTCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'createpartnerUSDT',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  String address;
+
+  String txId;
+
+  Future get10USDT() async {
+    try {
+      final HttpsCallableResult result = await get10USDTCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransaction10USDT() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=121&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
-
-    price = '121';
-
-    Hmac hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    Digest digest = hmacSha256.convert(bytes);
-
-    hmac = digest.toString();
-    print(digest);
+  Future get20USDT() async {
+    try {
+      final HttpsCallableResult result = await get20USDTCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransaction20USDT() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=242&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
-    price25 = '242';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
+  Future get30USDT() async {
+    try {
+      final HttpsCallableResult result = await get30USDTCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransaction30USDT() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=363&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
-    price50 = '363';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
+  Future getPartnerUSDT() async {
+    try {
+      final HttpsCallableResult result = await getPartnerUSDTCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransactionPartner() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=2438&currency1=USDT.ERC20&currency2=USDT.ERC20&buyer_email=azerbaev87%40gmail.com');
-    partnerPrice = '2438';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-    print(digest);
-
-    hmac = digest;
-  }
-
-  setTransid(String txid, String address, String amount, String checkout,
-      String status, String userId, String qrUrl) async {
+  setTransid(String userId, String address, String tx, int type) async {
     db
         .collection('users')
         .doc(userId)
-        .collection('transactions')
-        .doc(txid)
+        .collection('web-transactions')
+        .doc()
         .set({
-      'txHash': txid,
-      'address': address,
-      'qrUrl': qrUrl,
-      'amount': amount,
-      'checkOutUrl': checkout,
-      'status': status,
+      'qrUrl': address,
+      'tx': tx,
+      'type': type,
       'is_confirmed': false,
       'time': f.FieldValue.serverTimestamp(),
     });
   }
 
   Widget buyUSDT1(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction10USDT().whenComplete(() => {
-              getUSDT(price)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button1 = true;
+        get10USDT().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 1).whenComplete(
+                    () => {
+                      nextScreen(
+                          context,
+                          PaymentInfoPage(
+                            userId: userId,
+                            address: address,
+                          )),
+                      button1 = false,
+                      notifyListeners(),
+                    },
+                  ),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button1 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -187,34 +164,38 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyUSDT2(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction20USDT().whenComplete(() => {
-              getUSDT(price25)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button2 = true;
+        get20USDT().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 2).whenComplete(
+                    () => {
+                      nextScreen(
+                          context,
+                          PaymentInfoPage(
+                            userId: userId,
+                            address: address,
+                          )),
+                      button2 = false,
+                      notifyListeners(),
+                    },
+                  ),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button2 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -242,34 +223,36 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyUSDT3(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction30USDT().whenComplete(() => {
-              getUSDT(price50)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
+        button3 = true;
+        get30USDT().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 3).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button3 = false,
+                        notifyListeners(),
                       })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button3 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -297,34 +280,36 @@ class USDTPaymentBloc extends ChangeNotifier {
   }
 
   Widget partnerUSDTButton(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransactionPartner().whenComplete(() => {
-              getUSDT(partnerPrice)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button4 = true;
+        getPartnerUSDT().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 4).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button4 = false,
+                        notifyListeners(),
+                      }),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button4 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -358,7 +343,7 @@ class USDTPaymentBloc extends ChangeNotifier {
             context,
             ConfirmPayment(
               userId: userId,
-              txId: txId,
+              qrUrl: address,
             ));
       },
       child: Container(

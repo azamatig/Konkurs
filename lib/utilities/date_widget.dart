@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/widgets/hand_cursor.dart';
 
 class DateWidget extends StatefulWidget {
@@ -34,10 +34,7 @@ class _DateWidgetState extends State<DateWidget> {
                       .contains(widget.date.toString().substring(0, 10))
                   ? Colors.red
                   : Color(0xffFCCD00),
-              size: 4,
-            ),
-            SizedBox(
-              height: 2.5,
+              size: 2,
             ),
             _showDate1(widget.date),
             _showWeek1(widget.date),
@@ -52,7 +49,7 @@ class _DateWidgetState extends State<DateWidget> {
         //padding: EdgeInsets.all(2),
         child: Text(
       widget.arr[date.weekday - 1],
-      style: TextStyle(color: Colors.black),
+      style: GoogleFonts.roboto(color: Colors.black),
     ));
   }
 
@@ -61,7 +58,7 @@ class _DateWidgetState extends State<DateWidget> {
         //padding: EdgeInsets.all(2),
         child: Text(
       '${date.day}',
-      style: TextStyle(color: Colors.black),
+      style: GoogleFonts.roboto(color: Colors.black),
     ));
   }
 }

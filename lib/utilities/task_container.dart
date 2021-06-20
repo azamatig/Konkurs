@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TaskContainer extends StatelessWidget {
   final String title;
@@ -34,7 +35,7 @@ class TaskContainer extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: GoogleFonts.roboto(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w700,
                 ),
@@ -50,7 +51,7 @@ class TaskContainer extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5.0),
             child: Text(
               subtitle,
-              style: TextStyle(
+              style: GoogleFonts.roboto(
                 fontSize: 14.0,
                 color: Colors.black54,
                 fontWeight: FontWeight.w400,

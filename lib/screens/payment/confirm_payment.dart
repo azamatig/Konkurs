@@ -1,17 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class ConfirmPayment extends StatefulWidget {
   final userId;
-  final txId;
+  final qrUrl;
 
-  ConfirmPayment({Key key, this.userId, this.txId}) : super(key: key);
+  ConfirmPayment({Key key, this.userId, this.qrUrl}) : super(key: key);
 
   @override
   _ConfirmPaymentState createState() => _ConfirmPaymentState();
@@ -22,88 +23,77 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
   ScrollController controller;
 
   bool _isLoading = false;
+  List<dynamic> resuldados = [];
+  var status;
+  bool isDone = false;
+  bool isCanceled = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: LightColors.navyBlue1,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              Positioned(
-                left: -140,
-                top: -300,
-                child: CircleAvatar(
-                  radius: 190,
-                  backgroundColor: LightColors.lightBlue2,
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: LightColors.kLightYellow,
+                  valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
                 ),
-              ),
-              Positioned(
-                left: -130,
-                top: -330,
-                child: CircleAvatar(
-                  radius: 190,
-                  backgroundColor: LightColors.lightBlue1,
-                ),
-              ),
-              Positioned(
-                  left: 0,
-                  top: 30,
-                  child: Row(
-                    children: <Widget>[
-                      BackButton(
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 5),
-                      TitleText(
-                        text: "Назад",
-                        color: Colors.white,
-                      )
-                    ],
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(top: 75.0),
-                child: StreamBuilder(
-                    stream: db
-                        .collection('users')
-                        .doc(widget.userId)
-                        .collection('transactions')
-                        .orderBy('time', descending: true)
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        Center(child: CircularProgressIndicator());
-                      } else {
-                        return ListView.builder(
-                          padding: EdgeInsets.only(top: 30, bottom: 20),
-                          controller: controller,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: snapshot.data.docs.length ?? 0,
-                          itemBuilder: (_, int index) {
-                            if (index < snapshot.data.docs.length) {
-                              return dataList(snapshot.data.docs[index]);
+              )
+            : Container(
+                height: MediaQuery.of(context).size.height,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Positioned(
+                        left: 10,
+                        top: 10,
+                        child: Row(
+                          children: <Widget>[
+                            backButton(),
+                          ],
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 75.0),
+                      child: StreamBuilder(
+                          stream: db
+                              .collection('users')
+                              .doc(widget.userId)
+                              .collection('web-transactions')
+                              .orderBy('time', descending: true)
+                              .snapshots(),
+                          builder:
+                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return ListView.builder(
+                                padding: EdgeInsets.only(top: 30, bottom: 20),
+                                controller: controller,
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemCount: snapshot.data.docs.length ?? 0,
+                                itemBuilder: (_, int index) {
+                                  if (index < snapshot.data.docs.length) {
+                                    return dataList(snapshot.data.docs[index]);
+                                  }
+                                  return Center(
+                                    child: Opacity(
+                                      opacity: _isLoading ? 1.0 : 0.0,
+                                      child: SizedBox(
+                                          width: 32.0,
+                                          height: 32.0,
+                                          child:
+                                              new CircularProgressIndicator()),
+                                    ),
+                                  );
+                                },
+                              );
                             }
-                            return Center(
-                              child: Opacity(
-                                opacity: _isLoading ? 1.0 : 0.0,
-                                child: SizedBox(
-                                    width: 32.0,
-                                    height: 32.0,
-                                    child: new CircularProgressIndicator()),
-                              ),
-                            );
-                          },
-                        );
-                      }
-                      return CircularProgressIndicator();
-                    }),
-              ),
-            ],
-          ),
-        ));
+                          }),
+                    ),
+                  ],
+                ),
+              ));
   }
 
   Widget dataList(DocumentSnapshot th) {
@@ -124,14 +114,10 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    th.data()['txHash'] ?? '',
+                    th.data()['qrUrl'] ?? '',
                     maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                  Text(
-                    "Сумма - " + numberFormat(th.data()['amount']) ?? '',
-                    maxLines: 3,
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style:
+                        GoogleFonts.roboto(color: Colors.white, fontSize: 12),
                   ),
                   Row(
                     children: <Widget>[
@@ -144,7 +130,8 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
                       ),
                       Text(
                         formatOnlyDate(th.data()['time'].toDate() ?? ''),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
+                        style: GoogleFonts.roboto(
+                            color: Colors.white, fontSize: 12),
                       )
                     ],
                   ),
@@ -158,14 +145,7 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
               onTap: () {
                 popup.show(
                     title: 'Инфо платежа',
-                    content: th.data()['checkOutUrl'] ?? '',
-                    actions: [
-                      Container(
-                          child: CachedNetworkImage(
-                              width: 175,
-                              height: 175,
-                              imageUrl: th.data()['qrUrl'] ?? '')),
-                    ],
+                    content: th.data()['qrUrl'],
                     barrierDismissible: true);
               },
               child: Icon(
@@ -175,175 +155,221 @@ class _ConfirmPaymentState extends State<ConfirmPayment> {
               ),
             ),
           ),
+          SizedBox(
+            width: 20,
+          ),
           Center(child: _confirmButton(th)),
         ],
       ),
     );
   }
 
-  Widget _confirmButton(DocumentSnapshot snap) {
-    return _isLoading
-        ? CircularProgressIndicator(
-            backgroundColor: LightColors.kLightYellow,
-            valueColor: AlwaysStoppedAnimation(LightColors.kBlue),
+  Widget backButton() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Row(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Icon(
+              FontAwesomeIcons.chevronLeft,
+              size: 25,
+              color: LightColors.kLightYellow,
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Text(
+            'Назад',
+            style: GoogleFonts.roboto(
+                fontSize: 16, color: LightColors.kLightYellow),
           )
-        : GestureDetector(
-            onTap: () {
-              if (snap.data()['amount'] == '0.00980000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '0.01200000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2500(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '0.02400000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints5000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '0.09800000' &&
-                  snap.data()['is_confirmed'] == false) {
-                setPartner(snap.data()['txHash']);
-              }
-              // Tron
-              if (snap.data()['amount'] == '85.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints1000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '155.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '230.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints3000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '1515.00000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                setPartner(snap.data()['txHash']);
-              }
-              // USDT
-              if (snap.data()['amount'] == '163.02000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints1000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '285.48000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints2000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '405.37000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                awardPoints3000(snap.data()['txHash']);
-              }
-              if (snap.data()['amount'] == '2480.37000000' &&
-                  snap.data()['is_confirmed'] == false) {
-                setPartner(snap.data()['txHash']);
-              }
-            },
-            child: Container(
-                width: 130,
-                margin: EdgeInsets.only(bottom: 20, right: 15),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                decoration: BoxDecoration(
-                    color: snap.data()['is_confirmed'] == true
-                        ? LightColors.kGreen
-                        : LightColors.yellow2,
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: Wrap(
-                  children: <Widget>[
-                    Transform.rotate(
-                      angle: 70,
-                      child: Icon(
-                        FontAwesomeIcons.moneyBill,
-                        color: LightColors.kDarkBlue,
-                        size: 12,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    TitleText(
-                      text: snap.data()['is_confirmed'] == true
-                          ? "Оплачено"
-                          : "Подтвердить",
-                      color: LightColors.kDarkBlue,
-                      fontSize: 10,
-                    ),
-                  ],
-                )),
-          );
+        ],
+      ),
+    );
   }
 
-  void awardPoints2000(String transId) async {
+  Widget _confirmButton(DocumentSnapshot snap) {
+    final popup = BeautifulPopup(context: context, template: TemplateCoin);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isLoading = true;
+        });
+        getTxId(snap.data()['tx']).whenComplete(() => {
+              checkCompletion(),
+              if (snap.data()['type'] == 4 &&
+                  snap.data()['is_confirmed'] == false &&
+                  isDone == true)
+                {
+                  setPartner(snap),
+                },
+              if (snap.data()['type'] == 1 &&
+                  snap.data()['is_confirmed'] == false &&
+                  isDone == true)
+                {
+                  awardPoints1000(snap),
+                },
+              if (snap.data()['type'] == 2 &&
+                  snap.data()['is_confirmed'] == false &&
+                  isDone == true)
+                {
+                  awardPoints2000(snap),
+                },
+              if (snap.data()['type'] == 3 &&
+                  snap.data()['is_confirmed'] == false &&
+                  isDone == true)
+                {
+                  awardPoints3000(snap),
+                },
+              if (isCanceled == false && isDone == false)
+                {
+                  popup.show(
+                      title: 'В ожидании',
+                      content:
+                          "Вы не можете подтвердить на данный момент, так как процесс оплаты еще не завершен в системе, попробуйте еще раз через некоторое время!",
+                      barrierDismissible: true),
+                },
+              if (isCanceled == true && isDone == false)
+                {
+                  popup.show(
+                      title: 'Отмена',
+                      content: "Ваш платеж был отменен, или просрочен",
+                      barrierDismissible: true),
+                },
+              setState(() {
+                isDone = false;
+                _isLoading = false;
+                isCanceled = false;
+              }),
+            });
+      },
+      child: Container(
+          width: 130,
+          margin: EdgeInsets.only(bottom: 20, right: 15),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          decoration: BoxDecoration(
+              color: snap.data()['is_confirmed'] == true
+                  ? LightColors.kGreen
+                  : LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.moneyBill,
+                  color: LightColors.kDarkBlue,
+                  size: 12,
+                ),
+              ),
+              SizedBox(width: 5),
+              TitleText(
+                text: snap.data()['is_confirmed'] == true
+                    ? "Оплачено"
+                    : "Подтвердить",
+                color: LightColors.kDarkBlue,
+                fontSize: 10,
+              ),
+            ],
+          )),
+    );
+  }
+
+  void checkCompletion() {
+    var complete = resuldados.where((e) => e['status'] == 'COMPLETE');
+    var cancelled = resuldados
+        .where((e) => e['status'] == 'CANCELED' || e['status'] == 'EXPIRED');
+    if (complete.isNotEmpty) {
+      isDone = true;
+    }
+    if (cancelled.isNotEmpty) {
+      isCanceled = true;
+    }
+  }
+
+  HttpsCallable getTx = FirebaseFunctions.instanceFor(region: "europe-west3")
+      .httpsCallable('checkCrypto',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  Future getTxId(String txId) async {
+    try {
+      final HttpsCallableResult result = await getTx.call(
+        <String, dynamic>{
+          'message': txId,
+        },
+      );
+      resuldados = result.data['status'];
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+      print(e.code);
+    } catch (e) {
+      print('caught generic exception');
+      print(e);
+    }
+  }
+
+  void awardPoints10000(DocumentSnapshot snap) async {
+    var doc = db.collection('users').doc(widget.userId);
+    doc.update({'points': FieldValue.increment(10000)});
+
+    var confirm = db
+        .collection('users')
+        .doc(widget.userId)
+        .collection('web-transactions')
+        .doc(snap.id);
+    confirm.update({'is_confirmed': true});
+  }
+
+  void awardPoints2000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(2000)});
-    print('1232131');
 
     var confirm = db
         .collection('users')
         .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
+        .collection('web-transactions')
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints1000(String transId) async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(1000)});
-    print('1232131');
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void awardPoints3000(String transId) async {
+  void awardPoints3000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'points': FieldValue.increment(3000)});
-    print('1232131');
 
     var confirm = db
         .collection('users')
         .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
+        .collection('web-transactions')
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints2500(String transId) async {
+  void awardPoints1000(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(2500)});
+    doc.update({'points': FieldValue.increment(1000)});
 
     var confirm = db
         .collection('users')
         .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
+        .collection('web-transactions')
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 
-  void awardPoints5000(String transId) async {
-    var doc = db.collection('users').doc(widget.userId);
-    doc.update({'points': FieldValue.increment(5000)});
-
-    var confirm = db
-        .collection('users')
-        .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
-    confirm.update({'is_confirmed': true});
-  }
-
-  void setPartner(String transId) {
+  void setPartner(DocumentSnapshot snap) async {
     var doc = db.collection('users').doc(widget.userId);
     doc.update({'partner': true});
 
     var confirm = db
         .collection('users')
         .doc(widget.userId)
-        .collection('transactions')
-        .doc(transId);
+        .collection('web-transactions')
+        .doc(snap.id);
     confirm.update({'is_confirmed': true});
   }
 }

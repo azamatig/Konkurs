@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/tasks/details_screen.dart';
@@ -80,6 +82,15 @@ class _AllGiveawaysState extends State<AllGiveaways> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            FontAwesomeIcons.chevronLeft,
+          ),
+        ),
+        automaticallyImplyLeading: true,
         backgroundColor: Color(0xff102733),
         title: Text("Все конкурсы"),
         centerTitle: true,
@@ -138,7 +149,7 @@ class _AllGiveawaysState extends State<AllGiveaways> {
               docRef: document.reference,
               date: d.date,
               userPhoto: widget.userPhoto,
-              userId: Provider.of<UserData>(context).currentUserId,
+              userId: Provider.of<UserData>(context, listen: false).currentUserId,
               instaLink1: document.data()['task1InstaLink'],
               instaLink2: document.data()['task2InstaLink'],
               instaLink3: document.data()['task3InstaLink'],
@@ -165,7 +176,8 @@ class _AllGiveawaysState extends State<AllGiveaways> {
                     Text(
                       d.name,
                       maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style:
+                          GoogleFonts.roboto(color: Colors.white, fontSize: 18),
                     ),
                     SizedBox(
                       height: 8,
@@ -181,7 +193,8 @@ class _AllGiveawaysState extends State<AllGiveaways> {
                         ),
                         Text(
                           formatOnlyDate(d.date.toDate()),
-                          style: TextStyle(color: Colors.white, fontSize: 10),
+                          style: GoogleFonts.roboto(
+                              color: Colors.white, fontSize: 10),
                         )
                       ],
                     ),
@@ -199,7 +212,8 @@ class _AllGiveawaysState extends State<AllGiveaways> {
                         ),
                         Text(
                           '${d.description.substring(0, 10)} ...',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
+                          style: GoogleFonts.roboto(
+                              color: Colors.white, fontSize: 10),
                         )
                       ],
                     ),

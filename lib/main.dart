@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:konkurs_app/blocs/parent_bloc.dart';
 import 'package:konkurs_app/blocs/payment_bloc.dart';
@@ -14,11 +14,12 @@ import 'package:konkurs_app/blocs/tron_payment_bloc.dart';
 import 'package:konkurs_app/blocs/usdt_paymeny_bloc.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/auxillary/notifications.dart';
-import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/screens/login_screen.dart';
+import 'package:konkurs_app/screens/main_screens/home.dart';
 import 'package:konkurs_app/screens/main_screens/sign_up_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import 'screens/login_screen.dart';
 import 'utilities/constants.dart';
@@ -46,7 +47,6 @@ void main() async {
     final inviterId = url.queryParameters['invitedby'];
     if (inviterId != null) {
       InviterStorage(inviterId)
-        ..addPoints()
         ..saveNotification()
             .whenComplete(() => runApp(MyApp(inviterId: inviterId)));
     } else {
@@ -75,8 +75,7 @@ class MyApp extends StatelessWidget {
         if (snapshot.hasData) {
           Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
           return HomeScreen(
-            currentUserId:
-                Provider.of<UserData>(context, listen: false).currentUserId,
+            currentUserId: Provider.of<UserData>(context).currentUserId,
           );
         } else {
           return LoginScreen(inviterId: inviterId);
@@ -101,6 +100,19 @@ class MyApp extends StatelessWidget {
       ],
       child: OverlaySupport(
         child: MaterialApp(
+            builder: (context, widget) => ResponsiveWrapper.builder(
+                BouncingScrollWrapper.builder(context, widget),
+                maxWidth: 1960,
+                minWidth: 412,
+                defaultScale: true,
+                breakpoints: [
+                  ResponsiveBreakpoint.resize(450, name: MOBILE),
+                  ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                  ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+                  ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                  ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+                ],
+                background: Container(color: Color(0xFFF5F5F5))),
             title: 'GiveApp',
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
@@ -165,13 +177,6 @@ class InviterStorage {
 
   InviterStorage(this.inviterId) : _firestore = FirebaseFirestore.instance;
 
-  addPoints() {
-    _firestore
-        .collection('users')
-        .doc(inviterId)
-        .update({'points': FieldValue.increment(15)});
-  }
-
   Future<void> saveNotification() async {
     var timestamp = FieldValue.serverTimestamp();
     final DocumentReference ref = FirebaseFirestore.instance
@@ -179,7 +184,7 @@ class InviterStorage {
         .doc();
 
     var _postData = {
-      'message': "+15! Вы пригласили нового пользователя!",
+      'message': "Вы пригласили нового пользователя!",
       'type': 1,
       'title': "Реферал!",
       'is_Unread': true,

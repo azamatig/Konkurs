@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
@@ -16,18 +17,18 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   String _phone, _name, _email, _password;
+  final AuthService auth = AuthService();
   bool _isLoading = false;
 
-  _submit() {
+  Future _submit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       setState(() {
         _isLoading = true;
       });
       // Logging in the user w/ Firebase
-      AuthService.signUpUser(
+      await auth.signUpUser(
           context, _phone, _name, _email, _password, widget.inviterId);
-      Navigator.pop(context);
     }
   }
 
@@ -55,14 +56,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       Text(
                         'GIVE',
-                        style: TextStyle(
+                        style: GoogleFonts.roboto(
                             color: Colors.white,
                             fontSize: 32,
                             fontWeight: FontWeight.w800),
                       ),
                       Text(
                         'APP',
-                        style: TextStyle(
+                        style: GoogleFonts.roboto(
                             color: Color(0xffFCCD00),
                             fontSize: 32,
                             fontWeight: FontWeight.w800),
@@ -80,10 +81,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             vertical: 10.0,
                           ),
                           child: TextFormField(
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.roboto(color: Colors.white),
                             decoration: InputDecoration(
                                 labelText: 'Имя',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle:
+                                    GoogleFonts.roboto(color: Colors.white),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
@@ -104,10 +106,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             vertical: 10.0,
                           ),
                           child: TextFormField(
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.roboto(color: Colors.white),
                             decoration: InputDecoration(
                                 labelText: 'Телефон',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle:
+                                    GoogleFonts.roboto(color: Colors.white),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
@@ -128,10 +131,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             vertical: 10.0,
                           ),
                           child: TextFormField(
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.roboto(color: Colors.white),
                             decoration: InputDecoration(
                                 labelText: 'Email',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle:
+                                    GoogleFonts.roboto(color: Colors.white),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
@@ -153,10 +157,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             vertical: 10.0,
                           ),
                           child: TextFormField(
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.roboto(color: Colors.white),
                             decoration: InputDecoration(
                                 labelText: 'Пароль',
-                                labelStyle: TextStyle(color: Colors.white),
+                                labelStyle:
+                                    GoogleFonts.roboto(color: Colors.white),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
@@ -176,7 +181,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         SizedBox(height: 20.0),
                         GestureDetector(
                           onTap: () {
-                            _submit();
+                            _submit()
+                                .whenComplete(() => Navigator.pop(context));
                           },
                           child: Container(
                             child: _isLoading
@@ -192,7 +198,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     children: <Widget>[
                                       Text(
                                         "Регистрация",
-                                        style: TextStyle(
+                                        style: GoogleFonts.roboto(
                                             color: Colors.white, fontSize: 17),
                                       ),
                                       SizedBox(
@@ -225,7 +231,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                                 Text(
                                   "Назад",
-                                  style: TextStyle(
+                                  style: GoogleFonts.roboto(
                                       color: Colors.white, fontSize: 17),
                                 ),
                               ],

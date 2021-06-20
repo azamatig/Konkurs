@@ -27,6 +27,7 @@ dependencies:
   firebase_auth: ^0.20.0+1
   cloud_firestore: ^0.16.0
   image_picker: ^0.6.7+22
+  cloud_functions: 0.9.0
   firebase_storage: ^7.0.0
   flutter_image_compress: ^0.7.0
   font_awesome_flutter: ^8.11.0
@@ -64,6 +65,9 @@ dependencies:
   country_pickers: ^1.2.1
   get_it: ^1.0.3
   permission_handler: ^5.0.1
+  responsive_framework: ^0.0.15
+  flutter_html: 1.2.0
+  carousel_slider: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -108,6 +112,7 @@ flutter:
     - assets/images/ic_money.png
     - assets/images/ic_send.png
     - assets/images/gift.png
+    - assets/images/coinbase.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

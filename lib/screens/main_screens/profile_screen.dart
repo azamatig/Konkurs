@@ -1,19 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/pigstagram_auth.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/screens/giveaways/my_wins.dart';
+import 'package:konkurs_app/screens/login_screen.dart';
 import 'package:konkurs_app/screens/payment/pp_screen.dart';
 import 'package:konkurs_app/screens/payment/wallet_transfer.dart';
 import 'package:konkurs_app/screens/tasks/task_profile.dart';
+import 'package:konkurs_app/services/auth_service.dart';
 import 'package:konkurs_app/utilities/constants.dart';
-import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
+import 'package:konkurs_app/widgets/hand_cursor.dart';
 import 'package:provider/provider.dart';
 
 import '../../utilities/settings.dart';
@@ -178,7 +180,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildBuyingButton(),
                           GestureDetector(
                             onTap: () {
-                              nextScreen(context, null);
+                              AuthService.logout();
+                              nextScreenCloseOthers(context, LoginScreen());
                             },
                             child: Padding(
                               padding:
@@ -186,15 +189,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 children: [
                                   Text(
-                                    'Телеграм',
+                                    'Выйти',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.roboto(
                                         color: _iconColor, fontSize: 12),
                                   ),
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  Icon(FontAwesomeIcons.telegram,
+                                  Icon(FontAwesomeIcons.signOutAlt,
                                       size: 22, color: _iconColor),
                                 ],
                               ),
@@ -214,11 +217,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Text(
                             'Привет!',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: GoogleFonts.roboto(
+                                fontSize: 18, color: Colors.black),
                           ),
                           Text(
                             user.name,
-                            style: TextStyle(
+                            style: GoogleFonts.roboto(
                                 fontSize: 22,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
@@ -268,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           child: GestureDetector(
                                         onTap: _showRefUrlDialog,
                                         child: _actionList(
-                                            'assets/images/ic_send.png',
+                                            FontAwesomeIcons.telegramPlane,
                                             'Пригласить друга'),
                                       )),
                                       HandCursor(
@@ -280,15 +284,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   widget.userPhoto));
                                         },
                                         child: _actionList(
-                                            'assets/images/ic_money.png',
-                                            'Выйгрыши'),
+                                            FontAwesomeIcons.gift, 'Выйгрыши'),
                                       )),
                                     ]),
                                     TableRow(children: [
                                       HandCursor(
                                           child: GestureDetector(
                                               child: _actionList(
-                                                  'assets/images/ic_transact.png',
+                                                  FontAwesomeIcons.cogs,
                                                   'Настройки'),
                                               onTap: () {
                                                 nextScreen(
@@ -304,8 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               ));
                                         },
                                         child: _actionList(
-                                            'assets/images/ic_reward.png',
-                                            'Задания'),
+                                            FontAwesomeIcons.tasks, 'Задания'),
                                       )),
                                     ])
                                   ],
@@ -347,7 +349,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 user.points.toString(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.roboto(
                     color: _textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 30),
@@ -355,7 +357,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 'Доступных койнов',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _iconColor, fontSize: 16),
+                style: GoogleFonts.roboto(color: _iconColor, fontSize: 16),
               ),
             ],
           ),
@@ -406,7 +408,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Text(
               'Купить',
               textAlign: TextAlign.center,
-              style: TextStyle(color: _iconColor, fontSize: 12),
+              style: GoogleFonts.roboto(color: _iconColor, fontSize: 12),
             ),
             SizedBox(
               height: 5,
@@ -419,26 +421,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 // custom action widget
-  Widget _actionList(String iconPath, String desc) {
+  Widget _actionList(IconData iconPath, String desc) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(
+          Icon(
             iconPath,
-            fit: BoxFit.contain,
-            height: 45.0,
-            width: 45.0,
             color: _iconColor,
+            size: 30,
           ),
           SizedBox(
-            height: 8,
+            height: 30,
           ),
           Text(
             desc,
-            style: TextStyle(color: _iconColor),
+            style: GoogleFonts.roboto(color: _iconColor),
           )
         ],
       ),

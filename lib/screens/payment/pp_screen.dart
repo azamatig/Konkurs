@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/models/user_model.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
@@ -168,13 +169,14 @@ class _PartnerProgramScreenState extends State<PartnerProgramScreen> {
                           ),
                           Text(
                             'Ваш статус!',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: GoogleFonts.roboto(
+                                fontSize: 18, color: Colors.black),
                           ),
                           Text(
                             user.partner == true
                                 ? 'Вы партнер'
                                 : 'Вы не партнер',
-                            style: TextStyle(
+                            style: GoogleFonts.roboto(
                                 fontSize: 22,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
@@ -218,7 +220,7 @@ class _PartnerProgramScreenState extends State<PartnerProgramScreen> {
                                         Text(
                                           user.points.toString(),
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                          style: GoogleFonts.roboto(
                                               color: _textColor,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 30),
@@ -226,7 +228,7 @@ class _PartnerProgramScreenState extends State<PartnerProgramScreen> {
                                         Text(
                                           'Доступных койнов',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                          style: GoogleFonts.roboto(
                                               color: _iconColor, fontSize: 16),
                                         ),
                                       ],
@@ -337,7 +339,7 @@ class _PartnerProgramScreenState extends State<PartnerProgramScreen> {
         children: <Widget>[
           Text(
             level,
-            style: TextStyle(color: _iconColor),
+            style: GoogleFonts.roboto(color: _iconColor),
           ),
           SizedBox(
             height: 8,
@@ -348,7 +350,7 @@ class _PartnerProgramScreenState extends State<PartnerProgramScreen> {
           ),
           Text(
             desc,
-            style: TextStyle(color: _iconColor),
+            style: GoogleFonts.roboto(color: _iconColor),
           )
         ],
       ),

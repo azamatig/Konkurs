@@ -12,6 +12,7 @@ class User {
   List eventDays;
   bool partner;
   String parent;
+  bool registered;
 
   User(
       {this.id,
@@ -24,7 +25,8 @@ class User {
       this.points,
       this.eventDays,
       this.partner,
-      this.parent});
+      this.parent,
+      this.registered});
 
   factory User.fromDoc(DocumentSnapshot d) {
     return User(
@@ -39,6 +41,7 @@ class User {
       eventDays: d['eventDays'],
       partner: d['partner'],
       parent: d['parent'],
+      registered: d['registered'],
     );
   }
 
@@ -56,6 +59,7 @@ class User {
       eventDays: d['eventDays'],
       partner: d['partner'],
       parent: d['parent'],
+      registered: d['registered'],
     );
   }
 
@@ -73,6 +77,7 @@ class User {
       eventDays: d['eventDays'],
       partner: d['partner'],
       parent: d['parent'],
+      registered: d['registered'],
     );
   }
 
@@ -90,6 +95,7 @@ class User {
       eventDays: d['eventDays'],
       partner: d['partner'],
       parent: d['parent'],
+      registered: d['registered'],
     );
   }
 
@@ -105,5 +111,6 @@ class User {
     this.eventDays = m['eventDays'];
     this.partner = m['partner'];
     this.parent = m['parent'];
+    this.registered = m['registered'];
   }
 }

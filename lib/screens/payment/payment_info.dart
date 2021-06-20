@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/blocs/payment_bloc.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
@@ -10,17 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 class PaymentInfoPage extends StatefulWidget {
   final String userId;
   final String address;
-  final String checkOutUrl;
-  final String qrUrl;
   final bool isLoading;
 
-  PaymentInfoPage(
-      {Key key,
-      this.userId,
-      this.address,
-      this.checkOutUrl,
-      this.qrUrl,
-      this.isLoading})
+  PaymentInfoPage({Key key, this.userId, this.address, this.isLoading})
       : super(key: key);
 
   @override
@@ -28,7 +20,7 @@ class PaymentInfoPage extends StatefulWidget {
 }
 
 class _PaymentInfoPageState extends State<PaymentInfoPage> {
-  String address;
+  bool copied = false;
 
   @override
   void initState() {
@@ -49,19 +41,25 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
                 child: backButton(),
               ),
               SizedBox(
-                height: 10,
+                height: 25,
               ),
               infoText(),
               SizedBox(
-                height: 10,
+                height: 25,
               ),
-              qrPicture(),
-              SizedBox(
-                height: 15,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  qrPicture(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  urlButton(widget.address),
+                ],
               ),
-              addressWidget(),
               SizedBox(
-                height: 15,
+                height: 25,
               ),
               _buttonWidget(),
             ],
@@ -80,56 +78,65 @@ class _PaymentInfoPageState extends State<PaymentInfoPage> {
 
   Widget qrPicture() {
     return Container(
-      child: CachedNetworkImage(
-        imageUrl: widget.qrUrl == null ? '' : widget.qrUrl,
+      width: 150,
+      child: Text(
+        widget.address == null
+            ? 'Ошибка данных...попробуйте снова'
+            : 'Перейти в платежную систему',
+        style: GoogleFonts.roboto(fontSize: 10, color: LightColors.yellow),
       ),
+    );
+  }
+
+  Widget urlButton(String url) {
+    return Container(
+      width: 150,
+      child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: LightColors.kBlue, shadowColor: Colors.grey),
+          onPressed: () => {
+                setUrl(url),
+              },
+          child: url != null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.wallet,
+                      color: LightColors.kDarkBlue,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Оплата',
+                      style: GoogleFonts.roboto(
+                          color: LightColors.kDarkBlue, fontSize: 12),
+                    )
+                  ],
+                )
+              : SizedBox()),
     );
   }
 
   Widget infoText() {
     return Container(
-      width: 300,
+      width: 400,
       child: Text(
-        'Ваш QR код и ссылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь в историю оплат и нажмите Подтвердить оплату! \n'
+        'Cсылка на оплату сформирована, перейдите по ссылкам и оплатите покупку, удобным Вам способом! \n Потом вернитесь в историю оплат и нажмите Подтвердить оплату! \n'
         'Средства будут начислены после подтверждения',
-        style: TextStyle(fontSize: 11, color: LightColors.kPalePink),
+        style: TextStyle(fontSize: 14, color: LightColors.kPalePink),
+        textAlign: TextAlign.center,
       ),
-    );
-  }
-
-  Widget addressWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 320,
-          child: Text(
-            'Адрес кошелька \n' + widget.address,
-            style: TextStyle(fontSize: 12, color: LightColors.kLightYellow),
-          ),
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        Container(
-          width: 320,
-          child: Text('Ссылка на оплату \n' + widget.checkOutUrl,
-              style: TextStyle(fontSize: 12, color: LightColors.kLightYellow)),
-        )
-      ],
     );
   }
 
   Widget _buttonWidget() {
     final pb = context.watch<PaymentBloc>();
     return Column(
-      children: <Widget>[
-        Column(
-          children: [
-            pb.transferButton(context, widget.userId),
-          ],
-        )
+      children: [
+        pb.transferButton(context, widget.userId),
       ],
     );
   }

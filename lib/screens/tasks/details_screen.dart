@@ -482,7 +482,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            nextScreenCloseOthers(
+                            nextScreen(
                                 context,
                                 AllGivesUsers(
                                   doc: post,

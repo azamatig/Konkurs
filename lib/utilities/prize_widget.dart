@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 
 class PrizeWidget extends StatelessWidget {
@@ -14,55 +14,35 @@ class PrizeWidget extends StatelessWidget {
         onTap: () {
           Navigator.pop(context);
         },
-        child: _postImage(context));
+        child: _carouselSlider(context));
   }
 
-  SingleChildScrollView _postImage(context) {
-    return SingleChildScrollView(
-        child: Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: LightColors.kLightYellow2,
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image: CachedNetworkImageProvider(postImage),
-        ),
-      ),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 35.0),
-            child: Container(
-              height: 165,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, top: 15),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    child: Container(
-                        color: LightColors.kLightYellow,
-                        height: 40,
-                        width: 40,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Icon(
-                              FontAwesomeIcons.chevronLeft,
-                              size: 25,
-                              color: LightColors.kDarkBlue,
-                            ),
-                          ),
-                        )),
+  CarouselSlider _carouselSlider(BuildContext context) {
+    List<String> imgList = [
+      postImage,
+      postImage,
+      postImage,
+      'https://wallpaperaccess.com/full/1180458.jpg'
+    ];
+    final double height = MediaQuery.of(context).size.height;
+    return CarouselSlider(
+        items: imgList
+            .map((item) => Container(
+                  decoration: BoxDecoration(
+                    color: LightColors.kLightYellow,
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: CachedNetworkImageProvider(item),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ));
+                ))
+            .toList(),
+        options: CarouselOptions(
+          height: height,
+          autoPlay: true,
+          aspectRatio: 2.0,
+          enlargeCenterPage: true,
+          enlargeStrategy: CenterPageEnlargeStrategy.height,
+        ));
   }
 }

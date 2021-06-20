@@ -1,169 +1,214 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart' as f;
-import 'package:crypto/crypto.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart';
-import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/payment/confirm_payment.dart';
 import 'package:konkurs_app/screens/payment/payment_info.dart';
-import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class PaymentBloc extends ChangeNotifier {
-  var httpClient = Client();
-
-  String price;
-  String price25;
-  String price50;
-  String partnerPrice;
-  var hmac;
-  var results;
-  CpTransaction result;
-  String qrUrl;
   String txId;
   String address;
-  String checkOut;
-  String statusUrl;
-  String amount;
   final db = f.FirebaseFirestore.instance;
+  bool button1 = false;
+  bool button2 = false;
+  bool button3 = false;
+  bool button4 = false;
 
-  bool isLoading = false;
+  HttpsCallable get10Call =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create10dollars',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-  Future<Response> getTransaction(String price) async {
-    const String baseUrl = 'https://www.coinpayments.net/api.php';
-    Map<String, String> headers = new Map();
-    headers["Content-Type"] =
-        "application/x-www-form-urlencoded; charset=UTF-8";
-    headers["HMAC"] = "$hmac";
-    var data = {
-      "version": "1",
-      "key": "bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380",
-      "cmd": "create_transaction",
-      "amount": price,
-      "currency1": "ETH",
-      "currency2": "ETH",
-      "buyer_email": "azerbaev87@gmail.com"
-    };
-    var parts = [];
-    data.forEach((key, value) {
-      parts.add('${Uri.encodeQueryComponent(key)}='
-          '${Uri.encodeQueryComponent(value)}');
-    });
-    var formData = parts.join('&');
+  HttpsCallable getPartnerCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'createPartner',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-    return await httpClient.post('$baseUrl', headers: headers, body: formData);
+  HttpsCallable get20Call =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create20dollars',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable get30Call =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create30dollars',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  Future get10ETH() async {
+    try {
+      final HttpsCallableResult result = await get10Call.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['url'];
+      txId = result.data['id'];
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+      print(e.code);
+    } catch (e) {
+      print('caught generic exception');
+      print(e);
+    }
   }
 
-  Future<void> createTransaction20USD() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.0098&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-
-    price = '0.0098';
-
-    Hmac hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    Digest digest = hmacSha256.convert(bytes);
-
-    hmac = digest.toString();
+  Future get20D() async {
+    try {
+      final HttpsCallableResult result = await get20Call.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['url'];
+      txId = result.data['id'];
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+    } catch (e) {
+      print('caught generic exception');
+      print(e);
+    }
   }
 
-  Future<void> createTransaction25USD() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.012&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    price25 = '0.012';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
+  Future get30D() async {
+    try {
+      final HttpsCallableResult result = await get30Call.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['url'];
+      txId = result.data['id'];
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+    } catch (e) {
+      print('caught generic exception');
+    }
   }
 
-  Future<void> createTransaction50USD() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.024&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    price50 = '0.024';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
+  Future getPartnerETH() async {
+    try {
+      final HttpsCallableResult result = await getPartnerCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['url'];
+      txId = result.data['id'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransactionPartner() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=0.098&currency1=ETH&currency2=ETH&buyer_email=azerbaev87%40gmail.com');
-    partnerPrice = '0.098';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
-  }
-
-  setTransid(String txid, String address, String amount, String checkout,
-      String status, String userId, String qrUrl) async {
+  setTransid(String userId, String address, String id, int type) async {
     db
         .collection('users')
         .doc(userId)
-        .collection('transactions')
-        .doc(txid)
+        .collection('web-transactions')
+        .doc()
         .set({
-      'txHash': txid,
-      'address': address,
-      'qrUrl': qrUrl,
-      'amount': amount,
-      'checkOutUrl': checkout,
-      'status': status,
+      'qrUrl': address,
+      'tx': id,
       'is_confirmed': false,
+      'type': type,
       'time': f.FieldValue.serverTimestamp(),
     });
   }
 
   Widget buyButtons(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction20USD().whenComplete(() => {
-              getTransaction(price)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
+        button1 = true;
+        get10ETH().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 1).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button1 = false,
+                        notifyListeners(),
                       })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button1 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+              color: LightColors.yellow2,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Wrap(
+            children: <Widget>[
+              Transform.rotate(
+                angle: 70,
+                child: Icon(
+                  FontAwesomeIcons.coins,
+                  color: LightColors.kDarkBlue,
+                ),
+              ),
+              SizedBox(width: 5),
+              TitleText(
+                text: "10\$ - 1000 gc",
+                color: LightColors.kDarkBlue,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget buyButtons20(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
+    return GestureDetector(
+      onTap: () {
+        button3 = true;
+        get20D().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 2).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button3 = false,
+                        notifyListeners(),
+                      })
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button3 = false,
+                  notifyListeners(),
+                }
+            });
+        notifyListeners();
+      },
+      child: Container(
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -186,39 +231,41 @@ class PaymentBloc extends ChangeNotifier {
     );
   }
 
-  Widget buyButtons2(BuildContext context, String userId) {
+  Widget buyButtons30(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction25USD().whenComplete(() => {
-              getTransaction(price25)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
+        button4 = true;
+        get30D().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 3).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button4 = false,
+                        notifyListeners(),
                       })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button4 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -233,62 +280,7 @@ class PaymentBloc extends ChangeNotifier {
               ),
               SizedBox(width: 5),
               TitleText(
-                text: "25\$ - 2500 gc",
-                color: LightColors.kDarkBlue,
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget buyButtons3(BuildContext context, String userId) {
-    return GestureDetector(
-      onTap: () {
-        createTransaction50USD().whenComplete(() => {
-              getTransaction(price50)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
-            });
-        notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
-      },
-      child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          decoration: BoxDecoration(
-              color: LightColors.yellow2,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          child: Wrap(
-            children: <Widget>[
-              Transform.rotate(
-                angle: 70,
-                child: Icon(
-                  FontAwesomeIcons.coins,
-                  color: LightColors.kDarkBlue,
-                ),
-              ),
-              SizedBox(width: 5),
-              TitleText(
-                text: "50\$ - 5000 gc",
+                text: "30\$ - 3000 gc",
                 color: LightColors.kDarkBlue,
               ),
             ],
@@ -297,38 +289,40 @@ class PaymentBloc extends ChangeNotifier {
   }
 
   Widget partnerButton(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransactionPartner().whenComplete(() => {
-              getTransaction(partnerPrice)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button2 = true;
+        getPartnerETH().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 4).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button2 = false,
+                        notifyListeners(),
+                      }),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button2 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -343,7 +337,7 @@ class PaymentBloc extends ChangeNotifier {
               ),
               SizedBox(width: 10),
               TitleText(
-                text: "Партнерская программа",
+                text: "Стать партнером",
                 color: LightColors.kDarkBlue,
               ),
             ],
@@ -358,12 +352,12 @@ class PaymentBloc extends ChangeNotifier {
             context,
             ConfirmPayment(
               userId: userId,
-              txId: txId,
+              qrUrl: address,
             ));
       },
       child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: EdgeInsets.only(bottom: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
               color: LightColors.yellow2,
               borderRadius: BorderRadius.all(Radius.circular(15))),

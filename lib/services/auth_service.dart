@@ -8,7 +8,7 @@ class AuthService {
   static final _auth = auth.FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
 
-  static void signUpUser(BuildContext context, String phone, String name,
+  Future signUpUser(BuildContext context, String phone, String name,
       String email, String password, String inviterId) async {
     var placeholder =
         'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
@@ -32,6 +32,7 @@ class AuthService {
           'eventDays': [],
           'parent': inviterId ?? '',
           'partner': false,
+          'registered': false,
         });
         if (inviterId != null) {
           _firestore
@@ -81,7 +82,8 @@ class AuthService {
             .set({
           'children': [],
         });
-        Provider.of<UserData>(context).currentUserId = signedInUser.uid;
+        Provider.of<UserData>(context, listen: false).currentUserId =
+            signedInUser.uid;
       }
     } catch (e) {
       print(e);

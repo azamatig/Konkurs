@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:konkurs_app/screens/tasks/details_screen.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/dropdown_menu.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
-
 import 'package:konkurs_app/widgets/hand_cursor.dart';
 
 // ignore: must_be_immutable
@@ -74,7 +74,8 @@ class PopularEventTile extends StatelessWidget {
                     Text(
                       name,
                       maxLines: 2,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style:
+                          GoogleFonts.roboto(color: Colors.white, fontSize: 18),
                     ),
                     SizedBox(
                       height: 8,
@@ -90,7 +91,8 @@ class PopularEventTile extends StatelessWidget {
                         ),
                         Text(
                           formatOnlyDate(date.toDate()),
-                          style: TextStyle(color: Colors.white, fontSize: 10),
+                          style: GoogleFonts.roboto(
+                              color: Colors.white, fontSize: 10),
                         )
                       ],
                     ),
@@ -108,7 +110,8 @@ class PopularEventTile extends StatelessWidget {
                         ),
                         Text(
                           '${desc.substring(0, 20)} ...',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
+                          style: GoogleFonts.roboto(
+                              color: Colors.white, fontSize: 10),
                         )
                       ],
                     ),
@@ -124,7 +127,7 @@ class PopularEventTile extends StatelessWidget {
                   imageUrl: imgeAssetPath,
                   height: 100,
                   width: 120,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                 )),
           ],
         ),

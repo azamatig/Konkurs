@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:konkurs_app/models/post_model.dart';
 import 'package:konkurs_app/models/user_data.dart';
 import 'package:konkurs_app/screens/tasks/details_screen.dart';
@@ -82,6 +83,14 @@ class _ClosedGiveawaysState extends State<ClosedGiveaways> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            FontAwesomeIcons.chevronLeft,
+          ),
+        ),
         backgroundColor: Color(0xff102733),
         title: Text("Завершенные конкурсы"),
         centerTitle: true,

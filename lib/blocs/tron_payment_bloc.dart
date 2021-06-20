@@ -1,138 +1,104 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart' as f;
-import 'package:crypto/crypto.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart';
-import 'package:konkurs_app/models/cp_transaction.dart';
 import 'package:konkurs_app/screens/payment/confirm_payment.dart';
 import 'package:konkurs_app/screens/payment/payment_info.dart';
-import 'package:konkurs_app/utilities/achievements_view.dart';
 import 'package:konkurs_app/utilities/constants.dart';
 import 'package:konkurs_app/utilities/next_screen.dart';
 import 'package:konkurs_app/utilities/title_wallet_text.dart';
 
 class TRXPaymentBloc extends ChangeNotifier {
-  var httpClient = Client();
-
-  bool _isLoading = true;
-  bool get isLoading => _isLoading;
-
-  String price10;
-  String price20;
-  String price30;
-  String partnerPrice;
-  var hmac;
-  var results;
-  CpTransaction result;
-  String qrUrl;
-  String txId;
-  String address;
-  String checkOut;
-  String statusUrl;
-  String amount;
   final db = f.FirebaseFirestore.instance;
+  bool button1 = false;
+  bool button2 = false;
+  bool button3 = false;
+  bool button4 = false;
 
-  Future<Response> getTRX(String price) async {
-    const String baseUrl = 'https://www.coinpayments.net/api.php';
-    Map<String, String> headers = new Map();
-    headers["Content-Type"] =
-        "application/x-www-form-urlencoded; charset=UTF-8";
-    headers["HMAC"] = "$hmac";
-    var data = {
-      "version": "1",
-      "key": "bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380",
-      "cmd": "create_transaction",
-      "amount": price,
-      "currency1": "TRX",
-      "currency2": "TRX",
-      "buyer_email": "azerbaev87@gmail.com"
-    };
-    var parts = [];
-    data.forEach((key, value) {
-      parts.add('${Uri.encodeQueryComponent(key)}='
-          '${Uri.encodeQueryComponent(value)}');
-    });
-    var formData = parts.join('&');
+  HttpsCallable get10TRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create10TRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
 
-    return await httpClient.post('$baseUrl', headers: headers, body: formData);
+  HttpsCallable get20TRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create20TRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable get30TRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'create30TRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  HttpsCallable getPartnerTRXCall =
+      FirebaseFunctions.instanceFor(region: "europe-west3").httpsCallable(
+          'createPartnerTRX',
+          options: HttpsCallableOptions(timeout: Duration(seconds: 10)));
+
+  String address;
+
+  String txId;
+
+  Future get10TRX() async {
+    try {
+      final HttpsCallableResult result = await get10TRXCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransaction10TRX() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=85&currency1=TRX&currency2=TRX&buyer_email=azerbaev87%40gmail.com');
-
-    price10 = '85';
-
-    Hmac hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    Digest digest = hmacSha256.convert(bytes);
-
-    hmac = digest.toString();
-    notifyListeners();
-    print(digest);
+  Future get20TRX() async {
+    try {
+      final HttpsCallableResult result = await get20TRXCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransaction25USD() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=155&currency1=TRX&currency2=TRX&buyer_email=azerbaev87%40gmail.com');
-    price20 = '155';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
-    notifyListeners();
+  Future get30TRX() async {
+    try {
+      final HttpsCallableResult result = await get30TRXCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransaction50USD() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=230&currency1=TRX&currency2=TRX&buyer_email=azerbaev87%40gmail.com');
-    price30 = '230';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-
-    hmac = digest;
-    notifyListeners();
+  Future getPartnerTRX() async {
+    try {
+      final HttpsCallableResult result = await getPartnerTRXCall.call(
+        <String, dynamic>{
+          'message': '1',
+        },
+      );
+      address = result.data['address'];
+      txId = result.data['tx'];
+    } on FirebaseFunctionsException catch (e) {} catch (e) {}
   }
 
-  Future<void> createTransactionPartner() async {
-    var secret = utf8.encode(
-        '1D2C758ca29B26f3c4541eDeC03eCdF5ee8cc0163b0107d2A4704534367b57CB');
-    var bytes = utf8.encode(
-        'version=1&key=bc9b1b3dcd5e2bc7aaf27fcb23f73569006ecf6e559eeecc912071774f66f380&cmd=create_transaction&amount=1515&currency1=TRX&currency2=TRX&buyer_email=azerbaev87%40gmail.com');
-    partnerPrice = '1515';
-
-    var hmacSha256 = Hmac(sha512, secret); // HMAC-SHA256
-    var digest = hmacSha256.convert(bytes);
-    print(digest);
-
-    hmac = digest;
-    notifyListeners();
-  }
-
-  setTransid(String txid, String address, String amount, String checkout,
-      String status, String userId, String qrUrl) async {
+  setTransid(String userId, String address, String tx, int type) async {
     db
         .collection('users')
         .doc(userId)
-        .collection('transactions')
-        .doc(txid)
+        .collection('web-transactions')
+        .doc()
         .set({
-      'txHash': txid,
-      'address': address,
-      'qrUrl': qrUrl,
-      'amount': amount,
-      'checkOutUrl': checkout,
-      'status': status,
+      'qrUrl': address,
+      'tx': tx,
+      'type': type,
       'is_confirmed': false,
       'time': f.FieldValue.serverTimestamp(),
     });
@@ -142,34 +108,36 @@ class TRXPaymentBloc extends ChangeNotifier {
     BuildContext context,
     String userId,
   ) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction10TRX().whenComplete(() => {
-              getTRX(price10)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button1 = true;
+        get10TRX().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 1).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button1 = false,
+                        notifyListeners(),
+                      }),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button1 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -197,34 +165,36 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyTRX2(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction25USD().whenComplete(() => {
-              getTRX(price20)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button2 = true;
+        get20TRX().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 2).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button2 = false,
+                        notifyListeners(),
+                      }),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button2 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -252,34 +222,36 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   Widget buyTRX3(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransaction50USD().whenComplete(() => {
-              getTRX(price30)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
+        button3 = true;
+        get30TRX().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 3).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button3 = false,
+                        notifyListeners(),
                       })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button3 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -307,34 +279,36 @@ class TRXPaymentBloc extends ChangeNotifier {
   }
 
   Widget partnerTRXButton(BuildContext context, String userId) {
+    final popup =
+        BeautifulPopup(context: context, template: TemplateBlueRocket);
     return GestureDetector(
       onTap: () {
-        createTransactionPartner().whenComplete(() => {
-              getTRX(partnerPrice)
-                  .then((value) => {
-                        results = value.body,
-                        result = CpTransaction.fromJson(results),
-                        qrUrl = result.result.qrcodeUrl,
-                        txId = result.result.txnId,
-                        address = result.result.address,
-                        checkOut = result.result.checkoutUrl,
-                        statusUrl = result.result.statusUrl,
-                        amount = result.result.amount,
-                      })
-                  .whenComplete(() => setTransid(txId, address, amount,
-                      checkOut, statusUrl, userId, qrUrl))
-                  .whenComplete(() => nextScreen(
-                      context,
-                      PaymentInfoPage(
-                        userId: userId,
-                        qrUrl: qrUrl,
-                        address: address,
-                        checkOutUrl: checkOut,
-                      )))
+        button4 = true;
+        getPartnerTRX().whenComplete(() => {
+              if (address != null)
+                {
+                  setTransid(userId, address, txId, 4).whenComplete(() => {
+                        nextScreen(
+                            context,
+                            PaymentInfoPage(
+                              userId: userId,
+                              address: address,
+                            )),
+                        button4 = false,
+                        notifyListeners(),
+                      }),
+                }
+              else
+                {
+                  popup.show(
+                    title: 'Извините...',
+                    content: 'Что-то пошло не так, попробуйте позже' ?? '',
+                  ),
+                  button4 = false,
+                  notifyListeners(),
+                }
             });
         notifyListeners();
-        showAchievementView2(
-            context, 'Оплата формируется', 'Дождитесь открытия экарана оплаты');
       },
       child: Container(
           margin: EdgeInsets.only(bottom: 20),
@@ -368,7 +342,7 @@ class TRXPaymentBloc extends ChangeNotifier {
             context,
             ConfirmPayment(
               userId: userId,
-              txId: txId,
+              qrUrl: address,
             ));
       },
       child: Container(
