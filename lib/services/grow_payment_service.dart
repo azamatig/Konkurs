@@ -1,19 +1,50 @@
 import 'package:http/http.dart' as http;
-import 'package:uuid/uuid.dart';
 
-const paymentUrl = "https://sandbox.ps.grow.mybuilder.site/";
+const paymentUrl = "http://localhost:8080";
 
 class GrowPaymentService {
-  Future<dynamic> pay(double amount) async {
+  Future<dynamic> request(double amount) async {
     return http
-        .post('$paymentUrl/payment/checkout/redirect', body: <String, dynamic>{
-          'merchant_id': '',
-          'order_id': Uuid().v4(),
+        .post('$paymentUrl/api/v1/grow-payment/request',
+            body: <String, dynamic>{
+              'amount': amount,
+            })
+        .then((res) => res.body)
+        .then((data) => print(data));
+  }
+
+  Future<dynamic> create(double amount, int adId) async {
+    return http
+        .post('$paymentUrl/api/v1/grow-payment/create', body: <String, dynamic>{
           'amount': amount,
-          'order_desc': 'Give App',
-          'signature': ''
+          'adId': adId,
+          'locale': 'ru'
         })
         .then((res) => res.body)
-        .then((history) => print(history));
+        .then((data) => print(data));
+  }
+
+  Future<dynamic> confirm(int invoiceId) async {
+    return http
+        .post('$paymentUrl/api/v1/grow-payment/request',
+            body: <String, dynamic>{'invoiceId': invoiceId, 'locale': 'ru'})
+        .then((res) => res.body)
+        .then((data) => print(data));
+  }
+
+  Future<dynamic> status(int invoiceId) async {
+    return http
+        .post('$paymentUrl/api/v1/grow-payment/status',
+            body: <String, dynamic>{'invoiceId': invoiceId, 'locale': 'ru'})
+        .then((res) => res.body)
+        .then((data) => print(data));
+  }
+
+  Future<dynamic> balance(int invoiceId) async {
+    return http
+        .post('$paymentUrl/api/v1/balance',
+            body: <String, dynamic>{'invoiceId': invoiceId, 'locale': 'ru'})
+        .then((res) => res.body)
+        .then((data) => print(data));
   }
 }
